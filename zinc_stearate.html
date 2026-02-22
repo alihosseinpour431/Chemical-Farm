@@ -1,0 +1,2644 @@
+<!doctype html>
+<html dir="rtl" lang="fa" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title data-i18n-en="Chemical Farm" data-i18n-fa="کمیکال فارم ">Chemical Farm | Acetaldehyde</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600&amp;family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+        :root {
+            --primary: #0d9488;
+            --primary-light: #14b8a6;
+            --secondary: #2563eb;
+            --danger: #fb7185;
+            --warning: #fbbf24;
+            --success: #22c55e;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: rgba(15,23,42,0.10);
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --glow-primary: 0 0 22px rgba(13, 148, 136, 0.22);
+            --glow-secondary: 0 0 22px rgba(37, 99, 235, 0.22);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Vazirmatn','Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 35px 0;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow), var(--glow-primary);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateY(0);
+            animation: headerFloat 6s ease-in-out infinite;
+        }
+        @keyframes headerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo i {
+            font-size: 2rem;
+            background: rgba(255,255,255,0.15);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255,255,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+        .logo h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+        }
+        .search-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+        }
+        #search-input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        #search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        #search-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1), var(--glow-primary);
+        }
+        
+        /* Header actions (Home + Language) */
+        .header-actions{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .hdr-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.10);
+            color: white;
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .hdr-btn i{ opacity: .9; }
+        .hdr-btn:hover{
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover), var(--glow-secondary);
+            border-color: rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.14);
+        }
+        .hdr-btn:active{ transform: translateY(0); }
+        .hdr-btn.lang{
+            border: 1px solid rgba(255,255,255,0.28);
+        }
+        #langLabel{
+            font-family: 'Space Grotesk','Vazirmatn','Inter',sans-serif;
+            font-weight: 700;
+            letter-spacing: .6px;
+        }
+
+        /* Language toggling */
+        html[lang="fa"] body{ direction: rtl; }
+        html[lang="fa"] .container{ direction: rtl; }
+        html[lang="fa"] .product-name,
+        html[lang="fa"] .section-title,
+        html[lang="fa"] .market-title,
+        html[lang="fa"] .companies-title,
+        html[lang="fa"] .applications-title,
+        html[lang="fa"] .feedstock-title,
+        html[lang="fa"] .molecular-title{
+            font-family:'Vazirmatn','Space Grotesk','Inter',sans-serif;
+        }
+.product-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .product-type {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.15);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            align-self: flex-start;
+            transition: var(--transition);
+            box-shadow: var(--glow-primary);
+        }
+        .product-type:hover {
+            transform: scale(1.03);
+            box-shadow: var(--glow-primary), 0 5px 15px rgba(37, 99, 235, 0.15);
+        }
+        .product-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .product-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+            color: #475569;
+            margin-top: 5px;
+        }
+        .product-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow), var(--glow-primary);
+            transition: var(--transition);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: floatUp 0.6s ease-out;
+        }
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 16px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        .stat-value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .stat-card:hover .stat-value::after {
+            width: 100%;
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
+        }
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 2;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .section-card:hover::before {
+            transform: scaleX(1);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .section-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .properties-header .section-icon {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        .hazard-header .section-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .health-header .section-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        .industry-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .license-header .section-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .section-card:hover .section-title::after {
+            width: 70%;
+        }
+        .property-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .property-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
+            padding-left: 10px;
+            transition: var(--transition);
+        }
+        .property-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gray);
+            opacity: 0.5;
+        }
+        .property-item:hover {
+            padding-left: 15px;
+        }
+        .property-item:hover::before {
+            background: var(--primary);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.2);
+        }
+        .property-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .property-label i {
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+        .property-value {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+            position: relative;
+            display: inline-block;
+        }
+        .property-value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .property-item:hover .property-value::after {
+            width: 100%;
+        }
+        .hazard-section, .health-section {
+            padding: 20px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hazard-section::before, .health-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            opacity: 0.7;
+        }
+        .hazard-section {
+            background: rgba(254, 226, 226, 0.4);
+            border: 1px solid #fecaca;
+        }
+        .hazard-section::before {
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+        }
+        .hazard-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #b91c1c;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .hazard-value {
+            color: #991b1b;
+            line-height: 1.6;
+        }
+        .health-section {
+            background: rgba(254, 249, 196, 0.4);
+            border: 1px solid #fde68a;
+        }
+        .health-section::before {
+            background: linear-gradient(to bottom, #f59e0b, #d97706);
+        }
+        .health-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #a16207;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .health-value {
+            color: #854d0e;
+            line-height: 1.6;
+        }
+        .industry-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .industry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .industry-tag {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .industry-tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            z-index: -1;
+        }
+        .industry-tag:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: var(--success);
+            color: white;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        .industry-tag:hover::after {
+            animation: shine 1s;
+        }
+        @keyframes shine {
+            to { transform: translateX(100%); }
+        }
+        .feedstock-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .feedstock-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        .feedstock-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-secondary);
+        }
+        .feedstock-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .feedstock-header .section-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+        .feedstock-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .raw-materials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .material-tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .material-tag::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        .material-tag:hover {
+            transform: scale(1.05);
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        .material-tag:hover::after {
+            transform: translateX(0);
+        }
+        .market-insights {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .market-insights::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .market-insights:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .market-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .market-header .section-icon {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        .market-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .market-description {
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .demand-chart-container {
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+            background: #f8fafc;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        .demand-chart-container:hover {
+            box-shadow: var(--card-hover), var(--glow-primary);
+            transform: scale(1.01);
+        }
+        .region-demand {
+            margin-top: 25px;
+        }
+        .region-item {
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .region-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .region-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover);
+            z-index: 2;
+        }
+        .region-item:hover::before {
+            opacity: 1;
+        }
+        .region-item:nth-child(1) {
+            border-left-color: #2563eb;
+        }
+        .region-item:nth-child(1)::before {
+            background: linear-gradient(to bottom, #2563eb, #3b82f6);
+        }
+        .region-item:nth-child(2) {
+            border-left-color: #8b5cf6;
+        }
+        .region-item:nth-child(2)::before {
+            background: linear-gradient(to bottom, #8b5cf6, #a78bfa);
+        }
+        .region-item:nth-child(3) {
+            border-left-color: #10b981;
+        }
+        .region-item:nth-child(3)::before {
+            background: linear-gradient(to bottom, #10b981, #34d399);
+        }
+        .region-item:nth-child(4) {
+            border-left-color: #f59e0b;
+        }
+        .region-item:nth-child(4)::before {
+            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
+        }
+        .region-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        .region-percentage {
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            display: inline-block;
+        }
+        .region-percentage::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: var(--transition);
+        }
+        .region-item:hover .region-percentage::after {
+            width: 100%;
+        }
+        .region-description {
+            color: #64748b;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .region-progress {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .region-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        .region-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1.5s ease;
+            position: relative;
+        }
+        .key-companies {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-commodity {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-commodity:hover, .key-companies:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .companies-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .companies-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .companies-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .company-list {
+            list-style: none;
+        }
+        .company-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .company-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--success);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+            z-index: 1;
+        }
+        .company-item:hover::before {
+            transform: scaleX(1);
+        }
+        .company-item:last-child {
+            border-bottom: none;
+        }
+        .company-item:hover {
+            transform: translateX(5px);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .company-flag {
+            width: 28px;
+            height: 20px;
+            border-radius: 3px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: #64748b;
+            transition: var(--transition);
+        }
+        .company-item:hover .company-flag {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 2px var(--success);
+        }
+        .company-name {
+            font-weight: 600;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+        .company-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--success);
+            transition: var(--transition);
+        }
+        .company-item:hover .company-name::after {
+            width: 100%;
+        }
+        .company-country {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .molecular-visualization {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .molecular-visualization::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+        .molecular-visualization:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .molecular-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .molecular-header .section-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .molecular-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .molecular-diagram {
+            width: 100%;
+            height: 300px;
+            border-radius: 16px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .molecular-diagram:hover {
+            box-shadow: var(--card-hover);
+        }
+        #molecular-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .molecular-info {
+            display: flex;
+            justify-content: space-around;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        .molecular-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .color-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .molecular-red {
+            background-color: #ef4444;
+        }
+        .molecular-blue {
+            background-color: #1e40af;
+        }
+        .molecular-gray {
+            background-color: #64748b;
+        }
+        .safety-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-top: 15px;
+            align-self: flex-start;
+            animation: pulseDanger 2s infinite;
+        }
+        @keyframes pulseDanger {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #64748b;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        .footer-note {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        /* Production Process Specific Styles */
+        .process-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stage {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--primary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .stage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .stage:hover {
+            background: #edf2ff;
+            transform: translateX(5px);
+        }
+        .stage:hover::before {
+            animation: shine 1.5s;
+        }
+        @keyframes shine {
+            to { transform: translateX(100%); }
+        }
+        .stage-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .stage:hover .stage-number {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+        }
+        .stage-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+            position: relative;
+            display: inline-block;
+        }
+        .stage-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .stage:hover .stage-title::after {
+            width: 100%;
+        }
+        .stage-description {
+            color: #475569;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        .process-diagram {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+        .diagram-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+        }
+        .plant-capacity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .capacity-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--success);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .capacity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .capacity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: #edf7f4;
+        }
+        .capacity-card:hover::before {
+            animation: shine 1.5s;
+        }
+        .capacity-title {
+            font-weight: 600;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .capacity-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .capacity-location {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .capacity-note {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+        .process-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 8px;
+        }
+        .process-btn {
+            padding: 5px 12px;
+            border-radius: 18px;
+            background: #e2e8f0;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .process-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .process-btn:hover::after {
+            animation: shine 1s;
+        }
+        .process-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .process-info {
+            background: #f0f4ff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            border-left: 3px solid var(--primary);
+        }
+        .process-highlight {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        /* Applications Section */
+        .applications-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .applications-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success), #22c55e);
+        }
+        .applications-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .applications-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .applications-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .applications-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .application-chart {
+            height: 250px;
+            margin-top: 15px;
+            position: relative;
+        }
+        .application-chart::after {
+            content: '3D Interactive';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0,0,0,0.1);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            backdrop-filter: blur(2px);
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        .legend-item:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        .design-credit {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .design-credit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .credit-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .credit-icon {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        .credit-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+        .credit-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .credit-details {
+            color: #475569;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .contact-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        .contact-item:hover::before {
+            animation: shine 1s;
+        }
+        .contact-item:hover i {
+            color: white;
+        }
+        /* License Providers Section */
+        .license-providers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .provider-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            transition: var(--transition);
+            border-left: 3px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+        .provider-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .provider-item:hover {
+            transform: translateX(5px);
+            background: #f1f5f9;
+        }
+        .provider-item:hover::before {
+            animation: shine 1.5s;
+        }
+        .provider-rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+        }
+        .provider-item:hover .provider-rank {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        .provider-info {
+            flex: 1;
+        }
+        .provider-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+            position: relative;
+            display: inline-block;
+        }
+        .provider-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        .provider-item:hover .provider-name::after {
+            width: 100%;
+        }
+        .provider-details {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .provider-licenses {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            align-self: flex-start;
+            transition: var(--transition);
+        }
+        .provider-item:hover .provider-licenses {
+            background: var(--secondary);
+            color: white;
+        }
+        /* 3D Chart Container */
+        .chart3d-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .chart3d-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            transform: translate(-50%, -100%);
+        }
+        .chart3d-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid rgba(0,0,0,0.8);
+        }
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .product-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .product-header {
+                flex-direction: column;
+            }
+            .product-name {
+                font-size: 2rem;
+                text-align: center;
+            }
+            .product-stats {
+                grid-template-columns: 1fr;
+            }
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+            .plant-capacity {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+
+/* =========================
+   Language fonts & direction
+   ========================= */
+html[lang="en"] body{
+    font-family: 'Inter','Space Grotesk', sans-serif;
+}
+html[lang="fa"] body{
+    font-family: 'Vazirmatn','Inter', sans-serif;
+}
+/* Better RTL/LTR support using logical properties where possible */
+.property-item{ padding-inline-start: 10px; padding-left: 0; }
+.property-item:hover{ padding-inline-start: 15px; }
+.property-item::before{ inset-inline-start: 0; left: auto; }
+.region-item{ border-inline-start: 4px solid; border-left: 0; }
+.region-item::before{ inset-inline-start: 0; left:auto; }
+.stage{ border-inline-start: 3px solid var(--primary); border-left: 0; }
+.capacity-card{ border-inline-start: 3px solid var(--success); border-left: 0; }
+.provider-item{ border-inline-start: 3px solid var(--secondary); border-left: 0; }
+.hazard-section::before, .health-section::before{ inset-inline-start: 0; left:auto; }
+
+/* =========================
+   Theme system (Light/Dark)
+   ========================= */
+html{
+    /* surfaces */
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --surface-3: rgba(255,255,255,0.70);
+    --text-1: #0f172a;
+    --text-2: #475569;
+    --text-3: #64748b;
+    --border: rgba(15,23,42,0.10);
+    --molecule-bg: #f8fafc;
+    color-scheme: light;
+}
+body{
+    background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+    color: var(--text-1);
+}
+html[data-theme="dark"]{
+    /* High-contrast dark palette (readable on true-black displays) */
+    --surface: rgba(12,18,34,0.88);
+    --surface-2: rgba(17,26,46,0.78);
+    --surface-3: rgba(12,18,34,0.62);
+
+    /* Text */
+    --text-1: #eef2ff;   /* main text */
+    --text-2: #d6def7;   /* body/secondary text */
+    --text-3: #a7b4d8;   /* muted text */
+
+    /* Critical: many parts of the page use var(--dark) for text */
+    --dark: #eef2ff;
+    --light: #0b1020;
+
+    /* Borders / shadows */
+    --border: rgba(167,180,216,0.18);
+    --gray: rgba(167,180,216,0.18);
+    --card-shadow: 0 10px 18px -4px rgba(0, 0, 0, 0.55), 0 4px 10px -6px rgba(0, 0, 0, 0.45);
+    --card-hover: 0 22px 30px -10px rgba(0, 0, 0, 0.65), 0 10px 16px -10px rgba(0, 0, 0, 0.50);
+
+    /* 3D canvas background */
+    --molecule-bg: #0b1020;
+
+    color-scheme: dark;
+}
+html[data-theme="dark"] body{
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(13,148,136,0.20), transparent 55%),
+                radial-gradient(1000px 700px at 90% 15%, rgba(37,99,235,0.18), transparent 55%),
+                radial-gradient(1000px 700px at 50% 110%, rgba(139,92,246,0.14), transparent 55%),
+                linear-gradient(180deg, #020617 0%, #0b1220 100%);
+    color: var(--text-1);
+}
+/* Card surfaces */
+html[data-theme="dark"] .product-stats,
+html[data-theme="dark"] .section-card,
+html[data-theme="dark"] .feedstock-section,
+html[data-theme="dark"] .market-insights,
+html[data-theme="dark"] .key-companies,
+html[data-theme="dark"] .key-commodity,
+html[data-theme="dark"] .molecular-visualization,
+html[data-theme="dark"] .applications-section,
+html[data-theme="dark"] .design-credit{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--card-shadow);
+}
+html[data-theme="dark"] .demand-chart-container,
+html[data-theme="dark"] .process-diagram,
+html[data-theme="dark"] .molecular-info,
+html[data-theme="dark"] .stage,
+html[data-theme="dark"] .capacity-card,
+html[data-theme="dark"] .provider-item,
+html[data-theme="dark"] .contact-item,
+html[data-theme="dark"] .region-item{
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+html[data-theme="dark"] .section-header,
+html[data-theme="dark"] .feedstock-header,
+html[data-theme="dark"] .market-header,
+html[data-theme="dark"] .companies-header,
+html[data-theme="dark"] .molecular-header,
+html[data-theme="dark"] .applications-header{
+    border-bottom: 1px solid var(--border);
+}
+/* Text colors */
+html[data-theme="dark"] .product-subtitle,
+html[data-theme="dark"] .market-description,
+html[data-theme="dark"] .region-description,
+html[data-theme="dark"] .company-country,
+html[data-theme="dark"] .capacity-location,
+html[data-theme="dark"] .capacity-note,
+html[data-theme="dark"] .property-label,
+html[data-theme="dark"] .stat-label,
+html[data-theme="dark"] footer,
+html[data-theme="dark"] .footer-note{
+    color: var(--text-2) !important;
+}
+html[data-theme="dark"] .property-value,
+html[data-theme="dark"] .region-title,
+html[data-theme="dark"] .company-name,
+html[data-theme="dark"] .stage-title,
+html[data-theme="dark"] .capacity-value,
+html[data-theme="dark"] .provider-name{
+    color: var(--text-1) !important;
+}
+html[data-theme="dark"] .region-progress{ background: rgba(148,163,184,0.18); }
+html[data-theme="dark"] .region-item:hover{ background: rgba(148,163,184,0.08); }
+html[data-theme="dark"] .company-item:hover{ background: rgba(16,185,129,0.08); }
+
+/* Hazard blocks in dark */
+html[data-theme="dark"] .hazard-section{
+    background: rgba(127,29,29,0.25);
+    border-color: rgba(239,68,68,0.35);
+}
+html[data-theme="dark"] .health-section{
+    background: rgba(120,53,15,0.25);
+    border-color: rgba(245,158,11,0.35);
+}
+html[data-theme="dark"] .safety-badge{
+    background: rgba(239,68,68,0.18);
+    color: #fecaca;
+}
+
+/* Toggle button polish */
+.hdr-btn.theme i{ transition: transform .25s ease; }
+.hdr-btn.theme:hover i{ transform: rotate(-10deg) scale(1.05); }
+
+/* Responsive fix: product-header is grid (not flex) */
+@media (max-width: 768px){
+    .product-header{ grid-template-columns: 1fr; }
+    .safety-badge{ justify-self: start; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+
+/* =========================
+   Dark-mode readability overrides (inline styles + hard-coded colors)
+   ========================= */
+html[data-theme="dark"]{
+    /* Make sure plain text defaults are readable */
+    color: var(--text-1);
+}
+
+html[data-theme="dark"] body{
+    color: var(--text-1);
+}
+
+/* Override common hard-coded text colors used in inline styles */
+html[data-theme="dark"] [style*="color: #475569"],
+html[data-theme="dark"] [style*="color:#475569"]{ color: var(--text-2) !important; }
+
+html[data-theme="dark"] [style*="color: #64748b"],
+html[data-theme="dark"] [style*="color:#64748b"]{ color: var(--text-3) !important; }
+
+html[data-theme="dark"] [style*="color: #0f172a"],
+html[data-theme="dark"] [style*="color:#0f172a"],
+html[data-theme="dark"] [style*="color: var(--dark)"],
+html[data-theme="dark"] [style*="color:var(--dark)"]{ color: var(--text-1) !important; }
+
+/* Fix common light backgrounds used inline inside CAPEX cards */
+html[data-theme="dark"] [style*="background: #f8fafc"],
+html[data-theme="dark"] [style*="background:#f8fafc"]{
+    background: var(--surface-2) !important;
+    border-color: var(--border) !important;
+}
+html[data-theme="dark"] [style*="background: #fff7ed"],
+html[data-theme="dark"] [style*="background:#fff7ed"],
+html[data-theme="dark"] [style*="background: #fff7ed;"],
+html[data-theme="dark"] [style*="background:#fff7ed;"]{
+    background: rgba(249,115,22,0.12) !important;
+    border-color: rgba(249,115,22,0.28) !important;
+}
+
+/* Ensure link/text inside contact pills stays readable */
+html[data-theme="dark"] a{ color: var(--text-1); }
+html[data-theme="dark"] a:hover{ color: var(--text-1); }
+
+/* Keep small helper texts readable */
+html[data-theme="dark"] .credit-details,
+html[data-theme="dark"] .capacity-note,
+html[data-theme="dark"] .stage-description{ color: var(--text-2) !important; }
+
+
+
+/* === Fix: process-info box readability in Dark theme === */
+html[data-theme="dark"] .process-info{
+    background: rgba(37, 99, 235, 0.12) !important; /* soft indigo */
+    border: 1px solid rgba(167,180,216,0.22) !important;
+    color: var(--text-2) !important;
+}
+html[data-theme="dark"] .process-info .process-highlight{
+    color: #93c5fd !important; /* readable accent */
+}
+html[data-theme="dark"] .process-info i{
+    color: #93c5fd !important;
+}
+
+</style>
+
+</head>
+
+<body>
+<div class="container">
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-flask"></i>
+        <h1><span data-i18n-en="Chemical Farm" data-i18n-fa="Chemical Farm">Chemical Farm</span></h1>
+      </div>
+      <div class="header-actions">
+        <!-- ✅ Home should point to index.html (not home page.html) -->
+        <a class="hdr-btn home" href="index.html" title="Home">
+          <i class="fas fa-home"></i>
+          <span data-i18n-en="Home" data-i18n-fa="خانه">Home</span>
+        </a>
+        <button class="hdr-btn theme" id="themeToggle" title="Theme" type="button" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+          <span data-i18n-en="Theme" data-i18n-fa="تم">Theme</span>
+        </button>
+        <button class="hdr-btn lang" id="langToggle" title="Language" type="button">
+          <i class="fas fa-language"></i>
+          <span id="langLabel">EN</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="product-header">
+    <div class="product-info">
+      <div class="product-type">
+        <span data-i18n-en="Additive / Lubricant (Metal Soap)" data-i18n-fa="افزودنی / روان‌کننده (صابون فلزی)">Additive / Lubricant (Metal Soap)</span>
+      </div>
+      <h1 class="product-name">
+        <i class="fas fa-flask"></i>
+        <span data-i18n-en="Zinc Stearate" data-i18n-fa="استئارات روی">Zinc Stearate</span>
+      </h1>
+      <div class="product-subtitle">
+        <i class="fas fa-microscope"></i> C₃₆H₇₀O₄Zn | CAS 557-05-1
+      </div>
+    </div>
+
+    <div class="safety-badge">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span data-i18n-en="Low Hazard | Dust Irritant (Combustible Dust)" data-i18n-fa="خطر پایین | تحریک‌کننده گردوغبار (گردِ قابل‌احتراق)">Low Hazard | Dust Irritant (Combustible Dust)</span>
+    </div>
+  </div>
+
+  <!-- ✅ Top “tab” stats exactly like your MEG style -->
+  <div class="product-stats">
+    <div class="stat-card">
+      <div class="stat-value"><span data-i18n-en="~270K" data-i18n-fa="حدود ۲۷۰ هزار">~270K</span></div>
+      <div class="stat-label"><span data-i18n-en="Estimated Global Market Volume (Tons/Y, 2024)" data-i18n-fa="برآورد حجم بازار جهانی (تن/سال، ۲۰۲۴)">Estimated Global Market Volume (Tons/Y, 2024)</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><span data-i18n-en="~$1.56B" data-i18n-fa="حدود ۱.۵۶ میلیارد دلار">~$1.56B</span></div>
+      <div class="stat-label"><span data-i18n-en="Estimated Market Value (2025)" data-i18n-fa="برآورد ارزش بازار (۲۰۲۵)">Estimated Market Value (2025)</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><span data-i18n-en="White, hydrophobic fine powder" data-i18n-fa="پودر سفیدِ آب‌گریز و ریزدانه">White, hydrophobic fine powder</span></div>
+      <div class="stat-label"><span data-i18n-en="Common Form" data-i18n-fa="شکل رایج">Common Form</span></div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="main-content">
+
+      <div class="section-card">
+        <div class="section-header properties-header">
+          <div class="section-icon"><i class="fas fa-vial"></i></div>
+          <h2 class="section-title"><span data-i18n-en="Chemical Properties" data-i18n-fa="خواص شیمیایی">Chemical Properties</span></h2>
+        </div>
+
+        <div class="property-grid">
+          <div class="property-item">
+            <div class="property-label"><i class="fas fa-weight-hanging"></i> <span data-i18n-en="Molecular Weight" data-i18n-fa="جرم مولکولی">Molecular Weight</span></div>
+            <div class="property-value"><span data-i18n-en="632.33 g/mol" data-i18n-fa="۶۳۲.۳۳ گرم/مول">632.33 g/mol</span></div>
+          </div>
+
+          <div class="property-item">
+            <div class="property-label"><i class="fas fa-temperature-low"></i> <span data-i18n-en="Melting Range" data-i18n-fa="بازه ذوب">Melting Range</span></div>
+            <div class="property-value"><span data-i18n-en="~120–130°C (may soften/decompose)" data-i18n-fa="حدود ۱۲۰ تا ۱۳۰°C (ممکن است نرم/تجزیه شود)">~120–130°C (may soften/decompose)</span></div>
+          </div>
+
+          <div class="property-item">
+            <div class="property-label"><i class="fas fa-ruler-combined"></i> <span data-i18n-en="Density" data-i18n-fa="چگالی">Density</span></div>
+            <div class="property-value"><span data-i18n-en="~1.09–1.10 g/cm³ (solid)" data-i18n-fa="حدود ۱.۰۹ تا ۱.۱۰ گرم/سانتی‌متر³ (جامد)">~1.09–1.10 g/cm³ (solid)</span></div>
+          </div>
+
+          <div class="property-item">
+            <div class="property-label"><i class="fas fa-tint"></i> <span data-i18n-en="Water Solubility" data-i18n-fa="حلالیت در آب">Water Solubility</span></div>
+            <div class="property-value"><span data-i18n-en="Insoluble (hydrophobic)" data-i18n-fa="نامحلول (آب‌گریز)">Insoluble (hydrophobic)</span></div>
+          </div>
+
+          <div class="property-item">
+            <div class="property-label"><i class="fas fa-flask"></i> <span data-i18n-en="Solubility (organic)" data-i18n-fa="حلالیت (آلی)">Solubility (organic)</span></div>
+            <div class="property-value"><span data-i18n-en="Soluble in hot aromatic/chlorinated solvents" data-i18n-fa="در حلال‌های آروماتیک/کلردارِ داغ محلول">Soluble in hot aromatic/chlorinated solvents</span></div>
+          </div>
+
+          <div class="property-item">
+            <div class="property-label"><i class="fas fa-fire"></i> <span data-i18n-en="Flash Point (indicative)" data-i18n-fa="نقطه اشتعال (تقریبی)">Flash Point (indicative)</span></div>
+            <div class="property-value"><span data-i18n-en="~277°C (reported)" data-i18n-fa="حدود ۲۷۷°C (گزارش‌شده)">~277°C (reported)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header hazard-header">
+          <div class="section-icon"><i class="fas fa-exclamation-triangle"></i></div>
+          <h2 class="section-title"><span data-i18n-en="Hazard Classification" data-i18n-fa="طبقه‌بندی خطر">Hazard Classification</span></h2>
+        </div>
+
+        <div class="hazard-section">
+          <h3 class="hazard-title">
+            <i class="fas fa-wind"></i>
+            <span data-i18n-en="Dust control: nuisance dust, avoid inhalation; keep away from ignition sources" data-i18n-fa="کنترل گردوغبار: گرد مزاحم، از استنشاق پرهیز؛ دور از منابع جرقه/احتراق">Dust control: nuisance dust, avoid inhalation; keep away from ignition sources</span>
+          </h3>
+          <p class="hazard-value">
+            <span
+              data-i18n-en="Zinc stearate is typically handled as a fine hydrophobic powder. Use local exhaust ventilation, minimize airborne dust during transfer, and keep good housekeeping to reduce combustible dust risk. Use goggles and a dust mask/respirator where needed."
+              data-i18n-fa="استئارات روی معمولاً به‌صورت پودر ریز و آب‌گریز هندل می‌شود. تهویه موضعی، کاهش ایجاد گردوغبار هنگام انتقال و نظافت صنعتی برای کاهش ریسک «گرد قابل‌احتراق» توصیه می‌شود. در صورت نیاز از عینک و ماسک/رسپیراتور گردوغبار استفاده کنید."
+            >Zinc stearate is typically handled as a fine hydrophobic powder. Use local exhaust ventilation, minimize airborne dust during transfer, and keep good housekeeping to reduce combustible dust risk. Use goggles and a dust mask/respirator where needed.</span>
+          </p>
+        </div>
+
+        <div class="section-header health-header" style="margin-top: 25px;">
+          <div class="section-icon"><i class="fas fa-heartbeat"></i></div>
+          <h2 class="section-title"><span data-i18n-en="Chronic Health Effects" data-i18n-fa="اثرات بلندمدت بر سلامت">Chronic Health Effects</span></h2>
+        </div>
+
+        <div class="health-section">
+          <h3 class="health-title">
+            <i class="fas fa-user-injured"></i>
+            <span data-i18n-en="Repeated dust exposure may irritate airways; skin dryness possible" data-i18n-fa="مواجهه مکرر با گردوغبار ممکن است مجاری تنفسی را تحریک کند؛ خشکی پوست محتمل است">Repeated dust exposure may irritate airways; skin dryness possible</span>
+          </h3>
+          <p class="health-value">
+            <span
+              data-i18n-en="Long-term exposure to airborne particulates can contribute to respiratory irritation in sensitive individuals. Maintain dust controls, use PPE as required, and follow SDS/occupational exposure guidance for particulate limits."
+              data-i18n-fa="مواجهه بلندمدت با ذرات معلق می‌تواند در افراد حساس باعث تحریک تنفسی شود. کنترل گردوغبار، استفاده از PPE در صورت نیاز و رعایت راهنمای SDS/حدود مواجهه شغلی برای ذرات معلق توصیه می‌گردد."
+            >Long-term exposure to airborne particulates can contribute to respiratory irritation in sensitive individuals. Maintain dust controls, use PPE as required, and follow SDS/occupational exposure guidance for particulate limits.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="molecular-visualization">
+        <div class="molecular-header">
+          <div class="section-icon"><i class="fas fa-project-diagram"></i></div>
+          <h2 class="molecular-title"><span data-i18n-en="3D Molecular Structure" data-i18n-fa="ساختار مولکولی سه‌بعدی">3D Molecular Structure</span></h2>
+        </div>
+        <div class="molecular-diagram"><div id="molecular-canvas"></div></div>
+        <div class="molecular-info">
+          <div class="molecular-label"><span class="color-swatch molecular-red"></span><span data-i18n-en="Zinc (Zn)" data-i18n-fa="روی (Zn)">Zinc (Zn)</span></div>
+          <div class="molecular-label"><span class="color-swatch molecular-blue"></span><span data-i18n-en="Oxygen (O)" data-i18n-fa="اکسیژن (O)">Oxygen (O)</span></div>
+          <div class="molecular-label"><span class="color-swatch molecular-gray"></span><span data-i18n-en="Carbon chain (C)" data-i18n-fa="زنجیره کربنی (C)">Carbon chain (C)</span></div>
+        </div>
+        <div class="capacity-note">
+          <span
+            data-i18n-en="Interactive 3D visualization (schematic) of zinc stearate: a zinc–carboxylate 'metal soap' with long hydrophobic fatty chains that provide lubrication and mold-release behavior."
+            data-i18n-fa="نمایش سه‌بعدی تعاملی (شماتیک) از استئارات روی: یک «صابون فلزی» از نوع روی-کربوکسیلات با زنجیره‌های بلند آب‌گریز که رفتار روان‌کنندگی و رهاساز قالب ایجاد می‌کنند."
+          >Interactive 3D visualization (schematic) of zinc stearate: a zinc–carboxylate 'metal soap' with long hydrophobic fatty chains that provide lubrication and mold-release behavior.</span>
+        </div>
+      </div>
+
+      <div class="feedstock-section">
+        <div class="feedstock-header">
+          <div class="section-icon"><i class="fas fa-industry"></i></div>
+          <h2 class="feedstock-title"><span data-i18n-en="Production Process &amp; Capacity" data-i18n-fa="فرآیند تولید و ظرفیت">Production Process &amp; Capacity</span></h2>
+        </div>
+
+        <div class="process-info">
+          <i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+          <span data-i18n-en="Zinc stearate is commonly produced by " data-i18n-fa="استئارات روی معمولاً از طریق ">Zinc stearate is commonly produced by </span>
+          <span class="process-highlight"><span data-i18n-en="neutralization/precipitation of stearic acid with zinc oxide or zinc salts" data-i18n-fa="خنثی‌سازی/رسوب‌دهی اسید استئاریک با اکسید روی یا نمک‌های روی">neutralization/precipitation of stearic acid with zinc oxide or zinc salts</span></span>
+          <span data-i18n-en=", followed by " data-i18n-fa=" و سپس "> , followed by </span>
+          <span class="process-highlight"><span data-i18n-en="filtration, drying, and micronization" data-i18n-fa="فیلتراسیون، خشک‌کردن و میکرونایز/دانه‌بندی">filtration, drying, and micronization</span></span>
+          <span data-i18n-en=" to match PVC/rubber specs." data-i18n-fa=" برای رسیدن به مشخصات PVC/لاستیک."> to match PVC/rubber specs.</span>
+        </div>
+
+        <div class="process-selector">
+          <button class="process-btn active" data-process="neutralization"><span data-i18n-en="Neutralization / Precipitation" data-i18n-fa="خنثی‌سازی / رسوب‌دهی">Neutralization / Precipitation</span></button>
+          <button class="process-btn" data-process="micronization"><span data-i18n-en="Drying &amp; Micronization" data-i18n-fa="خشک‌کردن و میکرونایز">Drying &amp; Micronization</span></button>
+        </div>
+
+        <div class="process-stages">
+          <div class="stage">
+            <div class="stage-title"><span class="stage-number">1</span><span data-i18n-en="Feedstock Preparation" data-i18n-fa="آماده‌سازی خوراک">Feedstock Preparation</span></div>
+            <div class="stage-description">
+              <span
+                data-i18n-en="Stearic acid (or fatty acid blend) is melted and conditioned; zinc oxide (or zinc salts) is prepared and metered. Water/solvent phase and additives may be prepared to control particle size."
+                data-i18n-fa="اسید استئاریک (یا مخلوط اسیدهای چرب) ذوب و آماده‌سازی می‌شود؛ اکسید روی (یا نمک‌های روی) آماده و دوز می‌گردد. فاز آب/حلال و افزودنی‌ها برای کنترل اندازه ذره قابل استفاده است."
+              >Stearic acid (or fatty acid blend) is melted and conditioned; zinc oxide (or zinc salts) is prepared and metered. Water/solvent phase and additives may be prepared to control particle size.</span>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-title"><span class="stage-number">2</span><span data-i18n-en="Reaction &amp; Salt Formation" data-i18n-fa="واکنش و تشکیل نمک">Reaction &amp; Salt Formation</span></div>
+            <div class="stage-description">
+              <span
+                data-i18n-en="Under controlled temperature and agitation, zinc reacts with fatty acid to form zinc stearate. pH/stoichiometry control limits free acid and improves consistency."
+                data-i18n-fa="در دما و هم‌زدن کنترل‌شده، روی با اسید چرب واکنش داده و استئارات روی تشکیل می‌شود. کنترل pH/استوکیومتری، اسید آزاد را کاهش داده و یکنواختی محصول را بهتر می‌کند."
+              >Under controlled temperature and agitation, zinc reacts with fatty acid to form zinc stearate. pH/stoichiometry control limits free acid and improves consistency.</span>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-title"><span class="stage-number">3</span><span data-i18n-en="Separation &amp; Drying" data-i18n-fa="جداسازی و خشک‌کردن">Separation &amp; Drying</span></div>
+            <div class="stage-description">
+              <span
+                data-i18n-en="The solid product is filtered/centrifuged and dried. Moisture control is critical for PVC processing performance and storage stability."
+                data-i18n-fa="محصول جامد فیلتر/سانتریفیوژ و سپس خشک می‌شود. کنترل رطوبت برای عملکرد در فرآیند PVC و پایداری ذخیره‌سازی مهم است."
+              >The solid product is filtered/centrifuged and dried. Moisture control is critical for PVC processing performance and storage stability.</span>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="stage-title"><span class="stage-number">4</span><span data-i18n-en="Milling, Classification &amp; Packaging" data-i18n-fa="آسیاب، دانه‌بندی و بسته‌بندی">Milling, Classification &amp; Packaging</span></div>
+            <div class="stage-description">
+              <span
+                data-i18n-en="Micronization and classification tune particle size distribution (PSD) for mold-release/lubrication behavior. Dust-safe packaging and handling are implemented."
+                data-i18n-fa="میکرونایز و دانه‌بندی، توزیع اندازه ذرات (PSD) را برای رفتار روان‌کنندگی/رهاساز قالب تنظیم می‌کند. بسته‌بندی و هندلینگ ایمن در برابر گردوغبار اعمال می‌شود."
+              >Micronization and classification tune particle size distribution (PSD) for mold-release/lubrication behavior. Dust-safe packaging and handling are implemented.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plant-capacity">
+          <div class="capacity-card">
+            <div class="capacity-title"><i class="fas fa-industry"></i> <span data-i18n-en="Minimum Capacity" data-i18n-fa="حداقل ظرفیت">Minimum Capacity</span></div>
+            <div class="capacity-value"><span data-i18n-en="5K T/Y" data-i18n-fa="۵ هزار تن/سال">5K T/Y</span></div>
+            <div class="capacity-location"><span data-i18n-en="Regional additive plant (PVC/rubber grades)" data-i18n-fa="واحد افزودنی منطقه‌ای (گریدهای PVC/لاستیک)">Regional additive plant (PVC/rubber grades)</span></div>
+          </div>
+
+          <div class="capacity-card">
+            <div class="capacity-title"><i class="fas fa-industry"></i> <span data-i18n-en="Maximum Capacity (single site)" data-i18n-fa="حداکثر ظرفیت (یک سایت)">Maximum Capacity (single site)</span></div>
+            <div class="capacity-value"><span data-i18n-en="60K T/Y" data-i18n-fa="۶۰ هزار تن/سال">60K T/Y</span></div>
+            <div class="capacity-location"><span data-i18n-en="World-scale metal stearates hub (China-focused demand)" data-i18n-fa="هاب مقیاس‌بالا (با تمرکز تقاضای چین)">World-scale metal stearates hub (China-focused demand)</span></div>
+          </div>
+        </div>
+
+        <div class="capacity-note">
+          <span
+            data-i18n-en="China-focused note: demand is closely tied to PVC processing (pipes, profiles, construction). China is a leading PVC producer, which strengthens local pull for zinc stearate grades used as lubricant and mold-release agent."
+            data-i18n-fa="نکته با تمرکز چین: تقاضا ارتباط مستقیم با فرآوری PVC (لوله، پروفیل، ساخت‌وساز) دارد. چین از تولیدکنندگان بزرگ PVC است و همین موضوع کشش مصرف گریدهای استئارات روی را به‌عنوان روان‌کننده و رهاساز قالب تقویت می‌کند."
+          >China-focused note: demand is closely tied to PVC processing (pipes, profiles, construction). China is a leading PVC producer, which strengthens local pull for zinc stearate grades used as lubricant and mold-release agent.</span>
+        </div>
+      </div>
+
+      <div class="applications-section">
+        <div class="applications-header">
+          <div class="section-icon"><i class="fas fa-building"></i></div>
+          <h2 class="applications-title"><span data-i18n-en="Industry Applications" data-i18n-fa="کاربردهای صنعتی">Industry Applications</span></h2>
+        </div>
+
+        <div class="industry-tags">
+          <div class="industry-tag"><span data-i18n-en="PVC Lubricant / Mold Release" data-i18n-fa="روان‌کننده/رهاساز قالب PVC">PVC Lubricant / Mold Release</span></div>
+          <div class="industry-tag"><span data-i18n-en="Rubber Processing (release/activator aid)" data-i18n-fa="فرآوری لاستیک (کمک‌فرآیند/رهاساز)">Rubber Processing (release/activator aid)</span></div>
+          <div class="industry-tag"><span data-i18n-en="Paints &amp; Coatings (sanding/flatting aid)" data-i18n-fa="رنگ و پوشش (کمک سنباده‌خوری/مات‌کنندگی)">Paints &amp; Coatings (sanding/flatting aid)</span></div>
+          <div class="industry-tag"><span data-i18n-en="Powder Metallurgy / PU / Composites" data-i18n-fa="متالورژی پودر/PU/کامپوزیت‌ها">Powder Metallurgy / PU / Composites</span></div>
+          <div class="industry-tag"><span data-i18n-en="Cosmetics / Pharma (formulation aid)" data-i18n-fa="آرایشی/دارویی (کمک‌فرمولاسیون)">Cosmetics / Pharma (formulation aid)</span></div>
+        </div>
+
+        <div class="application-chart">
+          <canvas height="220" id="applicationsChart" width="400"></canvas>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item"><span class="legend-color" style="background-color:#2563eb;"></span>
+            <span><span data-i18n-en="Plastics & PVC (45%)*" data-i18n-fa="پلاستیک و PVC (۴۵٪)*">Plastics & PVC (45%)*</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#8b5cf6;"></span>
+            <span><span data-i18n-en="Rubber (25%)*" data-i18n-fa="لاستیک (۲۵٪)*">Rubber (25%)*</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#10b981;"></span>
+            <span><span data-i18n-en="Paints/Coatings (15%)*" data-i18n-fa="رنگ/پوشش (۱۵٪)*">Paints/Coatings (15%)*</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#f59e0b;"></span>
+            <span><span data-i18n-en="Cosmetics/Pharma (10%)*" data-i18n-fa="آرایشی/دارویی (۱۰٪)*">Cosmetics/Pharma (10%)*</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#ef4444;"></span>
+            <span><span data-i18n-en="Others (5%)*" data-i18n-fa="سایر (۵٪)*">Others (5%)*</span></span>
+          </div>
+        </div>
+
+        <p style="margin-top:10px;color:#64748b;font-size:0.92rem;line-height:1.5;">
+          <span data-i18n-en="*Indicative split (illustrative). Actual shares vary by region, grade, and downstream mix."
+                data-i18n-fa="*تقسیم‌بندی تقریبی (نمایشی). سهم واقعی با توجه به منطقه، گرید و ترکیب مصرف پایین‌دستی تغییر می‌کند.">
+            *Indicative split (illustrative). Actual shares vary by region, grade, and downstream mix.
+          </span>
+        </p>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header license-header">
+          <div class="section-icon"><i class="fas fa-certificate"></i></div>
+          <h2 class="section-title"><span data-i18n-en="Top Technology &amp; Know-how Providers" data-i18n-fa="برترین ارائه‌دهندگان فناوری/دانش فنی">Top Technology &amp; Know-how Providers</span></h2>
+        </div>
+
+        <p style="color:#475569;margin-bottom:15px;line-height:1.5;">
+          <span
+            data-i18n-en="Zinc stearate is a mature commodity additive. Competitive advantage is usually driven by grade design (PSD, free acid, metal content), dust-safe finishing, and consistency for PVC/rubber processing. In China, demand is strongly linked to PVC construction applications and high-volume compounding hubs."
+            data-i18n-fa="استئارات روی یک افزودنی کالاییِ بالغ است. مزیت رقابتی معمولاً از طراحی گرید (PSD، اسید آزاد، درصد فلز)، فینیشینگ ایمن در برابر گردوغبار و یکنواختی برای فرآیند PVC/لاستیک ناشی می‌شود. در چین، تقاضا به‌شدت به کاربردهای ساختمانیِ PVC و هاب‌های کامپاندینگ پرحجم وابسته است."
+          >Zinc stearate is a mature commodity additive. Competitive advantage is usually driven by grade design (PSD, free acid, metal content), dust-safe finishing, and consistency for PVC/rubber processing. In China, demand is strongly linked to PVC construction applications and high-volume compounding hubs.</span>
+        </p>
+
+        <div class="license-providers">
+          <div class="provider-item"><div class="provider-rank">1</div><div class="provider-info">
+            <div class="provider-name">Metal Stearates Producers (Global)</div>
+            <div class="provider-details"><span data-i18n-en="Grade design, QA/QC, industrial scale-up" data-i18n-fa="طراحی گرید، کنترل کیفیت، مقیاس‌گذاری صنعتی">Grade design, QA/QC, industrial scale-up</span></div>
+            <div class="provider-licenses"><span data-i18n-en="PSD control, low free acid, dust-safe finishing" data-i18n-fa="کنترل PSD، اسید آزاد پایین، فینیشینگ ایمن">PSD control, low free acid, dust-safe finishing</span></div>
+          </div></div>
+
+          <div class="provider-item"><div class="provider-rank">2</div><div class="provider-info">
+            <div class="provider-name">Drying &amp; Powder Handling OEMs</div>
+            <div class="provider-details"><span data-i18n-en="Dryers, filters, dust collection, explosion-safe design" data-i18n-fa="خشک‌کن، فیلتر، غبارگیر، طراحی ایمن ضدانفجار">Dryers, filters, dust collection, explosion-safe design</span></div>
+            <div class="provider-licenses"><span data-i18n-en="CAPEX optimization &amp; product consistency" data-i18n-fa="بهینه‌سازی CAPEX و یکنواختی محصول">CAPEX optimization &amp; product consistency</span></div>
+          </div></div>
+
+          <div class="provider-item"><div class="provider-rank">3</div><div class="provider-info">
+            <div class="provider-name">Micronization / Classification OEMs</div>
+            <div class="provider-details"><span data-i18n-en="Grinding, air classification, PSD tailoring" data-i18n-fa="آسیاب، کلاسیفایر هوا، تنظیم PSD">Grinding, air classification, PSD tailoring</span></div>
+            <div class="provider-licenses"><span data-i18n-en="PVC lubrication &amp; release performance tuning" data-i18n-fa="تنظیم عملکرد روان‌کنندگی/رهاساز در PVC">PVC lubrication &amp; release performance tuning</span></div>
+          </div></div>
+
+          <div class="provider-item"><div class="provider-rank">4</div><div class="provider-info">
+            <div class="provider-name">China Additives Ecosystem</div>
+            <div class="provider-details"><span data-i18n-en="PVC compounding hubs &amp; construction demand pull" data-i18n-fa="هاب‌های کامپاندینگ PVC و کشش تقاضای ساختمانی">PVC compounding hubs &amp; construction demand pull</span></div>
+            <div class="provider-licenses"><span data-i18n-en="Local supply chains + high-volume grades" data-i18n-fa="زنجیره تأمین داخلی + گریدهای پرحجم">Local supply chains + high-volume grades</span></div>
+          </div></div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+
+    <div class="sidebar">
+
+      <div class="market-insights">
+        <div class="market-header">
+          <div class="section-icon"><i class="fas fa-chart-pie"></i></div>
+          <h2 class="market-title"><span data-i18n-en="Global Demand Analysis" data-i18n-fa="تحلیل تقاضای جهانی">Global Demand Analysis</span></h2>
+        </div>
+
+        <p class="market-description">
+          <span
+            data-i18n-en="Demand is driven by plastics and rubber processing where zinc stearate acts as lubricant and mold-release agent. Asia-Pacific leads due to large-scale compounding and construction-linked PVC consumption; China is a key driver through high PVC output and downstream construction applications."
+            data-i18n-fa="محرک تقاضا، فرآوری پلاستیک و لاستیک است که در آن استئارات روی نقش روان‌کننده و رهاساز قالب دارد. آسیا-اقیانوسیه به‌دلیل کامپاندینگ مقیاس‌بالا و مصرف PVC مرتبط با ساخت‌وساز پیشتاز است؛ چین با تولید بالای PVC و کاربردهای ساختمانی پایین‌دستی، محرک کلیدی محسوب می‌شود."
+          >Demand is driven by plastics and rubber processing where zinc stearate acts as lubricant and mold-release agent. Asia-Pacific leads due to large-scale compounding and construction-linked PVC consumption; China is a key driver through high PVC output and downstream construction applications.</span>
+        </p>
+
+        <div class="demand-chart-container">
+          <canvas height="250" id="demandChart" width="400"></canvas>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item"><span class="legend-color" style="background-color:#2563eb;"></span>
+            <span><span data-i18n-en="Asia-Pacific (proxy: 44%)" data-i18n-fa="آسیا-اقیانوسیه (پروکسی: ۴۴٪)">Asia-Pacific (proxy: 44%)</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#8b5cf6;"></span>
+            <span><span data-i18n-en="Europe (proxy: 22%)" data-i18n-fa="اروپا (پروکسی: ۲۲٪)">Europe (proxy: 22%)</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#10b981;"></span>
+            <span><span data-i18n-en="North America (proxy: 20%)" data-i18n-fa="آمریکای شمالی (پروکسی: ۲۰٪)">North America (proxy: 20%)</span></span>
+          </div>
+          <div class="legend-item"><span class="legend-color" style="background-color:#f59e0b;"></span>
+            <span><span data-i18n-en="Middle East & Africa + Others (proxy: 14%)" data-i18n-fa="خاورمیانه/آفریقا + سایر (پروکسی: ۱۴٪)">Middle East & Africa + Others (proxy: 14%)</span></span>
+          </div>
+        </div>
+
+        <p style="margin-top:10px;color:#64748b;font-size:0.92rem;line-height:1.5;">
+          <span data-i18n-en="Regional shares shown as a proxy based on metallic stearates market distribution; zinc stearate generally follows similar demand centers."
+                data-i18n-fa="سهم‌های منطقه‌ای به‌صورت «پروکسی» بر اساس توزیع بازار استئارات‌های فلزی نمایش داده شده‌اند؛ استئارات روی معمولاً از مراکز تقاضای مشابه تبعیت می‌کند.">
+            Regional shares shown as a proxy based on metallic stearates market distribution; zinc stearate generally follows similar demand centers.
+          </span>
+        </p>
+      </div>
+
+      <div class="key-commodity">
+        <div class="companies-header">
+          <div class="section-icon"><i class="fas fa-industry"></i></div>
+          <h2 class="companies-title"><span data-i18n-en="Production Capacity Distribution" data-i18n-fa="توزیع ظرفیت تولید">Production Capacity Distribution</span></h2>
+        </div>
+
+        <div class="property-grid" style="grid-template-columns:1fr;">
+          <div class="property-item">
+            <div class="property-label"><span data-i18n-en="Estimated Global Volume (2024)" data-i18n-fa="برآورد حجم جهانی (۲۰۲۴)">Estimated Global Volume (2024)</span></div>
+            <div class="property-value" style="color:var(--primary);"><span data-i18n-en="~270K T/Y" data-i18n-fa="حدود ۲۷۰ هزار تن/سال">~270K T/Y</span></div>
+          </div>
+          <div class="property-item">
+            <div class="property-label"><span data-i18n-en="China Demand Link" data-i18n-fa="اتصال به تقاضای چین">China Demand Link</span></div>
+            <div class="property-value" style="color:var(--primary);"><span data-i18n-en="PVC pipes/profiles + compounding hubs" data-i18n-fa="لوله/پروفیل PVC + هاب‌های کامپاندینگ">PVC pipes/profiles + compounding hubs</span></div>
+          </div>
+          <div class="property-item">
+            <div class="property-label"><span data-i18n-en="Key Performance Drivers" data-i18n-fa="محرک‌های عملکردی">Key Performance Drivers</span></div>
+            <div class="property-value" style="color:var(--primary);"><span data-i18n-en="PSD, free acid, ZnO%, moisture, dust safety" data-i18n-fa="PSD، اسید آزاد، درصد ZnO، رطوبت، ایمنی گردوغبار">PSD, free acid, ZnO%, moisture, dust safety</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon" style="background:rgba(239,115,51,0.1);color:#ef7333;"><i class="fas fa-calculator"></i></div>
+          <h2 class="section-title"><span data-i18n-en="Capital Expenditure Analysis" data-i18n-fa="تحلیل هزینه سرمایه‌گذاری (CAPEX)">Capital Expenditure Analysis</span></h2>
+        </div>
+
+        <p style="color:#475569;margin-bottom:20px;line-height:1.5;">
+          <span
+            data-i18n-en="CAPEX is typically driven by reactor/filtration, dryer, milling & classification, and dust-safe powder handling. For China-focused high-volume markets, investment often prioritizes stable PSD control and packaging/logistics efficiency."
+            data-i18n-fa="CAPEX معمولاً توسط راکتور/فیلتراسیون، خشک‌کن، آسیاب و کلاسیفایر، و سیستم‌های هندلینگ پودر ایمن در برابر گردوغبار تعیین می‌شود. برای بازارهای پرحجم با تمرکز چین، سرمایه‌گذاری غالباً روی کنترل پایدار PSD و بهره‌وری بسته‌بندی/لجستیک متمرکز است."
+          >CAPEX is typically driven by reactor/filtration, dryer, milling & classification, and dust-safe powder handling. For China-focused high-volume markets, investment often prioritizes stable PSD control and packaging/logistics efficiency.</span>
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:25px;">
+          <div style="background:#f8fafc;border-radius:16px;padding:20px;border-left:4px solid #ef7333;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+              <h3 style="font-weight:600;color:var(--dark);display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-industry" style="color:#ef7333;"></i>
+                <span data-i18n-en="Indicative CAPEX (Zinc Stearate Plant, 10–30 KTPA)" data-i18n-fa="CAPEX تقریبی (واحد استئارات روی، ۱۰ تا ۳۰ هزار تن/سال)">Indicative CAPEX (Zinc Stearate Plant, 10–30 KTPA)</span>
+              </h3>
+              <div style="background:rgba(239,115,51,0.1);color:#ef7333;padding:5px 12px;border-radius:12px;font-weight:600;">
+                <span data-i18n-en="Indicative" data-i18n-fa="تقریبی">Indicative</span>
+              </div>
+            </div>
+
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:2.8rem;font-weight:700;color:#ef7333;margin-bottom:10px;text-align:center;">
+              <span data-i18n-en="$6–18M" data-i18n-fa="۶ تا ۱۸ میلیون دلار">$6–18M</span>
+            </div>
+
+            <div style="text-align:center;color:#64748b;font-size:0.95rem;margin-bottom:15px;">
+              <span data-i18n-en="Reactor + filtration + dryer + micronization + dust-safe handling (indicative)" data-i18n-fa="راکتور + فیلتراسیون + خشک‌کن + میکرونایز + هندلینگ ایمن (تقریبی)">Reactor + filtration + dryer + micronization + dust-safe handling (indicative)</span>
+            </div>
+
+            <div style="height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;position:relative;">
+              <div style="position:absolute;top:0;left:0;height:100%;width:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent);transform:translateX(-100%);animation:shimmer 1.5s infinite;"></div>
+              <div style="height:100%;width:70%;background:linear-gradient(to right,#f97316,#ef7333);border-radius:3px;"></div>
+            </div>
+
+            <p style="margin-top:12px;color:#64748b;font-size:0.9rem;line-height:1.5;">
+              <span data-i18n-en="Note: CAPEX depends strongly on product grades (PSD targets), automation, dust/explosion safety standards, and utilities."
+                    data-i18n-fa="یادداشت: CAPEX به‌شدت به گریدهای محصول (اهداف PSD)، اتوماسیون، استانداردهای ایمنی گرد/انفجار و یوتیلیتی‌ها وابسته است.">
+                Note: CAPEX depends strongly on product grades (PSD targets), automation, dust/explosion safety standards, and utilities.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="key-companies">
+        <div class="companies-header">
+          <div class="section-icon"><i class="fas fa-city"></i></div>
+          <h2 class="companies-title"><span data-i18n-en="Key Manufacturers" data-i18n-fa="تولیدکنندگان کلیدی">Key Manufacturers</span></h2>
+        </div>
+
+        <ul class="company-list">
+          <li class="company-item">
+            <div class="company-flag"><span data-i18n-en="US/EU" data-i18n-fa="آمریکا/اروپا">US/EU</span></div>
+            <div>
+              <div class="company-name">Global Metallic Stearates Producers</div>
+              <div class="company-country"><span data-i18n-en="Core supply for plastics/rubber/pharma; grade engineering" data-i18n-fa="تأمین اصلی برای پلاستیک/لاستیک/دارویی؛ مهندسی گرید">Core supply for plastics/rubber/pharma; grade engineering</span></div>
+            </div>
+          </li>
+
+          <li class="company-item">
+            <div class="company-flag"><span data-i18n-en="CN" data-i18n-fa="چین">CN</span></div>
+            <div>
+              <div class="company-name">China Additives Producers &amp; Compounding Hubs</div>
+              <div class="company-country"><span data-i18n-en="High pull from PVC construction chains (pipes/profiles)" data-i18n-fa="کشش بالا از زنجیره ساختمانی PVC (لوله/پروفیل)">High pull from PVC construction chains (pipes/profiles)</span></div>
+            </div>
+          </li>
+
+          <li class="company-item">
+            <div class="company-flag"><span data-i18n-en="AP" data-i18n-fa="آسیا">AP</span></div>
+            <div>
+              <div class="company-name">Asia-Pacific Regional Producers</div>
+              <div class="company-country"><span data-i18n-en="Growing plastics/rubber conversion capacity" data-i18n-fa="رشد ظرفیت تبدیل پلاستیک/لاستیک">Growing plastics/rubber conversion capacity</span></div>
+            </div>
+          </li>
+
+          <li class="company-item">
+            <div class="company-flag"><span data-i18n-en="EU" data-i18n-fa="اروپا">EU</span></div>
+            <div>
+              <div class="company-name">European Specialty Additives Producers</div>
+              <div class="company-country"><span data-i18n-en="Higher-spec grades; coatings and advanced compounding" data-i18n-fa="گریدهای با مشخصات بالاتر؛ پوشش‌ها و کامپاندینگ پیشرفته">Higher-spec grades; coatings and advanced compounding</span></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- /sidebar -->
+  </div><!-- /content-grid -->
+
+  <div class="design-credit">
+    <div class="credit-header">
+      <div class="credit-icon"><i class="fas fa-hard-hat"></i></div>
+      <h2 class="credit-title"><span data-i18n-en="Engineering Design Credit" data-i18n-fa="هزینه طراحی مهندسی">Engineering Design Credit</span></h2>
+    </div>
+    <div class="credit-details">
+      <p><span data-i18n-en="This chemical database entry was developed and designed by Ali Hosseinpour." data-i18n-fa="این پایگاه‌داده شیمیایی توسط علی حسین‌پور گردآوری و تدوین شده است.">This chemical database entry was developed and designed by Ali Hosseinpour.</span></p>
+    </div>
+    <div class="contact-info">
+      <a class="contact-item" href="tel:+989162926778"><i class="fas fa-phone"></i><span>+989162926778</span></a>
+      <a class="contact-item" href="mailto:hosseinpour431@gmail.com"><i class="fas fa-envelope"></i><span>hosseinpour431@gmail.com</span></a>
+    </div>
+  </div>
+
+  <footer>
+    <p><span data-i18n-en="Chemical Farm © 2025 | Comprehensive chemical intelligence for industry professionals" data-i18n-fa="کمیکال فارم © 2025| هوشمندی جامع شیمی برای متخصصان صنعت">Chemical Farm © 2025 | Comprehensive chemical intelligence for industry professionals</span></p>
+    <p class="footer-note"><span data-i18n-en="Data verified through authoritative chemical databases and industry reports" data-i18n-fa="داده‌ها با اتکا به پایگاه‌های معتبر شیمیایی و گزارش‌های صنعتی راستی‌آزمایی شده‌اند">Data verified through authoritative chemical databases and industry reports</span></p>
+  </footer>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  initMolecularVisualization();
+  initDemandPieChart();
+  initApplicationsPieChart();
+
+  document.querySelectorAll('.material-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+      const material = this.textContent;
+      const si = document.getElementById('search-input'); if (si) si.value = material;
+      alert(`Searching for products related to ${material}...`);
+    });
+  });
+
+  document.querySelectorAll('.company-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const companyName = this.querySelector('.company-name').textContent;
+      alert(`Viewing detailed information for ${companyName}...`);
+    });
+  });
+
+  const processTemplates = {
+    neutralization: {
+      infoHTML: `
+        <i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+        <span data-i18n-en="Zinc stearate is commonly made by " data-i18n-fa="استئارات روی معمولاً از طریق ">Zinc stearate is commonly made by </span>
+        <span class="process-highlight"><span data-i18n-en="reacting stearic acid with zinc oxide (or zinc salts)" data-i18n-fa="واکنش اسید استئاریک با اکسید روی (یا نمک‌های روی)">reacting stearic acid with zinc oxide (or zinc salts)</span></span>
+        <span data-i18n-en=" under controlled conditions, then recovered as a solid." data-i18n-fa=" تحت شرایط کنترل‌شده تولید و سپس به‌صورت جامد بازیابی می‌شود."> under controlled conditions, then recovered as a solid.</span>
+      `,
+      stages: [
+        { en:"Stearic acid is melted/conditioned; zinc source is prepared and dosed precisely.", fa:"اسید استئاریک ذوب/آماده می‌شود؛ منبع روی آماده و دقیق دوز می‌گردد." },
+        { en:"Controlled reaction forms zinc carboxylate (metal soap); stoichiometry limits free fatty acid.", fa:"واکنش کنترل‌شده نمک روی (صابون فلزی) می‌سازد؛ استوکیومتری، اسید چرب آزاد را محدود می‌کند." },
+        { en:"Solid is separated (filter/centrifuge) and washed if required for purity/ash control.", fa:"جامد جدا (فیلتر/سانتریفیوژ) و در صورت نیاز برای کنترل خلوص/خاکستر شستشو می‌شود." },
+        { en:"Drying reduces moisture to meet PVC/rubber performance and storage stability targets.", fa:"خشک‌کردن، رطوبت را برای اهداف عملکردی PVC/لاستیک و پایداری ذخیره کاهش می‌دهد." }
+      ]
+    },
+    micronization: {
+      infoHTML: `
+        <i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+        <span data-i18n-en="For PVC and rubber grades, " data-i18n-fa="برای گریدهای PVC و لاستیک، ">For PVC and rubber grades, </span>
+        <span class="process-highlight"><span data-i18n-en="particle size distribution (PSD) and dust-safe finishing" data-i18n-fa="توزیع اندازه ذرات (PSD) و فینیشینگ ایمن گردوغبار">particle size distribution (PSD) and dust-safe finishing</span></span>
+        <span data-i18n-en=" are critical for lubrication and mold-release behavior." data-i18n-fa=" برای روان‌کنندگی و رهاساز قالب بسیار کلیدی است."> are critical for lubrication and mold-release behavior.</span>
+      `,
+      stages: [
+        { en:"Drying is optimized to avoid agglomeration while meeting low-moisture targets.", fa:"خشک‌کردن طوری بهینه می‌شود که ضمن رسیدن به رطوبت پایین، آگلومره‌سازی کم شود." },
+        { en:"Micronization (milling) creates the required fineness for processing performance.", fa:"میکرونایز (آسیاب) ریزی موردنیاز برای عملکرد فرآیندی را ایجاد می‌کند." },
+        { en:"Air classification tunes PSD and removes oversize particles for consistent flow.", fa:"کلاسیفایر هوا PSD را تنظیم و ذرات درشت را حذف می‌کند تا جریان‌پذیری یکنواخت شود." },
+        { en:"Dust collection and safe packaging reduce combustible dust risk during logistics.", fa:"غبارگیری و بسته‌بندی ایمن، ریسک گرد قابل‌احتراق را در لجستیک کاهش می‌دهد." }
+      ]
+    }
+  };
+
+  function setProcess(processType){
+    const tpl = processTemplates[processType] || processTemplates.neutralization;
+    const infoBox = document.querySelector('.process-info');
+    if (infoBox) infoBox.innerHTML = tpl.infoHTML;
+
+    const stageDescs = Array.from(document.querySelectorAll('.stage-description'));
+    stageDescs.forEach((node, i)=>{
+      const st = tpl.stages[i];
+      if (!st) return;
+      node.innerHTML = `<span data-i18n-en="${st.en.replace(/"/g,'&quot;')}" data-i18n-fa="${st.fa.replace(/"/g,'&quot;')}">${st.en}</span>`;
+    });
+
+    if (window.ChemI18n && typeof window.ChemI18n.refresh === 'function') window.ChemI18n.refresh();
+  }
+
+  document.querySelectorAll('.process-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.process-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      setProcess(this.getAttribute('data-process'));
+    });
+  });
+  const activeBtn = document.querySelector('.process-btn.active');
+  setProcess(activeBtn ? activeBtn.getAttribute('data-process') : 'neutralization');
+
+  setTimeout(() => {
+    document.querySelectorAll('.section-card, .market-insights, .key-companies, .key-commodity').forEach((card, index) => {
+      setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 150 * index);
+    });
+  }, 100);
+});
+
+function initDemandPieChart() {
+  const ctx = document.getElementById('demandChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Asia-Pacific', 'Europe', 'North America', 'MEA + Others'],
+      datasets: [{
+        data: [44, 22, 20, 14],
+        backgroundColor: ['#2563eb','#8b5cf6','#10b981','#f59e0b'],
+        borderWidth: 1
+      }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed}%`}} } }
+  });
+}
+
+function initApplicationsPieChart() {
+  const ctx = document.getElementById('applicationsChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Plastics & PVC', 'Rubber', 'Paints/Coatings', 'Cosmetics/Pharma', 'Others'],
+      datasets: [{
+        data: [45, 25, 15, 10, 5],
+        backgroundColor: ['#2563eb','#8b5cf6','#10b981','#f59e0b','#ef4444'],
+        borderWidth: 1
+      }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed}%`}} } }
+  });
+}
+
+function initMolecularVisualization() {
+  const container = document.getElementById('molecular-canvas');
+  if (!container) return;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--molecule-bg').trim() || '#f8fafc');
+
+  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.z = 7.2;
+
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+  dl.position.set(1,1,1);
+  scene.add(dl);
+
+  const g = new THREE.Group();
+  scene.add(g);
+
+  function atom(pos, color, size, name){
+    const geo = new THREE.SphereGeometry(size, 24, 24);
+    const mat = new THREE.MeshPhongMaterial({ color, shininess: 90, specular: 0x333333 });
+    const s = new THREE.Mesh(geo, mat);
+    s.position.copy(pos);
+    s.userData = { name };
+    g.add(s);
+    return s;
+  }
+
+  function bond(a,b,color,r=0.09){
+    const dir = new THREE.Vector3().subVectors(b.position, a.position);
+    const mid = new THREE.Vector3().addVectors(a.position, b.position).multiplyScalar(0.5);
+    const len = dir.length();
+    const geo = new THREE.CylinderGeometry(r, r, len, 24);
+    const mat = new THREE.MeshPhongMaterial({ color, shininess: 40 });
+    const c = new THREE.Mesh(geo, mat);
+    c.position.copy(mid);
+    c.lookAt(b.position);
+    c.rotateX(Math.PI/2);
+    g.add(c);
+    return c;
+  }
+
+  // Colors aligned with legend swatches:
+  // Zn = red, O = blue, C-chain = gray
+  const Zn = atom(new THREE.Vector3(0,0,0), 0xef4444, 0.33, 'Zn');
+
+  const O1 = atom(new THREE.Vector3(-0.55, 0.18, 0.0), 0x2563eb, 0.22, 'O');
+  const O2 = atom(new THREE.Vector3(-0.55,-0.18, 0.0), 0x2563eb, 0.22, 'O');
+  bond(Zn,O1,0x475569,0.08);
+  bond(Zn,O2,0x475569,0.08);
+
+  const O3 = atom(new THREE.Vector3( 0.55, 0.18, 0.0), 0x2563eb, 0.22, 'O');
+  const O4 = atom(new THREE.Vector3( 0.55,-0.18, 0.0), 0x2563eb, 0.22, 'O');
+  bond(Zn,O3,0x475569,0.08);
+  bond(Zn,O4,0x475569,0.08);
+
+  // Two simplified hydrocarbon chains (schematic: 10 carbons each side)
+  function chain(startAtom, dirSign){
+    const n = 10;
+    const spacing = 0.45;
+    let prev = startAtom;
+    for (let i=0;i<n;i++){
+      const p = new THREE.Vector3(dirSign*(0.95 + i*spacing), 0, (i%2===0?0.10:-0.10));
+      const C = atom(p, 0x64748b, 0.18, 'C');
+      bond(prev, C, 0x475569, 0.06);
+      prev = C;
+    }
+  }
+  chain(O1, -1);
+  chain(O3,  1);
+
+  g.rotation.y = 0.55;
+  g.rotation.x = 0.18;
+
+  function animate(){
+    requestAnimationFrame(animate);
+    g.rotation.y += 0.0042;
+    g.rotation.x += 0.0013;
+    renderer.render(scene, camera);
+  }
+
+  window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+
+  window.addEventListener('chemThemeChange', () => {
+    try{
+      const bg = getComputedStyle(document.documentElement).getPropertyValue('--molecule-bg').trim() || '#f8fafc';
+      scene.background = new THREE.Color(bg);
+      renderer.render(scene, camera);
+    }catch(e){}
+  });
+
+  animate();
+}
+</script>
+
+<script>
+(function(){
+  const langBtn = document.getElementById('langToggle');
+  const langLabel = document.getElementById('langLabel');
+  const themeBtn = document.getElementById('themeToggle');
+
+  function renderI18n(el, lang){
+    const en = el.getAttribute('data-i18n-en') ?? '';
+    const fa = el.getAttribute('data-i18n-fa') ?? '';
+    if (el.tagName === 'TITLE'){ el.textContent = (lang === 'fa') ? fa : en; return; }
+    el.textContent = (lang === 'fa') ? fa : en;
+  }
+  function applyLang(lang){
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+    if (langLabel) langLabel.textContent = (lang === 'fa') ? 'EN' : 'FA';
+    document.querySelectorAll('[data-i18n-en][data-i18n-fa]').forEach(el => renderI18n(el, lang));
+  }
+  function getLang(){ return document.documentElement.getAttribute('lang') || 'en'; }
+
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = themeBtn?.querySelector('i');
+    if (icon){
+      icon.classList.remove('fa-moon','fa-sun');
+      icon.classList.add(theme === 'dark' ? 'fa-sun' : 'fa-moon');
+    }
+    window.dispatchEvent(new CustomEvent('chemThemeChange', { detail: { theme } }));
+  }
+  function getTheme(){ return document.documentElement.getAttribute('data-theme') || 'light'; }
+
+  window.ChemI18n = { applyLang, getLang, refresh: ()=>applyLang(getLang()) };
+
+  const savedLang = localStorage.getItem('chem_lang');
+  const autoLang = (navigator.language || '').toLowerCase().startsWith('fa') ? 'fa' : 'en';
+  applyLang(savedLang || autoLang);
+
+  langBtn?.addEventListener('click', ()=>{
+    const next = getLang() === 'fa' ? 'en' : 'fa';
+    localStorage.setItem('chem_lang', next);
+    applyLang(next);
+  });
+
+  const savedTheme = localStorage.getItem('chem_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+  themeBtn?.addEventListener('click', ()=>{
+    const next = getTheme() === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('chem_theme', next);
+    applyTheme(next);
+  });
+})();
+</script>
+
+</body>
+
+
+
+
+</html>

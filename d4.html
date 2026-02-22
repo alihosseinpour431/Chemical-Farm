@@ -1,0 +1,2556 @@
+<!doctype html>
+<html dir="rtl" lang="fa" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title data-i18n-en="Chemical Farm" data-i18n-fa="کمیکال فارم ">Chemical Farm | Acetaldehyde</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600&amp;family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+        :root {
+            --primary: #0d9488;
+            --primary-light: #14b8a6;
+            --secondary: #2563eb;
+            --danger: #fb7185;
+            --warning: #fbbf24;
+            --success: #22c55e;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: rgba(15,23,42,0.10);
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --glow-primary: 0 0 22px rgba(13, 148, 136, 0.22);
+            --glow-secondary: 0 0 22px rgba(37, 99, 235, 0.22);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Vazirmatn','Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 35px 0;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow), var(--glow-primary);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateY(0);
+            animation: headerFloat 6s ease-in-out infinite;
+        }
+        @keyframes headerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo i {
+            font-size: 2rem;
+            background: rgba(255,255,255,0.15);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255,255,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+        .logo h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+        }
+        .search-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+        }
+        #search-input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        #search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        #search-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1), var(--glow-primary);
+        }
+        
+        /* Header actions (Home + Language) */
+        .header-actions{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .hdr-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.10);
+            color: white;
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .hdr-btn i{ opacity: .9; }
+        .hdr-btn:hover{
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover), var(--glow-secondary);
+            border-color: rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.14);
+        }
+        .hdr-btn:active{ transform: translateY(0); }
+        .hdr-btn.lang{
+            border: 1px solid rgba(255,255,255,0.28);
+        }
+        #langLabel{
+            font-family: 'Space Grotesk','Vazirmatn','Inter',sans-serif;
+            font-weight: 700;
+            letter-spacing: .6px;
+        }
+
+        /* Language toggling */
+        html[lang="fa"] body{ direction: rtl; }
+        html[lang="fa"] .container{ direction: rtl; }
+        html[lang="fa"] .product-name,
+        html[lang="fa"] .section-title,
+        html[lang="fa"] .market-title,
+        html[lang="fa"] .companies-title,
+        html[lang="fa"] .applications-title,
+        html[lang="fa"] .feedstock-title,
+        html[lang="fa"] .molecular-title{
+            font-family:'Vazirmatn','Space Grotesk','Inter',sans-serif;
+        }
+.product-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .product-type {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.15);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            align-self: flex-start;
+            transition: var(--transition);
+            box-shadow: var(--glow-primary);
+        }
+        .product-type:hover {
+            transform: scale(1.03);
+            box-shadow: var(--glow-primary), 0 5px 15px rgba(37, 99, 235, 0.15);
+        }
+        .product-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .product-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+            color: #475569;
+            margin-top: 5px;
+        }
+        .product-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow), var(--glow-primary);
+            transition: var(--transition);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: floatUp 0.6s ease-out;
+        }
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 16px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        .stat-value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .stat-card:hover .stat-value::after {
+            width: 100%;
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
+        }
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 2;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .section-card:hover::before {
+            transform: scaleX(1);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .section-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .properties-header .section-icon {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        .hazard-header .section-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .health-header .section-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        .industry-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .license-header .section-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .section-card:hover .section-title::after {
+            width: 70%;
+        }
+        .property-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .property-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
+            padding-left: 10px;
+            transition: var(--transition);
+        }
+        .property-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gray);
+            opacity: 0.5;
+        }
+        .property-item:hover {
+            padding-left: 15px;
+        }
+        .property-item:hover::before {
+            background: var(--primary);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.2);
+        }
+        .property-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .property-label i {
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+        .property-value {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+            position: relative;
+            display: inline-block;
+        }
+        .property-value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .property-item:hover .property-value::after {
+            width: 100%;
+        }
+        .hazard-section, .health-section {
+            padding: 20px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hazard-section::before, .health-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            opacity: 0.7;
+        }
+        .hazard-section {
+            background: rgba(254, 226, 226, 0.4);
+            border: 1px solid #fecaca;
+        }
+        .hazard-section::before {
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+        }
+        .hazard-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #b91c1c;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .hazard-value {
+            color: #991b1b;
+            line-height: 1.6;
+        }
+        .health-section {
+            background: rgba(254, 249, 196, 0.4);
+            border: 1px solid #fde68a;
+        }
+        .health-section::before {
+            background: linear-gradient(to bottom, #f59e0b, #d97706);
+        }
+        .health-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #a16207;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .health-value {
+            color: #854d0e;
+            line-height: 1.6;
+        }
+        .industry-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .industry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .industry-tag {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .industry-tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            z-index: -1;
+        }
+        .industry-tag:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: var(--success);
+            color: white;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        .industry-tag:hover::after {
+            animation: shine 1s;
+        }
+        @keyframes shine {
+            to { transform: translateX(100%); }
+        }
+        .feedstock-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .feedstock-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        .feedstock-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-secondary);
+        }
+        .feedstock-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .feedstock-header .section-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+        .feedstock-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .raw-materials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .material-tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .material-tag::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        .material-tag:hover {
+            transform: scale(1.05);
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        .material-tag:hover::after {
+            transform: translateX(0);
+        }
+        .market-insights {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .market-insights::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .market-insights:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .market-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .market-header .section-icon {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        .market-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .market-description {
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .demand-chart-container {
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+            background: #f8fafc;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        .demand-chart-container:hover {
+            box-shadow: var(--card-hover), var(--glow-primary);
+            transform: scale(1.01);
+        }
+        .region-demand {
+            margin-top: 25px;
+        }
+        .region-item {
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .region-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .region-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover);
+            z-index: 2;
+        }
+        .region-item:hover::before {
+            opacity: 1;
+        }
+        .region-item:nth-child(1) {
+            border-left-color: #2563eb;
+        }
+        .region-item:nth-child(1)::before {
+            background: linear-gradient(to bottom, #2563eb, #3b82f6);
+        }
+        .region-item:nth-child(2) {
+            border-left-color: #8b5cf6;
+        }
+        .region-item:nth-child(2)::before {
+            background: linear-gradient(to bottom, #8b5cf6, #a78bfa);
+        }
+        .region-item:nth-child(3) {
+            border-left-color: #10b981;
+        }
+        .region-item:nth-child(3)::before {
+            background: linear-gradient(to bottom, #10b981, #34d399);
+        }
+        .region-item:nth-child(4) {
+            border-left-color: #f59e0b;
+        }
+        .region-item:nth-child(4)::before {
+            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
+        }
+        .region-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        .region-percentage {
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            display: inline-block;
+        }
+        .region-percentage::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: var(--transition);
+        }
+        .region-item:hover .region-percentage::after {
+            width: 100%;
+        }
+        .region-description {
+            color: #64748b;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .region-progress {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .region-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        .region-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1.5s ease;
+            position: relative;
+        }
+        .key-companies {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-commodity {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-commodity:hover, .key-companies:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .companies-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .companies-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .companies-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .company-list {
+            list-style: none;
+        }
+        .company-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .company-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--success);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+            z-index: 1;
+        }
+        .company-item:hover::before {
+            transform: scaleX(1);
+        }
+        .company-item:last-child {
+            border-bottom: none;
+        }
+        .company-item:hover {
+            transform: translateX(5px);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .company-flag {
+            width: 28px;
+            height: 20px;
+            border-radius: 3px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: #64748b;
+            transition: var(--transition);
+        }
+        .company-item:hover .company-flag {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 2px var(--success);
+        }
+        .company-name {
+            font-weight: 600;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+        .company-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--success);
+            transition: var(--transition);
+        }
+        .company-item:hover .company-name::after {
+            width: 100%;
+        }
+        .company-country {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .molecular-visualization {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .molecular-visualization::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+        .molecular-visualization:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .molecular-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .molecular-header .section-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .molecular-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .molecular-diagram {
+            width: 100%;
+            height: 300px;
+            border-radius: 16px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .molecular-diagram:hover {
+            box-shadow: var(--card-hover);
+        }
+        #molecular-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .molecular-info {
+            display: flex;
+            justify-content: space-around;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        .molecular-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .color-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .molecular-red {
+            background-color: #ef4444;
+        }
+        .molecular-blue {
+            background-color: #1e40af;
+        }
+        .molecular-gray {
+            background-color: #64748b;
+        }
+        .safety-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-top: 15px;
+            align-self: flex-start;
+            animation: pulseDanger 2s infinite;
+        }
+        @keyframes pulseDanger {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #64748b;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        .footer-note {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        /* Production Process Specific Styles */
+        .process-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stage {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--primary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .stage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .stage:hover {
+            background: #edf2ff;
+            transform: translateX(5px);
+        }
+        .stage:hover::before {
+            animation: shine 1.5s;
+        }
+        @keyframes shine {
+            to { transform: translateX(100%); }
+        }
+        .stage-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .stage:hover .stage-number {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+        }
+        .stage-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+            position: relative;
+            display: inline-block;
+        }
+        .stage-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .stage:hover .stage-title::after {
+            width: 100%;
+        }
+        .stage-description {
+            color: #475569;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        .process-diagram {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+        .diagram-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+        }
+        .plant-capacity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .capacity-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--success);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .capacity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .capacity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: #edf7f4;
+        }
+        .capacity-card:hover::before {
+            animation: shine 1.5s;
+        }
+        .capacity-title {
+            font-weight: 600;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .capacity-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .capacity-location {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .capacity-note {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+        .process-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 8px;
+        }
+        .process-btn {
+            padding: 5px 12px;
+            border-radius: 18px;
+            background: #e2e8f0;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .process-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .process-btn:hover::after {
+            animation: shine 1s;
+        }
+        .process-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .process-info {
+            background: #f0f4ff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            border-left: 3px solid var(--primary);
+        }
+        .process-highlight {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        /* Applications Section */
+        .applications-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .applications-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success), #22c55e);
+        }
+        .applications-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .applications-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .applications-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .applications-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .application-chart {
+            height: 250px;
+            margin-top: 15px;
+            position: relative;
+        }
+        .application-chart::after {
+            content: '3D Interactive';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0,0,0,0.1);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            backdrop-filter: blur(2px);
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        .legend-item:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        .design-credit {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .design-credit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .credit-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .credit-icon {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        .credit-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+        .credit-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .credit-details {
+            color: #475569;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .contact-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        .contact-item:hover::before {
+            animation: shine 1s;
+        }
+        .contact-item:hover i {
+            color: white;
+        }
+        /* License Providers Section */
+        .license-providers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .provider-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            transition: var(--transition);
+            border-left: 3px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+        .provider-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .provider-item:hover {
+            transform: translateX(5px);
+            background: #f1f5f9;
+        }
+        .provider-item:hover::before {
+            animation: shine 1.5s;
+        }
+        .provider-rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+        }
+        .provider-item:hover .provider-rank {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        .provider-info {
+            flex: 1;
+        }
+        .provider-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+            position: relative;
+            display: inline-block;
+        }
+        .provider-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        .provider-item:hover .provider-name::after {
+            width: 100%;
+        }
+        .provider-details {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .provider-licenses {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            align-self: flex-start;
+            transition: var(--transition);
+        }
+        .provider-item:hover .provider-licenses {
+            background: var(--secondary);
+            color: white;
+        }
+        /* 3D Chart Container */
+        .chart3d-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .chart3d-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            transform: translate(-50%, -100%);
+        }
+        .chart3d-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid rgba(0,0,0,0.8);
+        }
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .product-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .product-header {
+                flex-direction: column;
+            }
+            .product-name {
+                font-size: 2rem;
+                text-align: center;
+            }
+            .product-stats {
+                grid-template-columns: 1fr;
+            }
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+            .plant-capacity {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+
+/* =========================
+   Language fonts & direction
+   ========================= */
+html[lang="en"] body{
+    font-family: 'Inter','Space Grotesk', sans-serif;
+}
+html[lang="fa"] body{
+    font-family: 'Vazirmatn','Inter', sans-serif;
+}
+/* Better RTL/LTR support using logical properties where possible */
+.property-item{ padding-inline-start: 10px; padding-left: 0; }
+.property-item:hover{ padding-inline-start: 15px; }
+.property-item::before{ inset-inline-start: 0; left: auto; }
+.region-item{ border-inline-start: 4px solid; border-left: 0; }
+.region-item::before{ inset-inline-start: 0; left:auto; }
+.stage{ border-inline-start: 3px solid var(--primary); border-left: 0; }
+.capacity-card{ border-inline-start: 3px solid var(--success); border-left: 0; }
+.provider-item{ border-inline-start: 3px solid var(--secondary); border-left: 0; }
+.hazard-section::before, .health-section::before{ inset-inline-start: 0; left:auto; }
+
+/* =========================
+   Theme system (Light/Dark)
+   ========================= */
+html{
+    /* surfaces */
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --surface-3: rgba(255,255,255,0.70);
+    --text-1: #0f172a;
+    --text-2: #475569;
+    --text-3: #64748b;
+    --border: rgba(15,23,42,0.10);
+    --molecule-bg: #f8fafc;
+    color-scheme: light;
+}
+body{
+    background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+    color: var(--text-1);
+}
+html[data-theme="dark"]{
+    /* High-contrast dark palette (readable on true-black displays) */
+    --surface: rgba(12,18,34,0.88);
+    --surface-2: rgba(17,26,46,0.78);
+    --surface-3: rgba(12,18,34,0.62);
+
+    /* Text */
+    --text-1: #eef2ff;   /* main text */
+    --text-2: #d6def7;   /* body/secondary text */
+    --text-3: #a7b4d8;   /* muted text */
+
+    /* Critical: many parts of the page use var(--dark) for text */
+    --dark: #eef2ff;
+    --light: #0b1020;
+
+    /* Borders / shadows */
+    --border: rgba(167,180,216,0.18);
+    --gray: rgba(167,180,216,0.18);
+    --card-shadow: 0 10px 18px -4px rgba(0, 0, 0, 0.55), 0 4px 10px -6px rgba(0, 0, 0, 0.45);
+    --card-hover: 0 22px 30px -10px rgba(0, 0, 0, 0.65), 0 10px 16px -10px rgba(0, 0, 0, 0.50);
+
+    /* 3D canvas background */
+    --molecule-bg: #0b1020;
+
+    color-scheme: dark;
+}
+html[data-theme="dark"] body{
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(13,148,136,0.20), transparent 55%),
+                radial-gradient(1000px 700px at 90% 15%, rgba(37,99,235,0.18), transparent 55%),
+                radial-gradient(1000px 700px at 50% 110%, rgba(139,92,246,0.14), transparent 55%),
+                linear-gradient(180deg, #020617 0%, #0b1220 100%);
+    color: var(--text-1);
+}
+/* Card surfaces */
+html[data-theme="dark"] .product-stats,
+html[data-theme="dark"] .section-card,
+html[data-theme="dark"] .feedstock-section,
+html[data-theme="dark"] .market-insights,
+html[data-theme="dark"] .key-companies,
+html[data-theme="dark"] .key-commodity,
+html[data-theme="dark"] .molecular-visualization,
+html[data-theme="dark"] .applications-section,
+html[data-theme="dark"] .design-credit{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--card-shadow);
+}
+html[data-theme="dark"] .demand-chart-container,
+html[data-theme="dark"] .process-diagram,
+html[data-theme="dark"] .molecular-info,
+html[data-theme="dark"] .stage,
+html[data-theme="dark"] .capacity-card,
+html[data-theme="dark"] .provider-item,
+html[data-theme="dark"] .contact-item,
+html[data-theme="dark"] .region-item{
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+html[data-theme="dark"] .section-header,
+html[data-theme="dark"] .feedstock-header,
+html[data-theme="dark"] .market-header,
+html[data-theme="dark"] .companies-header,
+html[data-theme="dark"] .molecular-header,
+html[data-theme="dark"] .applications-header{
+    border-bottom: 1px solid var(--border);
+}
+/* Text colors */
+html[data-theme="dark"] .product-subtitle,
+html[data-theme="dark"] .market-description,
+html[data-theme="dark"] .region-description,
+html[data-theme="dark"] .company-country,
+html[data-theme="dark"] .capacity-location,
+html[data-theme="dark"] .capacity-note,
+html[data-theme="dark"] .property-label,
+html[data-theme="dark"] .stat-label,
+html[data-theme="dark"] footer,
+html[data-theme="dark"] .footer-note{
+    color: var(--text-2) !important;
+}
+html[data-theme="dark"] .property-value,
+html[data-theme="dark"] .region-title,
+html[data-theme="dark"] .company-name,
+html[data-theme="dark"] .stage-title,
+html[data-theme="dark"] .capacity-value,
+html[data-theme="dark"] .provider-name{
+    color: var(--text-1) !important;
+}
+html[data-theme="dark"] .region-progress{ background: rgba(148,163,184,0.18); }
+html[data-theme="dark"] .region-item:hover{ background: rgba(148,163,184,0.08); }
+html[data-theme="dark"] .company-item:hover{ background: rgba(16,185,129,0.08); }
+
+/* Hazard blocks in dark */
+html[data-theme="dark"] .hazard-section{
+    background: rgba(127,29,29,0.25);
+    border-color: rgba(239,68,68,0.35);
+}
+html[data-theme="dark"] .health-section{
+    background: rgba(120,53,15,0.25);
+    border-color: rgba(245,158,11,0.35);
+}
+html[data-theme="dark"] .safety-badge{
+    background: rgba(239,68,68,0.18);
+    color: #fecaca;
+}
+
+/* Toggle button polish */
+.hdr-btn.theme i{ transition: transform .25s ease; }
+.hdr-btn.theme:hover i{ transform: rotate(-10deg) scale(1.05); }
+
+/* Responsive fix: product-header is grid (not flex) */
+@media (max-width: 768px){
+    .product-header{ grid-template-columns: 1fr; }
+    .safety-badge{ justify-self: start; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+
+/* =========================
+   Dark-mode readability overrides (inline styles + hard-coded colors)
+   ========================= */
+html[data-theme="dark"]{
+    /* Make sure plain text defaults are readable */
+    color: var(--text-1);
+}
+
+html[data-theme="dark"] body{
+    color: var(--text-1);
+}
+
+/* Override common hard-coded text colors used in inline styles */
+html[data-theme="dark"] [style*="color: #475569"],
+html[data-theme="dark"] [style*="color:#475569"]{ color: var(--text-2) !important; }
+
+html[data-theme="dark"] [style*="color: #64748b"],
+html[data-theme="dark"] [style*="color:#64748b"]{ color: var(--text-3) !important; }
+
+html[data-theme="dark"] [style*="color: #0f172a"],
+html[data-theme="dark"] [style*="color:#0f172a"],
+html[data-theme="dark"] [style*="color: var(--dark)"],
+html[data-theme="dark"] [style*="color:var(--dark)"]{ color: var(--text-1) !important; }
+
+/* Fix common light backgrounds used inline inside CAPEX cards */
+html[data-theme="dark"] [style*="background: #f8fafc"],
+html[data-theme="dark"] [style*="background:#f8fafc"]{
+    background: var(--surface-2) !important;
+    border-color: var(--border) !important;
+}
+html[data-theme="dark"] [style*="background: #fff7ed"],
+html[data-theme="dark"] [style*="background:#fff7ed"],
+html[data-theme="dark"] [style*="background: #fff7ed;"],
+html[data-theme="dark"] [style*="background:#fff7ed;"]{
+    background: rgba(249,115,22,0.12) !important;
+    border-color: rgba(249,115,22,0.28) !important;
+}
+
+/* Ensure link/text inside contact pills stays readable */
+html[data-theme="dark"] a{ color: var(--text-1); }
+html[data-theme="dark"] a:hover{ color: var(--text-1); }
+
+/* Keep small helper texts readable */
+html[data-theme="dark"] .credit-details,
+html[data-theme="dark"] .capacity-note,
+html[data-theme="dark"] .stage-description{ color: var(--text-2) !important; }
+
+
+
+/* === Fix: process-info box readability in Dark theme === */
+html[data-theme="dark"] .process-info{
+    background: rgba(37, 99, 235, 0.12) !important; /* soft indigo */
+    border: 1px solid rgba(167,180,216,0.22) !important;
+    color: var(--text-2) !important;
+}
+html[data-theme="dark"] .process-info .process-highlight{
+    color: #93c5fd !important; /* readable accent */
+}
+html[data-theme="dark"] .process-info i{
+    color: #93c5fd !important;
+}
+
+</style>
+
+</head>
+
+
+<body>
+<div class="container">
+<header>
+<div class="header-content">
+<div class="logo">
+<i class="fas fa-flask"></i>
+<h1><span data-i18n-en="Chemical Farm" data-i18n-fa="Chemical Farm">Chemical Farm</span></h1>
+</div>
+<div class="header-actions">
+<a class="hdr-btn home" href="index.html" title="Home">
+<i class="fas fa-home"></i>
+<span data-i18n-en="Home" data-i18n-fa="خانه">Home</span>
+</a>
+<button class="hdr-btn theme" id="themeToggle" title="Theme" type="button" aria-label="Toggle theme">
+<i class="fas fa-moon"></i>
+<span data-i18n-en="Theme" data-i18n-fa="تم">Theme</span>
+</button>
+<button class="hdr-btn lang" id="langToggle" title="Language" type="button">
+<i class="fas fa-language"></i>
+<span id="langLabel">EN</span>
+</button>
+</div>
+</div>
+</header>
+<div class="product-header">
+<div class="product-info">
+<div class="product-type"><span data-i18n-en="Long-Chain Aliphatic Amine / Corrosion Inhibitor" data-i18n-fa="آمین آلیفاتیک زنجیره‌بلند / بازدارنده خوردگی">Long-Chain Aliphatic Amine / Corrosion Inhibitor</span></div>
+<h1 class="product-name">
+<i class="fas fa-flask"></i> <span data-i18n-en="Octadecylamine" data-i18n-fa="اکتادسیل‌آمین">Octadecylamine</span>
+</h1>
+<div class="product-subtitle">
+<i class="fas fa-microscope"></i> C₁₈H₃₉N | CAS 124-30-1
+</div>
+</div>
+<div class="safety-badge">
+<i class="fas fa-exclamation-triangle"></i>
+<span data-i18n-en="Irritant (Skin/Eyes) | Combustible Solid | Environmental Hazard (Aquatic Toxicity)" data-i18n-fa="تحریک‌کننده (پوست/چشم) | جامد قابل‌احتراق | خطر زیست‌محیطی (سمیت آبزی)">Irritant (Skin/Eyes) | Combustible Solid | Environmental Hazard (Aquatic Toxicity)</span>
+</div>
+</div>
+<div class="product-stats">
+<div class="stat-card">
+<div class="stat-value"><span data-i18n-en="45K" data-i18n-fa="۴۵ هزار">45K</span></div>
+<div class="stat-label"><span data-i18n-en="Estimated Global Demand (Tons/Y, 2024)" data-i18n-fa="برآورد تقاضای جهانی (تن/سال، ۲۰۲۴)">Estimated Global Demand (Tons/Y, 2024)</span></div>
+</div>
+<div class="stat-card">
+<div class="stat-value"><span data-i18n-en="$115M" data-i18n-fa="۱۱۵ میلیون دلار">$115M</span></div>
+<div class="stat-label"><span data-i18n-en="Estimated Market Value (2024)" data-i18n-fa="برآورد ارزش بازار (۲۰۲۴)">Estimated Market Value (2024)</span></div>
+</div>
+<div class="stat-card">
+<div class="stat-value"><span data-i18n-en="Waxy solid / Flakes (90–98% purity); soluble in organic solvents" data-i18n-fa="جامد مومی / پولک (خالصیت ۹۰ تا ۹۸٪)؛ محلول در حلال‌های آلی">Waxy solid / Flakes (90–98% purity); soluble in organic solvents</span></div>
+<div class="stat-label"><span data-i18n-en="Common Forms" data-i18n-fa="شکل‌های رایج">Common Forms</span></div>
+</div>
+</div>
+<div class="content-grid">
+<div class="main-content">
+<div class="section-card">
+<div class="section-header properties-header">
+<div class="section-icon"><i class="fas fa-vial"></i></div>
+<h2 class="section-title"><span data-i18n-en="Chemical Properties" data-i18n-fa="خواص شیمیایی">Chemical Properties</span></h2>
+</div>
+<div class="property-grid">
+<div class="property-item">
+<div class="property-label"><i class="fas fa-weight-hanging"></i> <span data-i18n-en="Molecular Weight" data-i18n-fa="جرم مولکولی">Molecular Weight</span></div>
+<div class="property-value"><span data-i18n-en="269.51 g/mol" data-i18n-fa="۲۶۹.۵۱ گرم/مول">269.51 g/mol</span></div>
+</div>
+<div class="property-item">
+<div class="property-label"><i class="fas fa-temperature-high"></i> <span data-i18n-en="Boiling Point" data-i18n-fa="نقطه جوش">Boiling Point</span></div>
+<div class="property-value"><span data-i18n-en="~348–350°C @ 760 mmHg" data-i18n-fa="حدود ۳۴۸ تا ۳۵۰°C در ۷۶۰ میلی‌متر جیوه">~348–350°C @ 760 mmHg</span></div>
+</div>
+<div class="property-item">
+<div class="property-label"><i class="fas fa-temperature-low"></i> <span data-i18n-en="Melting Point" data-i18n-fa="نقطه ذوب">Melting Point</span></div>
+<div class="property-value"><span data-i18n-en="~48–52°C" data-i18n-fa="حدود ۴۸ تا ۵۲°C">~48–52°C</span></div>
+</div>
+<div class="property-item">
+<div class="property-label"><i class="fas fa-ruler-combined"></i> <span data-i18n-en="Density" data-i18n-fa="چگالی">Density</span></div>
+<div class="property-value"><span data-i18n-en="~0.82 g/cm³ @ 25°C (estimated)" data-i18n-fa="حدود ۰.۸۲ گرم/سانتی‌متر³ در ۲۵°C (تخمینی)">~0.82 g/cm³ @ 25°C (estimated)</span></div>
+</div>
+<div class="property-item">
+<div class="property-label"><i class="fas fa-tint"></i> <span data-i18n-en="Water Solubility" data-i18n-fa="حلالیت در آب">Water Solubility</span></div>
+<div class="property-value"><span data-i18n-en="Very low (<10 mg/L); soluble in alcohols, chloroform, benzene" data-i18n-fa="بسیار کم (<۱۰ میلی‌گرم/لیتر)؛ محلول در الکل‌ها، کلروفرم، بنزن">Very low (<10 mg/L); soluble in alcohols, chloroform, benzene</span></div>
+</div>
+<div class="property-item">
+<div class="property-label"><i class="fas fa-fire"></i> <span data-i18n-en="Flash Point" data-i18n-fa="نقطه اشتعال">Flash Point</span></div>
+<div class="property-value"><span data-i18n-en=">150°C (closed cup, estimated)" data-i18n-fa="بیش از ۱۵۰°C (کاپ بسته، تخمینی)">>150°C (closed cup, estimated)</span></div>
+</div>
+</div>
+</div>
+<div class="section-card">
+<div class="section-header hazard-header">
+<div class="section-icon"><i class="fas fa-exclamation-triangle"></i></div>
+<h2 class="section-title"><span data-i18n-en="Hazard Classification" data-i18n-fa="طبقه‌بندی خطر">Hazard Classification</span></h2>
+</div>
+<div class="hazard-section">
+<h3 class="hazard-title">
+<i class="fas fa-skull-crossbones"></i>
+<span data-i18n-en="Irritant to skin/eyes/respiratory system; combustible solid; harmful to aquatic life" data-i18n-fa="تحریک‌کننده پوست/چشم/دستگاه تنفسی؛ جامد قابل‌احتراق؛ زیان‌آور برای حیات آبزی">Irritant to skin/eyes/respiratory system; combustible solid; harmful to aquatic life</span>
+</h3>
+<p class="hazard-value">
+<span data-i18n-en="Octadecylamine is a long-chain primary amine. Dust may cause irritation to eyes, skin, and respiratory tract. Avoid dust generation; use local exhaust ventilation during handling. Wear appropriate PPE (gloves, goggles, dust mask). Store in cool, dry conditions away from oxidizers. Environmental release must be prevented due to aquatic toxicity." data-i18n-fa="اکتادسیل‌آمین یک آمین اولیه زنجیره‌بلند است. گردوغبار ممکن است چشم، پوست و دستگاه تنفسی را تحریک کند. از تولید گردوغبار جلوگیری کنید؛ در هنگام هندلینگ از تهویه موضعی استفاده نمایید. از PPE مناسب (دستکش، عینک، ماسک گردوغبار) استفاده کنید. در شرایط خنک و خشک و دور از اکسنده‌ها ذخیره شود. به‌دلیل سمیت آبزی، از رهاسازی در محیط زیست جلوگیری شود.">Octadecylamine is a long-chain primary amine. Dust may cause irritation to eyes, skin, and respiratory tract. Avoid dust generation; use local exhaust ventilation during handling. Wear appropriate PPE (gloves, goggles, dust mask). Store in cool, dry conditions away from oxidizers. Environmental release must be prevented due to aquatic toxicity.</span>
+</p>
+</div>
+<div class="section-header health-header" style="margin-top: 25px;">
+<div class="section-icon"><i class="fas fa-heartbeat"></i></div>
+<h2 class="section-title"><span data-i18n-en="Chronic Health Effects" data-i18n-fa="اثرات بلندمدت بر سلامت">Chronic Health Effects</span></h2>
+</div>
+<div class="health-section">
+<h3 class="health-title">
+<i class="fas fa-user-injured"></i>
+<span data-i18n-en="Repeated exposure may cause sensitization; potential respiratory sensitization" data-i18n-fa="مواجهه تکراری ممکن است حساسیت‌زایی ایجاد کند؛ احتمال حساسیت‌زایی تنفسی">Repeated exposure may cause sensitization; potential respiratory sensitization</span>
+</h3>
+<p class="health-value">
+<span data-i18n-en="Repeated or prolonged skin contact may lead to dermatitis. Some long-chain amines have shown potential for respiratory sensitization in occupational settings. Implement engineering controls to minimize dust exposure, conduct air monitoring where appropriate, and follow good industrial hygiene practices." data-i18n-fa="تماس پوستی مکرر یا طولانی‌مدت ممکن است به درماتیت منجر شود. برخی آمین‌های زنجیره‌بلند در محیط‌های شغلی پتانسیل حساسیت‌زایی تنفسی را نشان داده‌اند. کنترل‌های مهندسی برای کاهش مواجهه با گردوغبار اجرا شود، در صورت لزوم پایش هوا انجام گیرد و اصول بهداشت صنعتی رعایت شود.">Repeated or prolonged skin contact may lead to dermatitis. Some long-chain amines have shown potential for respiratory sensitization in occupational settings. Implement engineering controls to minimize dust exposure, conduct air monitoring where appropriate, and follow good industrial hygiene practices.</span>
+</p>
+</div>
+</div>
+<div class="molecular-visualization">
+<div class="molecular-header">
+<div class="section-icon"><i class="fas fa-project-diagram"></i></div>
+<h2 class="molecular-title"><span data-i18n-en="3D Molecular Structure" data-i18n-fa="ساختار مولکولی سه‌بعدی">3D Molecular Structure</span></h2>
+</div>
+<div class="molecular-diagram"><div id="molecular-canvas"></div></div>
+<div class="molecular-info">
+<div class="molecular-label"><span class="color-swatch molecular-blue"></span><span data-i18n-en="Carbon (C)" data-i18n-fa="کربن (C)">Carbon (C)</span></div>
+<div class="molecular-label"><span class="color-swatch molecular-gray"></span><span data-i18n-en="Hydrogen (H)" data-i18n-fa="هیدروژن (H)">Hydrogen (H)</span></div>
+<div class="molecular-label"><span class="color-swatch molecular-green"></span><span data-i18n-en="Nitrogen (N)" data-i18n-fa="نیتروژن (N)">Nitrogen (N)</span></div>
+</div>
+<div class="capacity-note">
+<span data-i18n-en="Interactive 3D visualization of octadecylamine (C18H39N), a long-chain primary aliphatic amine. The hydrophobic C18 tail and hydrophilic amine head enable filming behavior on metal surfaces—key to its corrosion inhibition mechanism in steam/water systems." data-i18n-fa="نمایش سه‌بعدی تعاملی از اکتادسیل‌آمین (C18H39N)، یک آمین آلیفاتیک اولیه زنجیره‌بلند. دم هیدروفوبیک C18 و سر هیدروفیلیک آمین، رفتار فیلم‌سازی روی سطوح فلزی را ممکن می‌سازد—مکانیسم کلیدی بازدارندگی خوردگی در سیستم‌های بخار/آب.">Interactive 3D visualization of octadecylamine (C18H39N), a long-chain primary aliphatic amine. The hydrophobic C18 tail and hydrophilic amine head enable filming behavior on metal surfaces—key to its corrosion inhibition mechanism in steam/water systems.</span>
+</div>
+</div>
+<div class="feedstock-section">
+<div class="feedstock-header">
+<div class="section-icon"><i class="fas fa-industry"></i></div>
+<h2 class="feedstock-title"><span data-i18n-en="Production Process &amp; Capacity" data-i18n-fa="فرآیند تولید و ظرفیت">Production Process &amp; Capacity</span></h2>
+</div>
+<div class="process-info">
+<i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+<span data-i18n-en="Octadecylamine is primarily produced via " data-i18n-fa="اکتادسیل‌آمین عمدتاً از طریق ">Octadecylamine is primarily produced via </span>
+<span class="process-highlight"><span data-i18n-en="catalytic amination of stearyl alcohol (C18 alcohol)" data-i18n-fa="آمیناسیون کاتالیستی استئاریل الکل (الکل C18)">catalytic amination of stearyl alcohol (C18 alcohol)</span></span>
+<span data-i18n-en=" or " data-i18n-fa=" یا "> or </span>
+<span class="process-highlight"><span data-i18n-en="hydrogenation of stearyl nitrile" data-i18n-fa="هیدروژناسیون استئاریل نیتریل">hydrogenation of stearyl nitrile</span></span>
+<span data-i18n-en=", followed by purification to remove secondary/tertiary amine by-products." data-i18n-fa="، سپس خالص‌سازی برای حذف محصولات جانبی آمین‌های ثانویه/ثالثیه انجام می‌شود.">, followed by purification to remove secondary/tertiary amine by-products.</span>
+</div>
+<div class="process-selector">
+<button class="process-btn active" data-process="amination"><span data-i18n-en="Amination of Stearyl Alcohol" data-i18n-fa="آمیناسیون استئاریل الکل">Amination of Stearyl Alcohol</span></button>
+<button class="process-btn" data-process="nitrile"><span data-i18n-en="Nitrile Hydrogenation Route" data-i18n-fa="مسیر هیدروژناسیون نیتریل">Nitrile Hydrogenation Route</span></button>
+</div>
+<div class="process-stages">
+<div class="stage">
+<div class="stage-title"><span class="stage-number">1</span><span data-i18n-en="Feedstock Preparation" data-i18n-fa="آماده‌سازی خوراک">Feedstock Preparation</span></div>
+<div class="stage-description">
+<span data-i18n-en="Stearyl alcohol (C18) or stearyl nitrile is purified and dried; ammonia (for amination) or hydrogen (for nitrile route) is conditioned to catalyst specifications." data-i18n-fa="استئاریل الکل (C18) یا استئاریل نیتریل خالص‌سازی و خشک می‌شود؛ آمونیاک (برای آمیناسیون) یا هیدروژن (برای مسیر نیتریل) تا مشخصات کاتالیست شرطی‌سازی می‌گردد.">Stearyl alcohol (C18) or stearyl nitrile is purified and dried; ammonia (for amination) or hydrogen (for nitrile route) is conditioned to catalyst specifications.</span>
+</div>
+</div>
+<div class="stage">
+<div class="stage-title"><span class="stage-number">2</span><span data-i18n-en="Catalytic Reaction" data-i18n-fa="واکنش کاتالیستی">Catalytic Reaction</span></div>
+<div class="stage-description">
+<span data-i18n-en="Amination: C18OH + NH3 → C18NH2 + H2O over Ni/Cu catalysts at 150–200°C and 100–300 bar. Nitrile route: C17H35CN + 2H2 → C18H39N over Ni catalysts; temperature/pressure control minimizes secondary amine formation." data-i18n-fa="آمیناسیون: C18OH + NH3 → C18NH2 + H2O روی کاتالیست‌های Ni/Cu در ۱۵۰ تا ۲۰۰°C و ۱۰۰ تا ۳۰۰ بار. مسیر نیتریل: C17H35CN + 2H2 → C18H39N روی کاتالیست Ni؛ کنترل دما/فشار تشکیل آمین ثانویه را به حداقل می‌رساند.">Amination: C18OH + NH3 → C18NH2 + H2O over Ni/Cu catalysts at 150–200°C and 100–300 bar. Nitrile route: C17H35CN + 2H2 → C18H39N over Ni catalysts; temperature/pressure control minimizes secondary amine formation.</span>
+</div>
+</div>
+<div class="stage">
+<div class="stage-title"><span class="stage-number">3</span><span data-i18n-en="Separation &amp; Purification" data-i18n-fa="جداسازی و خالص‌سازی">Separation &amp; Purification</span></div>
+<div class="stage-description">
+<span data-i18n-en="Unreacted ammonia/hydrogen is recycled; crude product is distilled under vacuum to separate primary amine (target) from secondary/tertiary amines and heavies. High-purity grades (>95%) require precise fractionation control." data-i18n-fa="آمونیاک/هیدروژن واکنش‌نکرده بازیابی می‌شود؛ محصول خام تحت خلأ تقطیر شده تا آمین اولیه (هدف) از آمین‌های ثانویه/ثالثیه و ترکیبات سنگین جدا گردد. گریدهای با خلوص بالا (>۹۵٪) نیازمند کنترل دقیق تفکیک برشی هستند.">Unreacted ammonia/hydrogen is recycled; crude product is distilled under vacuum to separate primary amine (target) from secondary/tertiary amines and heavies. High-purity grades (>95%) require precise fractionation control.</span>
+</div>
+</div>
+<div class="stage">
+<div class="stage-title"><span class="stage-number">4</span><span data-i18n-en="Solidification &amp; Packaging" data-i18n-fa="جامد‌سازی و بسته‌بندی">Solidification &amp; Packaging</span></div>
+<div class="stage-description">
+<span data-i18n-en="Molten amine is flaked or prilled and packaged in moisture-resistant bags/containers. Storage under nitrogen blanket prevents oxidation/yellowing. Dust control during handling is essential for operator safety and product quality." data-i18n-fa="آمین مذاب پولک یا پریل شده و در کیسه/ظرف مقاوم در برابر رطوبت بسته‌بندی می‌شود. ذخیره‌سازی زیر پرده نیتروژن از اکسیداسیون/زردشدن جلوگیری می‌کند. کنترل گردوغبار در هندلینگ برای ایمنی اپراتور و کیفیت محصول ضروری است.">Molten amine is flaked or prilled and packaged in moisture-resistant bags/containers. Storage under nitrogen blanket prevents oxidation/yellowing. Dust control during handling is essential for operator safety and product quality.</span>
+</div>
+</div>
+</div>
+<div class="plant-capacity">
+<div class="capacity-card">
+<div class="capacity-title"><i class="fas fa-industry"></i> <span data-i18n-en="Minimum Capacity" data-i18n-fa="حداقل ظرفیت">Minimum Capacity</span></div>
+<div class="capacity-value"><span data-i18n-en="500 T/Y" data-i18n-fa="۵۰۰ تن/سال">500 T/Y</span></div>
+<div class="capacity-location"><span data-i18n-en="Specialty amine units / captive production" data-i18n-fa="واحدهای آمین تخصصی / تولید اختصاصی">Specialty amine units / captive production</span></div>
+</div>
+<div class="capacity-card">
+<div class="capacity-title"><i class="fas fa-industry"></i> <span data-i18n-en="Maximum Capacity" data-i18n-fa="حداکثر ظرفیت">Maximum Capacity</span></div>
+<div class="capacity-value"><span data-i18n-en="15K T/Y" data-i18n-fa="۱۵ هزار تن/سال">15K T/Y</span></div>
+<div class="capacity-location"><span data-i18n-en="Integrated fatty amines complexes (multi-product)" data-i18n-fa="مجتمع‌های یکپارچه آمین‌های چرب (چندمحصولی)">Integrated fatty amines complexes (multi-product)</span></div>
+</div>
+</div>
+<div class="capacity-note">
+<span data-i18n-en="Octadecylamine is typically produced as part of a fatty amines slate (C8–C22) from natural fatty alcohols or nitriles. Economics depend on integration with upstream fatty alcohol production and downstream corrosion inhibitor/formulation markets." data-i18n-fa="اکتادسیل‌آمین معمولاً به‌عنوان بخشی از سبد آمین‌های چرب (C8–C22) از الکل‌های چرب طبیعی یا نیتریل‌ها تولید می‌شود. اقتصاد پروژه به یکپارچه‌سازی با تولید الکل‌های چرب بالادستی و بازارهای پایین‌دستی بازدارنده خوردگی/فرمولاسیون وابسته است.">Octadecylamine is typically produced as part of a fatty amines slate (C8–C22) from natural fatty alcohols or nitriles. Economics depend on integration with upstream fatty alcohol production and downstream corrosion inhibitor/formulation markets.</span>
+</div>
+</div>
+<div class="applications-section">
+<div class="applications-header">
+<div class="section-icon"><i class="fas fa-building"></i></div>
+<h2 class="applications-title"><span data-i18n-en="Industry Applications" data-i18n-fa="کاربردهای صنعتی">Industry Applications</span></h2>
+</div>
+<div class="industry-tags">
+<div class="industry-tag"><span data-i18n-en="Steam System Corrosion Inhibitor" data-i18n-fa="بازدارنده خوردگی سیستم بخار">Steam System Corrosion Inhibitor</span></div>
+<div class="industry-tag"><span data-i18n-en="Boiler Water Treatment" data-i18n-fa="تصفیه آب بویلر">Boiler Water Treatment</span></div>
+<div class="industry-tag"><span data-i18n-en="Flotation Agent (Minerals)" data-i18n-fa="عامل فلوتاسیون (معادن)">Flotation Agent (Minerals)</span></div>
+<div class="industry-tag"><span data-i18n-en="Surfactant Intermediate" data-i18n-fa="میان‌واسطه سورفکتانت">Surfactant Intermediate</span></div>
+<div class="industry-tag"><span data-i18n-en="Lubricant Additive" data-i18n-fa="افزودنی روانکار">Lubricant Additive</span></div>
+</div>
+<div class="application-chart">
+<canvas height="220" id="applicationsChart" width="400"></canvas>
+</div>
+<div class="chart-legend">
+<div class="legend-item"><span class="legend-color" style="background-color:#2563eb;"></span>
+<span><span data-i18n-en="Corrosion Inhibitors (65%)" data-i18n-fa="بازدارنده‌های خوردگی (۶۵٪)">Corrosion Inhibitors (65%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#8b5cf6;"></span>
+<span><span data-i18n-en="Flotation Agents (15%)" data-i18n-fa="عوامل فلوتاسیون (۱۵٪)">Flotation Agents (15%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#10b981;"></span>
+<span><span data-i18n-en="Surfactants/Emulsifiers (10%)" data-i18n-fa="سورفکتانت‌ها/امولسیفایرها (۱۰٪)">Surfactants/Emulsifiers (10%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#f59e0b;"></span>
+<span><span data-i18n-en="Lubricants/Additives (7%)" data-i18n-fa="روانکارها/افزودنی‌ها (۷٪)">Lubricants/Additives (7%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#ef4444;"></span>
+<span><span data-i18n-en="Others (3%)" data-i18n-fa="سایر (۳٪)">Others (3%)</span></span>
+</div>
+</div>
+<div style="margin-top:10px;color:#64748b;font-size:0.9rem;line-height:1.5;">
+<span data-i18n-en="Note: Application shares reflect octadecylamine consumption in filming amine corrosion inhibitor formulations for power generation, refining, and industrial steam systems. Corrosion inhibition is the dominant value driver." data-i18n-fa="یادداشت: سهم کاربردها مصرف اکتادسیل‌آمین در فرمولاسیون‌های بازدارنده خوردگی آمین فیلم‌ساز برای تولید برق، پالایشگاه و سیستم‌های بخار صنعتی را منعکس می‌کند. بازدارندگی خوردگی محرک اصلی ارزش است.">Note: Application shares reflect octadecylamine consumption in filming amine corrosion inhibitor formulations for power generation, refining, and industrial steam systems. Corrosion inhibition is the dominant value driver.</span>
+</div>
+</div>
+<div class="section-card">
+<div class="section-header license-header">
+<div class="section-icon"><i class="fas fa-certificate"></i></div>
+<h2 class="section-title"><span data-i18n-en="Top Technology &amp; Supply Ecosystem" data-i18n-fa="اکوسیستم برتر فناوری و تأمین">Top Technology &amp; Supply Ecosystem</span></h2>
+</div>
+<p style="color:#475569;margin-bottom:15px;line-height:1.5;">
+<span data-i18n-en="Octadecylamine production centers on fatty alcohol/nitrile amination chemistry, catalyst selectivity (primary vs. secondary amine), vacuum distillation, and solidification/packaging. Most producers operate within integrated fatty amines value chains." data-i18n-fa="تولید اکتادسیل‌آمین بر شیمی آمیناسیون الکل‌های چرب/نیتریل، گزینش‌پذیری کاتالیست (آمین اولیه در برابر ثانویه)، تقطیر خلأ و جامد‌سازی/بسته‌بندی متمرکز است. اکثر تولیدکنندگان در زنجیره ارزش یکپارچه آمین‌های چرب فعالیت می‌کنند.">Octadecylamine production centers on fatty alcohol/nitrile amination chemistry, catalyst selectivity (primary vs. secondary amine), vacuum distillation, and solidification/packaging. Most producers operate within integrated fatty amines value chains.</span>
+</p>
+<div class="license-providers">
+<div class="provider-item"><div class="provider-rank">1</div><div class="provider-info">
+<div class="provider-name">Kao Corporation</div>
+<div class="provider-details"><span data-i18n-en="Fatty amines technology &amp; production | Japan/Global" data-i18n-fa="فناوری و تولید آمین‌های چرب | ژاپن/جهانی">Fatty amines technology &amp; production | Japan/Global</span></div>
+<div class="provider-licenses"><span data-i18n-en="Integrated C8–C22 amines slate; corrosion inhibitor formulations" data-i18n-fa="سبد یکپارچه آمین‌های C8–C22؛ فرمولاسیون‌های بازدارنده خوردگی">Integrated C8–C22 amines slate; corrosion inhibitor formulations</span></div>
+</div></div>
+<div class="provider-item"><div class="provider-rank">2</div><div class="provider-info">
+<div class="provider-name">Evonik Industries</div>
+<div class="provider-details"><span data-i18n-en="Specialty amines &amp; derivatives | Germany/Global" data-i18n-fa="آمین‌ها و مشتقات تخصصی | آلمان/جهانی">Specialty amines &amp; derivatives | Germany/Global</span></div>
+<div class="provider-licenses"><span data-i18n-en="High-purity grades; mining flotation & corrosion control" data-i18n-fa="گریدهای با خلوص بالا؛ فلوتاسیون معادن و کنترل خوردگی">High-purity grades; mining flotation & corrosion control</span></div>
+</div></div>
+<div class="provider-item"><div class="provider-rank">3</div><div class="provider-info">
+<div class="provider-name">Croda International</div>
+<div class="provider-details"><span data-i18n-en="Specialty surfactants &amp; amines | UK/Global" data-i18n-fa="سورفکتانت‌ها و آمین‌های تخصصی | بریتانیا/جهانی">Specialty surfactants &amp; amines | UK/Global</span></div>
+<div class="provider-licenses"><span data-i18n-en="Fatty amines portfolio; formulation expertise" data-i18n-fa="پرتفوی آمین‌های چرب؛ تخصص فرمولاسیون">Fatty amines portfolio; formulation expertise</span></div>
+</div></div>
+<div class="provider-item"><div class="provider-rank">4</div><div class="provider-info">
+<div class="provider-name">BASF (Lonzacare™)</div>
+<div class="provider-details"><span data-i18n-en="Corrosion inhibitors &amp; water treatment | Global" data-i18n-fa="بازدارنده‌های خوردگی و تصفیه آب | جهانی">Corrosion inhibitors &amp; water treatment | Global</span></div>
+<div class="provider-licenses"><span data-i18n-en="Filming amine technology; power/refining applications" data-i18n-fa="فناوری آمین فیلم‌ساز؛ کاربردهای نیروگاهی/پالایشگاهی">Filming amine technology; power/refining applications</span></div>
+</div></div>
+<div class="provider-item"><div class="provider-rank">5</div><div class="provider-info">
+<div class="provider-name">AkzoNobel Surface Chemistry</div>
+<div class="provider-details"><span data-i18n-en="Fatty amines &amp; derivatives | Netherlands/Global" data-i18n-fa="آمین‌های چرب و مشتقات | هلند/جهانی">Fatty amines &amp; derivatives | Netherlands/Global</span></div>
+<div class="provider-licenses"><span data-i18n-en="Mining chemicals & specialty applications" data-i18n-fa="مواد شیمیایی معادن و کاربردهای تخصصی">Mining chemicals & specialty applications</span></div>
+</div></div>
+<div class="provider-item"><div class="provider-rank">6</div><div class="provider-info">
+<div class="provider-name">Regional Fatty Alcohol Producers</div>
+<div class="provider-details"><span data-i18n-en="Palm/coconut-based integration | Asia" data-i18n-fa="یکپارچه‌سازی مبتنی بر نخل/نارگیل | آسیا">Palm/coconut-based integration | Asia</span></div>
+<div class="provider-licenses"><span data-i18n-en="Regional supply chains; cost-competitive grades" data-i18n-fa="زنجیره تأمین منطقه‌ای؛ گریدهای رقابتی از نظر هزینه">Regional supply chains; cost-competitive grades</span></div>
+</div></div>
+</div>
+</div>
+</div><!-- /main-content -->
+<div class="sidebar">
+<div class="market-insights">
+<div class="market-header">
+<div class="section-icon"><i class="fas fa-chart-pie"></i></div>
+<h2 class="market-title"><span data-i18n-en="Global Demand Analysis" data-i18n-fa="تحلیل تقاضای جهانی">Global Demand Analysis</span></h2>
+</div>
+<p class="market-description">
+<span data-i18n-en="Demand is driven by filming amine corrosion inhibitors for steam/water systems in power generation (fossil & nuclear), refining, and industrial facilities. Asia-Pacific leads consumption due to coal-fired power expansion and refinery growth; North America and Europe maintain steady demand for asset integrity." data-i18n-fa="تقاضا توسط بازدارنده‌های خوردگی آمین فیلم‌ساز برای سیستم‌های بخار/آب در تولید برق (فسیلی و هسته‌ای)، پالایشگاه و تأسیسات صنعتی هدایت می‌شود. آسیا-اقیانوسیه به‌دلیل گسترش نیروگاه‌های زغال‌سنگی و رشد پالایشگاه‌ها پیشتاز مصرف است؛ آمریکای شمالی و اروپا تقاضای پایداری برای یکپارچگی دارایی‌ها حفظ می‌کنند.">Demand is driven by filming amine corrosion inhibitors for steam/water systems in power generation (fossil & nuclear), refining, and industrial facilities. Asia-Pacific leads consumption due to coal-fired power expansion and refinery growth; North America and Europe maintain steady demand for asset integrity.</span>
+</p>
+<div style="background:#f8fafc;border-radius:14px;padding:14px 14px;border:1px solid #e2e8f0;margin:14px 0;">
+<div style="display:flex;align-items:flex-start;gap:10px;">
+<div style="width:34px;height:34px;border-radius:12px;background:rgba(59,130,246,0.10);display:flex;align-items:center;justify-content:center;color:#2563eb;">
+<i class="fas fa-bolt"></i>
+</div>
+<div style="color:#475569;line-height:1.55;">
+<b style="color:#0f172a;">
+<span data-i18n-en="Corrosion mechanism:" data-i18n-fa="مکانیسم خوردگی:">Corrosion mechanism:</span>
+</b>
+<span data-i18n-en=" Octadecylamine's long hydrophobic tail forms a protective monolayer film on carbon steel surfaces in steam condensate, neutralizing CO₂ acidity and blocking oxygen/water contact—reducing flow-accelerated corrosion (FAC) by >80% in well-dosed systems." data-i18n-fa=" دم هیدروفوبیک بلند اکتادسیل‌آمین لایه‌ای محافظ تک‌مولکولی روی سطوح فولاد کربنی در کندانس بخار تشکیل می‌دهد، اسیدیته CO₂ را خنثی کرده و تماس اکسیژن/آب را مسدود می‌کند—خوردگی شتاب‌یافته جریان (FAC) را در سیستم‌های به‌خوبی دوزشده بیش از ۸۰٪ کاهش می‌دهد."> Octadecylamine's long hydrophobic tail forms a protective monolayer film on carbon steel surfaces in steam condensate, neutralizing CO₂ acidity and blocking oxygen/water contact—reducing flow-accelerated corrosion (FAC) by >80% in well-dosed systems.</span>
+</div>
+</div>
+</div>
+<div class="demand-chart-container">
+<canvas height="250" id="demandChart" width="400"></canvas>
+</div>
+<div class="chart-legend">
+<div class="legend-item"><span class="legend-color" style="background-color:#2563eb;"></span>
+<span><span data-i18n-en="Asia-Pacific (45%)" data-i18n-fa="آسیا-اقیانوسیه (۴۵٪)">Asia-Pacific (45%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#8b5cf6;"></span>
+<span><span data-i18n-en="North America (25%)" data-i18n-fa="آمریکای شمالی (۲۵٪)">North America (25%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#10b981;"></span>
+<span><span data-i18n-en="Europe (20%)" data-i18n-fa="اروپا (۲۰٪)">Europe (20%)</span></span>
+</div>
+<div class="legend-item"><span class="legend-color" style="background-color:#f59e0b;"></span>
+<span><span data-i18n-en="Middle East &amp; Africa (10%)" data-i18n-fa="خاورمیانه و آفریقا (۱۰٪)">Middle East &amp; Africa (10%)</span></span>
+</div>
+</div>
+</div>
+<div class="key-commodity">
+<div class="companies-header">
+<div class="section-icon"><i class="fas fa-industry"></i></div>
+<h2 class="companies-title"><span data-i18n-en="Production &amp; Application Snapshot" data-i18n-fa="نمای کلی تولید و کاربرد">Production &amp; Application Snapshot</span></h2>
+</div>
+<div class="property-grid" style="grid-template-columns:1fr;">
+<div class="property-item">
+<div class="property-label"><span data-i18n-en="Global Demand (2024)" data-i18n-fa="تقاضای جهانی (۲۰۲۴)">Global Demand (2024)</span></div>
+<div class="property-value" style="color:var(--primary);"><span data-i18n-en="~45K T/Y" data-i18n-fa="حدود ۴۵ هزار تن/سال">~45K T/Y</span></div>
+</div>
+<div class="property-item"><div class="property-label"><span data-i18n-en="Primary Application" data-i18n-fa="کاربرد اصلی">Primary Application</span></div><div class="property-value" style="color:var(--primary);"><span data-i18n-en="Filming amine corrosion inhibitor (steam systems)" data-i18n-fa="بازدارنده خوردگی آمین فیلم‌ساز (سیستم‌های بخار)">Filming amine corrosion inhibitor (steam systems)</span></div></div>
+<div class="property-item"><div class="property-label"><span data-i18n-en="Key Markets" data-i18n-fa="بازارهای کلیدی">Key Markets</span></div><div class="property-value" style="color:var(--primary);"><span data-i18n-en="Power generation, refining, industrial steam" data-i18n-fa="تولید برق، پالایشگاه، بخار صنعتی">Power generation, refining, industrial steam</span></div></div>
+<div class="property-item"><div class="property-label"><span data-i18n-en="Feedstock Origin" data-i18n-fa="منشأ خوراک">Feedstock Origin</span></div><div class="property-value" style="color:var(--primary);"><span data-i18n-en="Palm/coconut (Asia) or tallow (Americas/Europe)" data-i18n-fa="نخل/نارگیل (آسیا) یا چربی حیوانی (آمریکا/اروپا)">Palm/coconut (Asia) or tallow (Americas/Europe)</span></div></div>
+</div>
+</div>
+<div class="section-card">
+<div class="section-header">
+<div class="section-icon" style="background:rgba(239,115,51,0.1);color:#ef7333;"><i class="fas fa-calculator"></i></div>
+<h2 class="section-title"><span data-i18n-en="Capital Expenditure Analysis" data-i18n-fa="تحلیل هزینه سرمایه‌گذاری (CAPEX)">Capital Expenditure Analysis</span></h2>
+</div>
+<p style="color:#475569;margin-bottom:20px;line-height:1.5;">
+<span data-i18n-en="CAPEX is driven by amination/hydrogenation reactor system, vacuum distillation for primary/secondary amine separation, catalyst recovery, solidification/flaking equipment, and dust control systems. Integration with fatty alcohol production significantly improves economics." data-i18n-fa="CAPEX تابع سامانه راکتور آمیناسیون/هیدروژناسیون، تقطیر خلأ برای جداسازی آمین اولیه/ثانویه، بازیابی کاتالیست، تجهیزات جامد‌سازی/پولک‌سازی و سامانه‌های کنترل گردوغبار است. یکپارچه‌سازی با تولید الکل‌های چرب به‌طور معنی‌داری اقتصاد پروژه را بهبود می‌بخشد.">CAPEX is driven by amination/hydrogenation reactor system, vacuum distillation for primary/secondary amine separation, catalyst recovery, solidification/flaking equipment, and dust control systems. Integration with fatty alcohol production significantly improves economics.</span>
+</p>
+<div style="display:flex;flex-direction:column;gap:25px;">
+<div style="background:#f8fafc;border-radius:16px;padding:20px;border-left:4px solid #ef7333;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+<h3 style="font-weight:600;color:var(--dark);display:flex;align-items:center;gap:8px;">
+<i class="fas fa-industry" style="color:#ef7333;"></i> <span data-i18n-en="Indicative CAPEX (5K T/Y Fatty Amines Unit incl. C18)" data-i18n-fa="CAPEX تقریبی (واحد ۵ هزار تن/سال آمین‌های چرب شامل C18)">Indicative CAPEX (5K T/Y Fatty Amines Unit incl. C18)</span>
+</h3>
+<div style="background:rgba(239,115,51,0.1);color:#ef7333;padding:5px 12px;border-radius:12px;font-weight:600;">
+<span data-i18n-en="Specialty Chemicals" data-i18n-fa="مواد شیمیایی تخصصی">Specialty Chemicals</span>
+</div>
+</h3>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:2.8rem;font-weight:700;color:#ef7333;margin-bottom:10px;text-align:center;">
+<span data-i18n-en="$35–65M" data-i18n-fa="۳۵ تا ۶۵ میلیون دلار">$35–65M</span>
+</div>
+<div style="text-align:center;color:#64748b;font-size:0.95rem;margin-bottom:15px;">
+<span data-i18n-en="Range reflects integration level, catalyst system, purification depth, and dust/safety controls" data-i18n-fa="بازه سطح یکپارچگی، سامانه کاتالیستی، عمق خالص‌سازی و کنترل‌های گردوغبار/ایمنی را منعکس می‌کند">Range reflects integration level, catalyst system, purification depth, and dust/safety controls</span>
+</div>
+<div style="height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;position:relative;">
+<div style="position:absolute;top:0;left:0;height:100%;width:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent);transform:translateX(-100%);animation:shimmer 1.5s infinite;"></div>
+<div style="height:100%;width:76%;background:linear-gradient(to right,#f97316,#ef7333);border-radius:3px;"></div>
+</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">
+<div style="background:#f8fafc;border-radius:12px;padding:15px;border-left:3px solid #f97316;">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef7333;font-weight:600;">
+<i class="fas fa-cogs"></i> <span data-i18n-en="Process Technology" data-i18n-fa="فناوری فرآیند">Process Technology</span>
+</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark);">
+<span data-i18n-en="$6–12M" data-i18n-fa="۶ تا ۱۲ میلیون دلار">$6–12M</span>
+</div>
+<div style="color:#64748b;font-size:0.85rem;margin-top:4px;">
+<span data-i18n-en="Catalyst package, reactor design, separation strategy" data-i18n-fa="پکیج کاتالیست، طراحی راکتور، استراتژی جداسازی">Catalyst package, reactor design, separation strategy</span>
+</div>
+</div>
+<div style="background:#f8fafc;border-radius:12px;padding:15px;border-left:3px solid #f59e0b;">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#f59e0b;font-weight:600;">
+<i class="fas fa-hard-hat"></i> <span data-i18n-en="Construction" data-i18n-fa="ساخت و اجرا">Construction</span>
+</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark);">
+<span data-i18n-en="$12–22M" data-i18n-fa="۱۲ تا ۲۲ میلیون دلار">$12–22M</span>
+</div>
+<div style="color:#64748b;font-size:0.85rem;margin-top:4px;">
+<span data-i18n-en="Civil/structural, piping, dust collection, containment" data-i18n-fa="عمران/سازه، پایپینگ، جمع‌آوری گردوغبار، محصورسازی">Civil/structural, piping, dust collection, containment</span>
+</div>
+</div>
+<div style="background:#f8fafc;border-radius:12px;padding:15px;border-left:3px solid #f59e0b;">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#f59e0b;font-weight:600;">
+<i class="fas fa-cube"></i> <span data-i18n-en="Equipment &amp; Machinery" data-i18n-fa="تجهیزات و ماشین‌آلات">Equipment &amp; Machinery</span>
+</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark);">
+<span data-i18n-en="$14–26M" data-i18n-fa="۱۴ تا ۲۶ میلیون دلار">$14–26M</span>
+</div>
+<div style="color:#64748b;font-size:0.85rem;margin-top:4px;">
+<span data-i18n-en="Reactor, vacuum columns, hydrogenation, flaker, storage" data-i18n-fa="راکتور، برج‌های خلأ، هیدروژناسیون، پولک‌ساز، مخازن">Reactor, vacuum columns, hydrogenation, flaker, storage</span>
+</div>
+</div>
+<div style="background:#f8fafc;border-radius:12px;padding:15px;border-left:3px solid #f97316;">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#f97316;font-weight:600;">
+<i class="fas fa-project-diagram"></i> <span data-i18n-en="Engineering &amp; Services" data-i18n-fa="مهندسی و خدمات">Engineering &amp; Services</span>
+</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dark);">
+<span data-i18n-en="$3–5M" data-i18n-fa="۳ تا ۵ میلیون دلار">$3–5M</span>
+</div>
+<div style="color:#64748b;font-size:0.85rem;margin-top:4px;">
+<span data-i18n-en="Design, HAZOP, commissioning, training" data-i18n-fa="طراحی، HAZOP، راه‌اندازی، آموزش">Design, HAZOP, commissioning, training</span>
+</div>
+</div>
+</div>
+</div>
+<div class="key-companies">
+<div class="companies-header">
+<div class="section-icon"><i class="fas fa-city"></i></div>
+<h2 class="companies-title"><span data-i18n-en="Key Producers &amp; Formulators" data-i18n-fa="تولیدکنندگان و فرمولاسیون‌کنندگان کلیدی">Key Producers &amp; Formulators</span></h2>
+</div>
+<ul class="company-list">
+<li class="company-item">
+<div class="company-flag"><span data-i18n-en="JP" data-i18n-fa="ژاپن">JP</span></div>
+<div>
+<div class="company-name">Kao Corporation</div>
+<div class="company-country"><span data-i18n-en="Integrated fatty amines producer; global corrosion inhibitor supply" data-i18n-fa="تولیدکننده یکپارچه آمین‌های چرب؛ تأمین جهانی بازدارنده خوردگی">Integrated fatty amines producer; global corrosion inhibitor supply</span></div>
+</div>
+</li>
+<li class="company-item">
+<div class="company-flag"><span data-i18n-en="DE" data-i18n-fa="آلمان">DE</span></div>
+<div>
+<div class="company-name">Evonik Industries</div>
+<div class="company-country"><span data-i18n-en="Specialty amines portfolio; mining & corrosion applications" data-i18n-fa="پرتفوی آمین‌های تخصصی؛ کاربردهای معادن و خوردگی">Specialty amines portfolio; mining & corrosion applications</span></div>
+</div>
+</li>
+<li class="company-item">
+<div class="company-flag"><span data-i18n-en="UK" data-i18n-fa="بریتانیا">UK</span></div>
+<div>
+<div class="company-name">Croda International</div>
+<div class="company-country"><span data-i18n-en="Fatty amines & derivatives for multiple end-markets" data-i18n-fa="آمین‌های چرب و مشتقات برای بازارهای پایانی متعدد">Fatty amines & derivatives for multiple end-markets</span></div>
+</div>
+</li>
+<li class="company-item">
+<div class="company-flag"><span data-i18n-en="US" data-i18n-fa="آمریکا">US</span></div>
+<div>
+<div class="company-name">BASF (Lonzacare™)</div>
+<div class="company-country"><span data-i18n-en="Filming amine corrosion inhibitor technology leader" data-i18n-fa="رهبر فناوری بازدارنده خوردگی آمین فیلم‌ساز">Filming amine corrosion inhibitor technology leader</span></div>
+</div>
+</li>
+<li class="company-item">
+<div class="company-flag"><span data-i18n-en="NL" data-i18n-fa="هلند">NL</span></div>
+<div>
+<div class="company-name">AkzoNobel Surface Chemistry</div>
+<div class="company-country"><span data-i18n-en="Mining chemicals & specialty amines" data-i18n-fa="مواد شیمیایی معادن و آمین‌های تخصصی">Mining chemicals & specialty amines</span></div>
+</div>
+</li>
+<li class="company-item">
+<div class="company-flag"><span data-i18n-en="CN/IN" data-i18n-fa="چین/هند">CN/IN</span></div>
+<div>
+<div class="company-name">Asian Palm-Based Producers</div>
+<div class="company-country"><span data-i18n-en="Regional supply chains from palm/coconut feedstocks" data-i18n-fa="زنجیره تأمین منطقه‌ای از خوراک نخل/نارگیل">Regional supply chains from palm/coconut feedstocks</span></div>
+</div>
+</li>
+</ul>
+</div>
+</div><!-- /sidebar -->
+</div><!-- /content-grid -->
+<div class="design-credit">
+<div class="credit-header">
+<div class="credit-icon"><i class="fas fa-hard-hat"></i></div>
+<h2 class="credit-title"><span data-i18n-en="Engineering Design Credit" data-i18n-fa="هزینه طراحی مهندسی">Engineering Design Credit</span></h2>
+</div>
+<div class="credit-details">
+<p><span data-i18n-en="This chemical database entry was developed and designed by Ali Hosseinpour with rigorous verification against authoritative sources including PubChem, ChemSpider, EPA HPV Program assessments, and industrial corrosion inhibitor technical literature (NACE, EPRI)." data-i18n-fa="این مدخل پایگاه‌داده شیمیایی توسط علی حسین‌پور با تأیید دقیق بر اساس منابع معتبر از جمله PubChem، ChemSpider، ارزیابی‌های برنامه HPV سازمان حفاظت محیط زیست آمریکا و ادبیات فنی صنعتی بازدارنده‌های خوردگی (NACE، EPRI) گردآوری و تدوین شده است.">This chemical database entry was developed and designed by Ali Hosseinpour with rigorous verification against authoritative sources including PubChem, ChemSpider, EPA HPV Program assessments, and industrial corrosion inhibitor technical literature (NACE, EPRI).</span></p>
+</div>
+<div class="contact-info">
+<a class="contact-item" href="tel:+989162926778"><i class="fas fa-phone"></i><span>+989162926778</span></a>
+<a class="contact-item" href="mailto:hosseinpour431@gmail.com"><i class="fas fa-envelope"></i><span>hosseinpour431@gmail.com</span></a>
+</div>
+</div>
+<footer>
+<p><span data-i18n-en="Chemical Farm © 2025 | Comprehensive chemical intelligence for industry professionals" data-i18n-fa="کمیکال فارم © 2025| هوشمندی جامع شیمی برای متخصصان صنعت">Chemical Farm © 2025 | Comprehensive chemical intelligence for industry professionals</span></p>
+<p class="footer-note"><span data-i18n-en="Data verified through PubChem (NIH), ChemSpider (RSC), EPA HPV assessments, NACE corrosion inhibitor guidelines, and specialty chemicals market reports (2023–2024)." data-i18n-fa="داده‌ها با اتکا به PubChem (NIH)، ChemSpider (RSC)، ارزیابی‌های HPV سازمان حفاظت محیط زیست، دستورالعمل‌های بازدارنده خوردگی NACE و گزارش‌های بازار مواد شیمیایی تخصصی (2023–2024) راستی‌آزمایی شده‌اند.">Data verified through PubChem (NIH), ChemSpider (RSC), EPA HPV assessments, NACE corrosion inhibitor guidelines, and specialty chemicals market reports (2023–2024).</span></p>
+</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+initMolecularVisualization();
+initDemandPieChart();
+initApplicationsPieChart();
+const processTemplates = {
+amination: {
+infoHTML: `
+<i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+<span data-i18n-en="Octadecylamine is primarily produced via " data-i18n-fa="اکتادسیل‌آمین عمدتاً از طریق ">Octadecylamine is primarily produced via </span>
+<span class="process-highlight"><span data-i18n-en="catalytic amination of stearyl alcohol" data-i18n-fa="آمیناسیون کاتالیستی استئاریل الکل">catalytic amination of stearyl alcohol</span></span>
+<span data-i18n-en=" (C18OH + NH3 → C18NH2 + H2O) over Ni/Cu catalysts, followed by vacuum distillation to isolate primary amine." data-i18n-fa=" (C18OH + NH3 → C18NH2 + H2O) روی کاتالیست‌های Ni/Cu، سپس تقطیر خلأ برای جداسازی آمین اولیه انجام می‌شود."> (C18OH + NH3 → C18NH2 + H2O) over Ni/Cu catalysts, followed by vacuum distillation to isolate primary amine.</span>
+`,
+stages: [
+{ en: "Stearyl alcohol (C18) and ammonia are dried/purified; catalyst bed is conditioned to operating temperature/pressure.", fa: "استئاریل الکل (C18) و آمونیاک خشک/خالص می‌شوند؛ بستر کاتالیست تا دما/فشار عملیاتی شرطی‌سازی می‌گردد." },
+{ en: "Amination occurs at 150–200°C and 100–300 bar; precise NH3/alcohol ratio and catalyst formulation control primary vs. secondary amine selectivity.", fa: "آمیناسیون در ۱۵۰ تا ۲۰۰°C و ۱۰۰ تا ۳۰۰ بار انجام می‌شود؛ نسبت دقیق آمونیاک/الکل و فرمولاسیون کاتالیست، گزینش‌پذیری آمین اولیه در برابر ثانویه را کنترل می‌کند." },
+{ en: "Crude product is distilled under vacuum; primary amine fraction (C18NH2) is separated from secondary/tertiary amines and heavies.", fa: "محصول خام تحت خلأ تقطیر می‌شود؛ برش آمین اولیه (C18NH2) از آمین‌های ثانویه/ثالثیه و ترکیبات سنگین جدا می‌گردد." },
+{ en: "Molten amine is flaked/prilled under nitrogen blanket; packaged in moisture-resistant containers with strict dust control during handling.", fa: "آمین مذاب تحت پرده نیتروژن پولک/پریل شده؛ در ظروف مقاوم در برابر رطوبت بسته‌بندی می‌شود و کنترل سخت‌گیرانه گردوغبار در هندلینگ اعمال می‌گردد." }
+]
+},
+nitrile: {
+infoHTML: `
+<i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+<span data-i18n-en="Alternative route: " data-i18n-fa="مسیر جایگزین: ">Alternative route: </span>
+<span class="process-highlight"><span data-i18n-en="hydrogenation of stearyl nitrile" data-i18n-fa="هیدروژناسیون استئاریل نیتریل">hydrogenation of stearyl nitrile</span></span>
+<span data-i18n-en=" (C17H35CN + 2H2 → C18H39N) over Ni catalysts. Requires careful control to minimize secondary amine formation and ensure high primary amine yield." data-i18n-fa=" (C17H35CN + 2H2 → C18H39N) روی کاتالیست Ni. نیازمند کنترل دقیق برای به حداقل رساندن تشکیل آمین ثانویه و تضمین بازده بالای آمین اولیه است."> (C17H35CN + 2H2 → C18H39N) over Ni catalysts. Requires careful control to minimize secondary amine formation and ensure high primary amine yield.</span>
+`,
+stages: [
+{ en: "Stearyl nitrile feed is purified; hydrogen is conditioned to catalyst specifications and moisture limits.", fa: "خوراک استئاریل نیتریل خالص‌سازی می‌شود؛ هیدروژن تا مشخصات کاتالیست و محدودیت‌های رطوبت شرطی‌سازی می‌گردد." },
+{ en: "Hydrogenation at 100–150°C and 20–50 bar over Raney Ni or supported Ni catalysts; temperature control critical to avoid over-hydrogenation/by-products.", fa: "هیدروژناسیون در ۱۰۰ تا ۱۵۰°C و ۲۰ تا ۵۰ بار روی کاتالیست‌های رانی نیکل یا نیکل پشتیبانی‌شده؛ کنترل دما برای جلوگیری از هیدروژناسیون بیش‌ازحد/محصولات جانبی حیاتی است." },
+{ en: "Product purification via vacuum distillation to achieve >95% primary amine content; secondary amines are minimized through process optimization.", fa: "خالص‌سازی محصول از طریق تقطیر خلأ برای دستیابی به محتوای آمین اولیه >۹۵٪؛ آمین‌های ثانویه از طریق بهینه‌سازی فرآیند به حداقل می‌رسند." },
+{ en: "Solidification and packaging under inert atmosphere; moisture control essential to prevent oxidation/yellowing during storage.", fa: "جامد‌سازی و بسته‌بندی تحت جو بی‌اثر؛ کنترل رطوبت برای جلوگیری از اکسیداسیون/زردشدن در حین ذخیره‌سازی ضروری است." }
+]
+}
+};
+function setProcess(processType){
+const tpl = processTemplates[processType] || processTemplates.amination;
+const infoBox = document.querySelector('.process-info');
+if (infoBox) infoBox.innerHTML = tpl.infoHTML;
+const stageDescs = Array.from(document.querySelectorAll('.stage-description'));
+stageDescs.forEach((node, i)=>{
+const st = tpl.stages[i];
+if (!st) return;
+node.innerHTML = `<span data-i18n-en="${st.en.replace(/"/g,'&quot;')}" data-i18n-fa="${st.fa.replace(/"/g,'&quot;')}">${st.en}</span>`;
+});
+if (window.ChemI18n && typeof window.ChemI18n.refresh === 'function') window.ChemI18n.refresh();
+}
+document.querySelectorAll('.process-btn').forEach(btn => {
+btn.addEventListener('click', function() {
+document.querySelectorAll('.process-btn').forEach(b => b.classList.remove('active'));
+this.classList.add('active');
+setProcess(this.getAttribute('data-process'));
+});
+});
+const activeBtn = document.querySelector('.process-btn.active');
+setProcess(activeBtn ? activeBtn.getAttribute('data-process') : 'amination');
+setTimeout(() => {
+document.querySelectorAll('.section-card, .market-insights, .key-companies, .key-commodity').forEach((card, index) => {
+setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 150 * index);
+});
+}, 100);
+});
+function initDemandPieChart() {
+const ctx = document.getElementById('demandChart').getContext('2d');
+new Chart(ctx, {
+type: 'pie',
+data: {
+labels: ['Asia-Pacific', 'North America', 'Europe', 'Middle East & Africa'],
+datasets: [{
+data: [45, 25, 20, 10],
+backgroundColor: ['#2563eb','#8b5cf6','#10b981','#f59e0b'],
+borderWidth: 1
+}]
+},
+options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed}%`}} } }
+});
+}
+function initApplicationsPieChart() {
+const ctx = document.getElementById('applicationsChart').getContext('2d');
+new Chart(ctx, {
+type: 'pie',
+data: {
+labels: ['Corrosion Inhibitors', 'Flotation Agents', 'Surfactants/Emulsifiers', 'Lubricants/Additives', 'Others'],
+datasets: [{
+data: [65, 15, 10, 7, 3],
+backgroundColor: ['#2563eb','#8b5cf6','#10b981','#f59e0b','#ef4444'],
+borderWidth: 1
+}]
+},
+options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed}%`}} } }
+});
+}
+function initMolecularVisualization() {
+const container = document.getElementById('molecular-canvas');
+if (!container) return;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--molecule-bg').trim() || '#f8fafc');
+const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+camera.position.z = 9.5;
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(1, 1, 1);
+scene.add(dl);
+const moleculeGroup = new THREE.Group();
+scene.add(moleculeGroup);
+function createAtom(position, color, size, name) {
+const geometry = new THREE.SphereGeometry(size, 24, 24);
+const material = new THREE.MeshPhongMaterial({ color, shininess: 100, specular: 0x333333 });
+const sphere = new THREE.Mesh(geometry, material);
+sphere.position.copy(position);
+sphere.userData = { name };
+moleculeGroup.add(sphere);
+return sphere;
+}
+function createBond(atom1, atom2, color, radius=0.09) {
+const direction = new THREE.Vector3().subVectors(atom2.position, atom1.position);
+const midpoint = new THREE.Vector3().addVectors(atom1.position, atom2.position).multiplyScalar(0.5);
+const length = direction.length();
+const geometry = new THREE.CylinderGeometry(radius, radius, length, 24);
+const material = new THREE.MeshPhongMaterial({ color, shininess: 50 });
+const cylinder = new THREE.Mesh(geometry, material);
+cylinder.position.copy(midpoint);
+cylinder.lookAt(atom2.position);
+cylinder.rotateX(Math.PI / 2);
+moleculeGroup.add(cylinder);
+return cylinder;
+}
+// Simplified C18 chain with NH2 head
+const carbons = [];
+const nC = 18;
+const spacing = 0.42;
+const startX = -((nC - 1) * spacing) / 2;
+// Carbon backbone
+for (let i = 0; i < nC; i++) {
+const pos = new THREE.Vector3(startX + i * spacing, 0, 0);
+const c = createAtom(pos, 0x1e40af, (i === nC-1) ? 0.32 : 0.24, 'C');
+carbons.push(c);
+}
+// Bonds along chain
+for (let i = 0; i < nC - 1; i++) {
+createBond(carbons[i], carbons[i+1], 0x475569, 0.09);
+}
+// NH2 group on terminal carbon
+const N = createAtom(new THREE.Vector3(startX + (nC-1) * spacing + 0.55, 0.35, 0), 0x10b981, 0.30, 'N');
+const H1 = createAtom(new THREE.Vector3(startX + (nC-1) * spacing + 0.95, 0.65, 0.15), 0x64748b, 0.20, 'H');
+const H2 = createAtom(new THREE.Vector3(startX + (nC-1) * spacing + 0.95, 0.05, -0.15), 0x64748b, 0.20, 'H');
+createBond(carbons[nC-1], N, 0x475569, 0.10);
+createBond(N, H1, 0x475569, 0.08);
+createBond(N, H2, 0x475569, 0.08);
+// Slight bend for aesthetics
+moleculeGroup.rotation.y = 0.35;
+moleculeGroup.rotation.x = 0.15;
+function animate() {
+requestAnimationFrame(animate);
+moleculeGroup.rotation.y += 0.0035;
+moleculeGroup.rotation.x += 0.0012;
+renderer.render(scene, camera);
+}
+window.addEventListener('resize', () => {
+camera.aspect = container.clientWidth / container.clientHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(container.clientWidth, container.clientHeight);
+});
+window.addEventListener('chemThemeChange', () => {
+try{
+const bg = getComputedStyle(document.documentElement).getPropertyValue('--molecule-bg').trim() || '#f8fafc';
+scene.background = new THREE.Color(bg);
+renderer.render(scene, camera);
+}catch(e){}
+});
+animate();
+}
+</script>
+<script>
+(function(){
+const langBtn = document.getElementById('langToggle');
+const langLabel = document.getElementById('langLabel');
+const themeBtn = document.getElementById('themeToggle');
+function renderI18n(el, lang){
+const en = el.getAttribute('data-i18n-en') ?? '';
+const fa = el.getAttribute('data-i18n-fa') ?? '';
+if (el.tagName === 'TITLE'){ el.textContent = (lang === 'fa') ? fa : en; return; }
+el.textContent = (lang === 'fa') ? fa : en;
+}
+function applyLang(lang){
+document.documentElement.setAttribute('lang', lang);
+document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+if (langLabel) langLabel.textContent = (lang === 'fa') ? 'EN' : 'FA';
+document.querySelectorAll('[data-i18n-en][data-i18n-fa]').forEach(el => renderI18n(el, lang));
+}
+function getLang(){ return document.documentElement.getAttribute('lang') || 'en'; }
+function applyTheme(theme){
+document.documentElement.setAttribute('data-theme', theme);
+const icon = themeBtn?.querySelector('i');
+if (icon){
+icon.classList.remove('fa-moon','fa-sun');
+icon.classList.add(theme === 'dark' ? 'fa-sun' : 'fa-moon');
+}
+window.dispatchEvent(new CustomEvent('chemThemeChange', { detail: { theme } }));
+}
+function getTheme(){ return document.documentElement.getAttribute('data-theme') || 'light'; }
+window.ChemI18n = { applyLang, getLang, refresh: ()=>applyLang(getLang()) };
+const savedLang = localStorage.getItem('chem_lang');
+const autoLang = (navigator.language || '').toLowerCase().startsWith('fa') ? 'fa' : 'en';
+applyLang(savedLang || autoLang);
+langBtn?.addEventListener('click', ()=>{
+const next = getLang() === 'fa' ? 'en' : 'fa';
+localStorage.setItem('chem_lang', next);
+applyLang(next);
+});
+const savedTheme = localStorage.getItem('chem_theme');
+const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+themeBtn?.addEventListener('click', ()=>{
+const next = getTheme() === 'dark' ? 'light' : 'dark';
+localStorage.setItem('chem_theme', next);
+applyTheme(next);
+});
+})();
+</script>
+</body>
+
+
+
+
+
+</html>

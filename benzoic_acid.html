@@ -1,0 +1,2960 @@
+<!doctype html>
+<html dir="rtl" lang="fa" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title data-i18n-en="Chemical Farm" data-i18n-fa="کمیکال فارم ">Chemical Farm | Acetaldehyde</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600&amp;family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+        :root {
+            --primary: #0d9488;
+            --primary-light: #14b8a6;
+            --secondary: #2563eb;
+            --danger: #fb7185;
+            --warning: #fbbf24;
+            --success: #22c55e;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: rgba(15,23,42,0.10);
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --glow-primary: 0 0 22px rgba(13, 148, 136, 0.22);
+            --glow-secondary: 0 0 22px rgba(37, 99, 235, 0.22);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Vazirmatn','Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 35px 0;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow), var(--glow-primary);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateY(0);
+            animation: headerFloat 6s ease-in-out infinite;
+        }
+        @keyframes headerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo i {
+            font-size: 2rem;
+            background: rgba(255,255,255,0.15);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255,255,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+        .logo h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+        }
+        .search-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+        }
+        #search-input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        #search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        #search-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1), var(--glow-primary);
+        }
+        
+        /* Header actions (Home + Language) */
+        .header-actions{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .hdr-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.10);
+            color: white;
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .hdr-btn i{ opacity: .9; }
+        .hdr-btn:hover{
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover), var(--glow-secondary);
+            border-color: rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.14);
+        }
+        .hdr-btn:active{ transform: translateY(0); }
+        .hdr-btn.lang{
+            border: 1px solid rgba(255,255,255,0.28);
+        }
+        #langLabel{
+            font-family: 'Space Grotesk','Vazirmatn','Inter',sans-serif;
+            font-weight: 700;
+            letter-spacing: .6px;
+        }
+
+        /* Language toggling */
+        html[lang="fa"] body{ direction: rtl; }
+        html[lang="fa"] .container{ direction: rtl; }
+        html[lang="fa"] .product-name,
+        html[lang="fa"] .section-title,
+        html[lang="fa"] .market-title,
+        html[lang="fa"] .companies-title,
+        html[lang="fa"] .applications-title,
+        html[lang="fa"] .feedstock-title,
+        html[lang="fa"] .molecular-title{
+            font-family:'Vazirmatn','Space Grotesk','Inter',sans-serif;
+        }
+.product-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .product-type {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.15);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            align-self: flex-start;
+            transition: var(--transition);
+            box-shadow: var(--glow-primary);
+        }
+        .product-type:hover {
+            transform: scale(1.03);
+            box-shadow: var(--glow-primary), 0 5px 15px rgba(37, 99, 235, 0.15);
+        }
+        .product-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .product-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+            color: #475569;
+            margin-top: 5px;
+        }
+        .product-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow), var(--glow-primary);
+            transition: var(--transition);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: floatUp 0.6s ease-out;
+        }
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 16px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        .stat-value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .stat-card:hover .stat-value::after {
+            width: 100%;
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
+        }
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 2;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .section-card:hover::before {
+            transform: scaleX(1);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .section-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .properties-header .section-icon {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        .hazard-header .section-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .health-header .section-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        .industry-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .license-header .section-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .section-card:hover .section-title::after {
+            width: 70%;
+        }
+        .property-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .property-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
+            padding-left: 10px;
+            transition: var(--transition);
+        }
+        .property-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gray);
+            opacity: 0.5;
+        }
+        .property-item:hover {
+            padding-left: 15px;
+        }
+        .property-item:hover::before {
+            background: var(--primary);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.2);
+        }
+        .property-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .property-label i {
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+        .property-value {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+            position: relative;
+            display: inline-block;
+        }
+        .property-value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .property-item:hover .property-value::after {
+            width: 100%;
+        }
+        .hazard-section, .health-section {
+            padding: 20px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hazard-section::before, .health-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            opacity: 0.7;
+        }
+        .hazard-section {
+            background: rgba(254, 226, 226, 0.4);
+            border: 1px solid #fecaca;
+        }
+        .hazard-section::before {
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+        }
+        .hazard-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #b91c1c;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .hazard-value {
+            color: #991b1b;
+            line-height: 1.6;
+        }
+        .health-section {
+            background: rgba(254, 249, 196, 0.4);
+            border: 1px solid #fde68a;
+        }
+        .health-section::before {
+            background: linear-gradient(to bottom, #f59e0b, #d97706);
+        }
+        .health-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #a16207;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .health-value {
+            color: #854d0e;
+            line-height: 1.6;
+        }
+        .industry-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .industry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .industry-tag {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .industry-tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            z-index: -1;
+        }
+        .industry-tag:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: var(--success);
+            color: white;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        .industry-tag:hover::after {
+            animation: shine 1s;
+        }
+        @keyframes shine {
+            to { transform: translateX(100%); }
+        }
+        .feedstock-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .feedstock-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        .feedstock-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-secondary);
+        }
+        .feedstock-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .feedstock-header .section-icon {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+        .feedstock-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .raw-materials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .material-tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .material-tag::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        .material-tag:hover {
+            transform: scale(1.05);
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        .material-tag:hover::after {
+            transform: translateX(0);
+        }
+        .market-insights {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .market-insights::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .market-insights:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .market-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .market-header .section-icon {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        .market-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .market-description {
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .demand-chart-container {
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+            background: #f8fafc;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        .demand-chart-container:hover {
+            box-shadow: var(--card-hover), var(--glow-primary);
+            transform: scale(1.01);
+        }
+        .region-demand {
+            margin-top: 25px;
+        }
+        .region-item {
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .region-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .region-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover);
+            z-index: 2;
+        }
+        .region-item:hover::before {
+            opacity: 1;
+        }
+        .region-item:nth-child(1) {
+            border-left-color: #2563eb;
+        }
+        .region-item:nth-child(1)::before {
+            background: linear-gradient(to bottom, #2563eb, #3b82f6);
+        }
+        .region-item:nth-child(2) {
+            border-left-color: #8b5cf6;
+        }
+        .region-item:nth-child(2)::before {
+            background: linear-gradient(to bottom, #8b5cf6, #a78bfa);
+        }
+        .region-item:nth-child(3) {
+            border-left-color: #10b981;
+        }
+        .region-item:nth-child(3)::before {
+            background: linear-gradient(to bottom, #10b981, #34d399);
+        }
+        .region-item:nth-child(4) {
+            border-left-color: #f59e0b;
+        }
+        .region-item:nth-child(4)::before {
+            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
+        }
+        .region-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        .region-percentage {
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            display: inline-block;
+        }
+        .region-percentage::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: var(--transition);
+        }
+        .region-item:hover .region-percentage::after {
+            width: 100%;
+        }
+        .region-description {
+            color: #64748b;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .region-progress {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .region-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        .region-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1.5s ease;
+            position: relative;
+        }
+        .key-companies {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-commodity {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-commodity:hover, .key-companies:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .companies-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .companies-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .companies-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .company-list {
+            list-style: none;
+        }
+        .company-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .company-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--success);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+            z-index: 1;
+        }
+        .company-item:hover::before {
+            transform: scaleX(1);
+        }
+        .company-item:last-child {
+            border-bottom: none;
+        }
+        .company-item:hover {
+            transform: translateX(5px);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .company-flag {
+            width: 28px;
+            height: 20px;
+            border-radius: 3px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: #64748b;
+            transition: var(--transition);
+        }
+        .company-item:hover .company-flag {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 2px var(--success);
+        }
+        .company-name {
+            font-weight: 600;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+        .company-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--success);
+            transition: var(--transition);
+        }
+        .company-item:hover .company-name::after {
+            width: 100%;
+        }
+        .company-country {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .molecular-visualization {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .molecular-visualization::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+        .molecular-visualization:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .molecular-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .molecular-header .section-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .molecular-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .molecular-diagram {
+            width: 100%;
+            height: 300px;
+            border-radius: 16px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .molecular-diagram:hover {
+            box-shadow: var(--card-hover);
+        }
+        #molecular-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .molecular-info {
+            display: flex;
+            justify-content: space-around;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        .molecular-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .color-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .molecular-red {
+            background-color: #ef4444;
+        }
+        .molecular-blue {
+            background-color: #1e40af;
+        }
+        .molecular-gray {
+            background-color: #64748b;
+        }
+        .safety-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-top: 15px;
+            align-self: flex-start;
+            animation: pulseDanger 2s infinite;
+        }
+        @keyframes pulseDanger {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #64748b;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        .footer-note {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        /* Production Process Specific Styles */
+        .process-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stage {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--primary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .stage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .stage:hover {
+            background: #edf2ff;
+            transform: translateX(5px);
+        }
+        .stage:hover::before {
+            animation: shine 1.5s;
+        }
+        @keyframes shine {
+            to { transform: translateX(100%); }
+        }
+        .stage-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .stage:hover .stage-number {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+        }
+        .stage-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+            position: relative;
+            display: inline-block;
+        }
+        .stage-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .stage:hover .stage-title::after {
+            width: 100%;
+        }
+        .stage-description {
+            color: #475569;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        .process-diagram {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+        .diagram-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+        }
+        .plant-capacity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .capacity-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--success);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .capacity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .capacity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: #edf7f4;
+        }
+        .capacity-card:hover::before {
+            animation: shine 1.5s;
+        }
+        .capacity-title {
+            font-weight: 600;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .capacity-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .capacity-location {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .capacity-note {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+        .process-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 8px;
+        }
+        .process-btn {
+            padding: 5px 12px;
+            border-radius: 18px;
+            background: #e2e8f0;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .process-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .process-btn:hover::after {
+            animation: shine 1s;
+        }
+        .process-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .process-info {
+            background: #f0f4ff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            border-left: 3px solid var(--primary);
+        }
+        .process-highlight {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        /* Applications Section */
+        .applications-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .applications-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success), #22c55e);
+        }
+        .applications-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover), var(--glow-primary);
+        }
+        .applications-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        .applications-header .section-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .applications-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .application-chart {
+            height: 250px;
+            margin-top: 15px;
+            position: relative;
+        }
+        .application-chart::after {
+            content: '3D Interactive';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0,0,0,0.1);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            backdrop-filter: blur(2px);
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        .legend-item:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        .design-credit {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .design-credit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .credit-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .credit-icon {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        .credit-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+        .credit-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .credit-details {
+            color: #475569;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .contact-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        .contact-item:hover::before {
+            animation: shine 1s;
+        }
+        .contact-item:hover i {
+            color: white;
+        }
+        /* License Providers Section */
+        .license-providers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .provider-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            transition: var(--transition);
+            border-left: 3px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+        .provider-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+        }
+        .provider-item:hover {
+            transform: translateX(5px);
+            background: #f1f5f9;
+        }
+        .provider-item:hover::before {
+            animation: shine 1.5s;
+        }
+        .provider-rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+        }
+        .provider-item:hover .provider-rank {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        .provider-info {
+            flex: 1;
+        }
+        .provider-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+            position: relative;
+            display: inline-block;
+        }
+        .provider-name::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        .provider-item:hover .provider-name::after {
+            width: 100%;
+        }
+        .provider-details {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .provider-licenses {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            align-self: flex-start;
+            transition: var(--transition);
+        }
+        .provider-item:hover .provider-licenses {
+            background: var(--secondary);
+            color: white;
+        }
+        /* 3D Chart Container */
+        .chart3d-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .chart3d-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            transform: translate(-50%, -100%);
+        }
+        .chart3d-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid rgba(0,0,0,0.8);
+        }
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .product-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .product-header {
+                flex-direction: column;
+            }
+            .product-name {
+                font-size: 2rem;
+                text-align: center;
+            }
+            .product-stats {
+                grid-template-columns: 1fr;
+            }
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+            .plant-capacity {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+
+/* =========================
+   Language fonts & direction
+   ========================= */
+html[lang="en"] body{
+    font-family: 'Inter','Space Grotesk', sans-serif;
+}
+html[lang="fa"] body{
+    font-family: 'Vazirmatn','Inter', sans-serif;
+}
+/* Better RTL/LTR support using logical properties where possible */
+.property-item{ padding-inline-start: 10px; padding-left: 0; }
+.property-item:hover{ padding-inline-start: 15px; }
+.property-item::before{ inset-inline-start: 0; left: auto; }
+.region-item{ border-inline-start: 4px solid; border-left: 0; }
+.region-item::before{ inset-inline-start: 0; left:auto; }
+.stage{ border-inline-start: 3px solid var(--primary); border-left: 0; }
+.capacity-card{ border-inline-start: 3px solid var(--success); border-left: 0; }
+.provider-item{ border-inline-start: 3px solid var(--secondary); border-left: 0; }
+.hazard-section::before, .health-section::before{ inset-inline-start: 0; left:auto; }
+
+/* =========================
+   Theme system (Light/Dark)
+   ========================= */
+html{
+    /* surfaces */
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --surface-3: rgba(255,255,255,0.70);
+    --text-1: #0f172a;
+    --text-2: #475569;
+    --text-3: #64748b;
+    --border: rgba(15,23,42,0.10);
+    --molecule-bg: #f8fafc;
+    color-scheme: light;
+}
+body{
+    background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+    color: var(--text-1);
+}
+html[data-theme="dark"]{
+    /* High-contrast dark palette (readable on true-black displays) */
+    --surface: rgba(12,18,34,0.88);
+    --surface-2: rgba(17,26,46,0.78);
+    --surface-3: rgba(12,18,34,0.62);
+
+    /* Text */
+    --text-1: #eef2ff;   /* main text */
+    --text-2: #d6def7;   /* body/secondary text */
+    --text-3: #a7b4d8;   /* muted text */
+
+    /* Critical: many parts of the page use var(--dark) for text */
+    --dark: #eef2ff;
+    --light: #0b1020;
+
+    /* Borders / shadows */
+    --border: rgba(167,180,216,0.18);
+    --gray: rgba(167,180,216,0.18);
+    --card-shadow: 0 10px 18px -4px rgba(0, 0, 0, 0.55), 0 4px 10px -6px rgba(0, 0, 0, 0.45);
+    --card-hover: 0 22px 30px -10px rgba(0, 0, 0, 0.65), 0 10px 16px -10px rgba(0, 0, 0, 0.50);
+
+    /* 3D canvas background */
+    --molecule-bg: #0b1020;
+
+    color-scheme: dark;
+}
+html[data-theme="dark"] body{
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(13,148,136,0.20), transparent 55%),
+                radial-gradient(1000px 700px at 90% 15%, rgba(37,99,235,0.18), transparent 55%),
+                radial-gradient(1000px 700px at 50% 110%, rgba(139,92,246,0.14), transparent 55%),
+                linear-gradient(180deg, #020617 0%, #0b1220 100%);
+    color: var(--text-1);
+}
+/* Card surfaces */
+html[data-theme="dark"] .product-stats,
+html[data-theme="dark"] .section-card,
+html[data-theme="dark"] .feedstock-section,
+html[data-theme="dark"] .market-insights,
+html[data-theme="dark"] .key-companies,
+html[data-theme="dark"] .key-commodity,
+html[data-theme="dark"] .molecular-visualization,
+html[data-theme="dark"] .applications-section,
+html[data-theme="dark"] .design-credit{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--card-shadow);
+}
+html[data-theme="dark"] .demand-chart-container,
+html[data-theme="dark"] .process-diagram,
+html[data-theme="dark"] .molecular-info,
+html[data-theme="dark"] .stage,
+html[data-theme="dark"] .capacity-card,
+html[data-theme="dark"] .provider-item,
+html[data-theme="dark"] .contact-item,
+html[data-theme="dark"] .region-item{
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+html[data-theme="dark"] .section-header,
+html[data-theme="dark"] .feedstock-header,
+html[data-theme="dark"] .market-header,
+html[data-theme="dark"] .companies-header,
+html[data-theme="dark"] .molecular-header,
+html[data-theme="dark"] .applications-header{
+    border-bottom: 1px solid var(--border);
+}
+/* Text colors */
+html[data-theme="dark"] .product-subtitle,
+html[data-theme="dark"] .market-description,
+html[data-theme="dark"] .region-description,
+html[data-theme="dark"] .company-country,
+html[data-theme="dark"] .capacity-location,
+html[data-theme="dark"] .capacity-note,
+html[data-theme="dark"] .property-label,
+html[data-theme="dark"] .stat-label,
+html[data-theme="dark"] footer,
+html[data-theme="dark"] .footer-note{
+    color: var(--text-2) !important;
+}
+html[data-theme="dark"] .property-value,
+html[data-theme="dark"] .region-title,
+html[data-theme="dark"] .company-name,
+html[data-theme="dark"] .stage-title,
+html[data-theme="dark"] .capacity-value,
+html[data-theme="dark"] .provider-name{
+    color: var(--text-1) !important;
+}
+html[data-theme="dark"] .region-progress{ background: rgba(148,163,184,0.18); }
+html[data-theme="dark"] .region-item:hover{ background: rgba(148,163,184,0.08); }
+html[data-theme="dark"] .company-item:hover{ background: rgba(16,185,129,0.08); }
+
+/* Hazard blocks in dark */
+html[data-theme="dark"] .hazard-section{
+    background: rgba(127,29,29,0.25);
+    border-color: rgba(239,68,68,0.35);
+}
+html[data-theme="dark"] .health-section{
+    background: rgba(120,53,15,0.25);
+    border-color: rgba(245,158,11,0.35);
+}
+html[data-theme="dark"] .safety-badge{
+    background: rgba(239,68,68,0.18);
+    color: #fecaca;
+}
+
+/* Toggle button polish */
+.hdr-btn.theme i{ transition: transform .25s ease; }
+.hdr-btn.theme:hover i{ transform: rotate(-10deg) scale(1.05); }
+
+/* Responsive fix: product-header is grid (not flex) */
+@media (max-width: 768px){
+    .product-header{ grid-template-columns: 1fr; }
+    .safety-badge{ justify-self: start; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+
+/* =========================
+   Dark-mode readability overrides (inline styles + hard-coded colors)
+   ========================= */
+html[data-theme="dark"]{
+    /* Make sure plain text defaults are readable */
+    color: var(--text-1);
+}
+
+html[data-theme="dark"] body{
+    color: var(--text-1);
+}
+
+/* Override common hard-coded text colors used in inline styles */
+html[data-theme="dark"] [style*="color: #475569"],
+html[data-theme="dark"] [style*="color:#475569"]{ color: var(--text-2) !important; }
+
+html[data-theme="dark"] [style*="color: #64748b"],
+html[data-theme="dark"] [style*="color:#64748b"]{ color: var(--text-3) !important; }
+
+html[data-theme="dark"] [style*="color: #0f172a"],
+html[data-theme="dark"] [style*="color:#0f172a"],
+html[data-theme="dark"] [style*="color: var(--dark)"],
+html[data-theme="dark"] [style*="color:var(--dark)"]{ color: var(--text-1) !important; }
+
+/* Fix common light backgrounds used inline inside CAPEX cards */
+html[data-theme="dark"] [style*="background: #f8fafc"],
+html[data-theme="dark"] [style*="background:#f8fafc"]{
+    background: var(--surface-2) !important;
+    border-color: var(--border) !important;
+}
+html[data-theme="dark"] [style*="background: #fff7ed"],
+html[data-theme="dark"] [style*="background:#fff7ed"],
+html[data-theme="dark"] [style*="background: #fff7ed;"],
+html[data-theme="dark"] [style*="background:#fff7ed;"]{
+    background: rgba(249,115,22,0.12) !important;
+    border-color: rgba(249,115,22,0.28) !important;
+}
+
+/* Ensure link/text inside contact pills stays readable */
+html[data-theme="dark"] a{ color: var(--text-1); }
+html[data-theme="dark"] a:hover{ color: var(--text-1); }
+
+/* Keep small helper texts readable */
+html[data-theme="dark"] .credit-details,
+html[data-theme="dark"] .capacity-note,
+html[data-theme="dark"] .stage-description{ color: var(--text-2) !important; }
+
+
+
+/* === Fix: process-info box readability in Dark theme === */
+html[data-theme="dark"] .process-info{
+    background: rgba(37, 99, 235, 0.12) !important; /* soft indigo */
+    border: 1px solid rgba(167,180,216,0.22) !important;
+    color: var(--text-2) !important;
+}
+html[data-theme="dark"] .process-info .process-highlight{
+    color: #93c5fd !important; /* readable accent */
+}
+html[data-theme="dark"] .process-info i{
+    color: #93c5fd !important;
+}
+
+</style>
+
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-flask"></i>
+          <h1><span data-i18n-en="Chemical Farm" data-i18n-fa="Chemical Farm">Chemical Farm</span></h1>
+        </div>
+        <div class="header-actions">
+          <a class="hdr-btn home" href="index.html" title="Home">
+            <i class="fas fa-home"></i>
+            <span data-i18n-en="Home" data-i18n-fa="خانه">Home</span>
+          </a>
+          <button class="hdr-btn theme" id="themeToggle" title="Theme" type="button" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+            <span data-i18n-en="Theme" data-i18n-fa="تم">Theme</span>
+          </button>
+          <button class="hdr-btn lang" id="langToggle" title="Language" type="button">
+            <i class="fas fa-language"></i>
+            <span id="langLabel">EN</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="product-header">
+      <div class="product-info">
+        <div class="product-type">
+          <span data-i18n-en="Aromatic Acid" data-i18n-fa="اسید آروماتیک">Aromatic Acid</span>
+        </div>
+        <h1 class="product-name">
+          <i class="fas fa-flask"></i>
+          <span data-i18n-en="Benzoic Acid" data-i18n-fa="اسید بنزوئیک">Benzoic Acid</span>
+        </h1>
+        <div class="product-subtitle">
+          <i class="fas fa-microscope"></i> C₇H₆O₂ | CAS 65-85-0
+        </div>
+      </div>
+
+      <div class="safety-badge">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span
+          data-i18n-en="Irritant | Serious eye damage risk | Harmful (repeated exposure)"
+          data-i18n-fa="محرک | خطر آسیب جدی چشم | زیان‌آور (مواجهه تکراری)"
+          >Irritant | Serious eye damage risk | Harmful (repeated exposure)</span
+        >
+      </div>
+    </div>
+
+    <div class="product-stats">
+      <div class="stat-card">
+        <div class="stat-value"><span data-i18n-en="0.84M" data-i18n-fa="۰.۸۴ میلیون">0.84M</span></div>
+        <div class="stat-label">
+          <span data-i18n-en="Global Capacity (Tons/Y) — indicative (2023–2024 range)" data-i18n-fa="ظرفیت جهانی (تن/سال) — تقریبی (بازه ۲۰۲۳–۲۰۲۴)"
+            >Global Capacity (Tons/Y) — indicative (2023–2024 range)</span
+          >
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value"><span data-i18n-en="$1.1B" data-i18n-fa="۱.۱ میلیارد دلار">$1.1B</span></div>
+        <div class="stat-label">
+          <span data-i18n-en="Market Value (2024) — indicative" data-i18n-fa="ارزش بازار (۲۰۲۴) — تقریبی">Market Value (2024) — indicative</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">
+          <span data-i18n-en="Solid (flakes / powder)" data-i18n-fa="جامد (پرک / پودر)">Solid (flakes / powder)</span>
+        </div>
+        <div class="stat-label">
+          <span data-i18n-en="Common Forms" data-i18n-fa="شکل‌های رایج">Common Forms</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div class="main-content">
+        <div class="section-card">
+          <div class="section-header properties-header">
+            <div class="section-icon">
+              <i class="fas fa-vial"></i>
+            </div>
+            <h2 class="section-title">
+              <span data-i18n-en="Chemical Properties" data-i18n-fa="خواص شیمیایی">Chemical Properties</span>
+            </h2>
+          </div>
+
+          <div class="property-grid">
+            <div class="property-item">
+              <div class="property-label">
+                <i class="fas fa-weight-hanging"></i>
+                <span data-i18n-en="Molecular Weight" data-i18n-fa="جرم مولکولی">Molecular Weight</span>
+              </div>
+              <div class="property-value"><span data-i18n-en="122.12 g/mol" data-i18n-fa="۱۲۲.۱۲ گرم/مول">122.12 g/mol</span></div>
+            </div>
+
+            <div class="property-item">
+              <div class="property-label">
+                <i class="fas fa-temperature-high"></i>
+                <span data-i18n-en="Boiling Point" data-i18n-fa="نقطه جوش">Boiling Point</span>
+              </div>
+              <div class="property-value"><span data-i18n-en="≈ 249–250°C @ 1 atm" data-i18n-fa="حدود ۲۴۹ تا ۲۵۰°C در ۱ اتمسفر">≈ 249–250°C @ 1 atm</span></div>
+            </div>
+
+            <div class="property-item">
+              <div class="property-label">
+                <i class="fas fa-temperature-low"></i>
+                <span data-i18n-en="Melting Point" data-i18n-fa="نقطه ذوب">Melting Point</span>
+              </div>
+              <div class="property-value"><span data-i18n-en="≈ 122–123°C" data-i18n-fa="حدود ۱۲۲ تا ۱۲۳°C">≈ 122–123°C</span></div>
+            </div>
+
+            <div class="property-item">
+              <div class="property-label">
+                <i class="fas fa-ruler-combined"></i>
+                <span data-i18n-en="Density" data-i18n-fa="چگالی">Density</span>
+              </div>
+              <div class="property-value"><span data-i18n-en="≈ 1.26 g/cm³ @ 15°C" data-i18n-fa="حدود ۱.۲۶ گرم/سانتی‌متر³ در ۱۵°C">≈ 1.26 g/cm³ @ 15°C</span></div>
+            </div>
+
+            <div class="property-item">
+              <div class="property-label">
+                <i class="fas fa-tint"></i>
+                <span data-i18n-en="Water Solubility" data-i18n-fa="حلالیت در آب">Water Solubility</span>
+              </div>
+              <div class="property-value">
+                <span data-i18n-en="Low–moderate (≈ 3.4 g/L @ 25°C)" data-i18n-fa="کم تا متوسط (حدود ۳.۴ گرم/لیتر در ۲۵°C)"
+                  >Low–moderate (≈ 3.4 g/L @ 25°C)</span
+                >
+              </div>
+            </div>
+
+            <div class="property-item">
+              <div class="property-label">
+                <i class="fas fa-fire"></i>
+                <span data-i18n-en="Flash Point" data-i18n-fa="نقطه اشتعال">Flash Point</span>
+              </div>
+              <div class="property-value"><span data-i18n-en="≈ 121°C (closed cup)" data-i18n-fa="حدود ۱۲۱°C (کاپ بسته)">≈ 121°C (closed cup)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header hazard-header">
+            <div class="section-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2 class="section-title">
+              <span data-i18n-en="Hazard Classification" data-i18n-fa="طبقه‌بندی خطر">Hazard Classification</span>
+            </h2>
+          </div>
+
+          <div class="hazard-section">
+            <h3 class="hazard-title">
+              <i class="fas fa-skull-crossbones"></i>
+              <span
+                data-i18n-en="Irritant; serious eye damage risk; dust may irritate respiratory tract"
+                data-i18n-fa="محرک؛ خطر آسیب جدی چشم؛ گرد و غبار می‌تواند محرک تنفسی باشد"
+                >Irritant; serious eye damage risk; dust may irritate respiratory tract</span
+              >
+            </h3>
+            <p class="hazard-value">
+              <span
+                data-i18n-en="Benzoic acid is an aromatic carboxylic acid used widely as a preservative intermediate (benzoates) and as a building block for resins, plasticizers, and benzoyl derivatives. Handle solids to minimize dust; avoid eye contact; use goggles and gloves. Provide local exhaust during charging, drying, or milling to reduce inhalation exposure."
+                data-i18n-fa="اسید بنزوئیک یک اسید کربوکسیلیک آروماتیک است که به‌طور گسترده به‌عنوان حدواسط نگهدارنده‌ها (بنزوات‌ها) و نیز به‌عنوان ماده پایه برای رزین‌ها، پلاستی‌سایزرها و مشتقات بنزوئیل استفاده می‌شود. هنگام کار با جامد، تشکیل گرد و غبار را به حداقل برسانید؛ از تماس با چشم اجتناب کنید؛ از عینک و دستکش استفاده کنید. در شارژ، خشک‌کردن یا آسیاب‌کردن، تهویه موضعی برای کاهش مواجهه استنشاقی ضروری است."
+                >Benzoic acid is an aromatic carboxylic acid used widely as a preservative intermediate (benzoates) and as a building block for resins, plasticizers, and benzoyl derivatives. Handle solids to minimize dust; avoid eye contact; use goggles and gloves. Provide local exhaust during charging, drying, or milling to reduce inhalation exposure.</span
+              >
+            </p>
+          </div>
+
+          <div class="section-header health-header" style="margin-top: 25px">
+            <div class="section-icon">
+              <i class="fas fa-heartbeat"></i>
+            </div>
+            <h2 class="section-title">
+              <span data-i18n-en="Chronic Health Effects" data-i18n-fa="اثرات بلندمدت بر سلامت">Chronic Health Effects</span>
+            </h2>
+          </div>
+
+          <div class="health-section">
+            <h3 class="health-title">
+              <i class="fas fa-user-injured"></i>
+              <span data-i18n-en="Repeated exposure risk (systemic effects possible)" data-i18n-fa="ریسک مواجهه تکراری (امکان اثرات سیستمیک)"
+                >Repeated exposure risk (systemic effects possible)</span
+              >
+            </h3>
+            <p class="health-value">
+              <span
+                data-i18n-en="Repeated or prolonged exposure to dust may sustain irritation and, in occupational settings, warrants exposure controls (enclosed handling, dust collection, hygiene). Follow SDS guidance and applicable OEL/controls for your jurisdiction and task."
+                data-i18n-fa="مواجهه تکراری یا طولانی‌مدت با گرد و غبار می‌تواند تحریک را پایدار کند و در محیط‌های صنعتی نیازمند کنترل‌های مواجهه (کار در سیستم بسته، غبارگیر، بهداشت فردی) است. دستورالعمل SDS و الزامات OEL/کنترل‌های قابل اجرا برای کشور و فعالیت خود را رعایت کنید."
+                >Repeated or prolonged exposure to dust may sustain irritation and, in occupational settings, warrants exposure controls (enclosed handling, dust collection, hygiene). Follow SDS guidance and applicable OEL/controls for your jurisdiction and task.</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="molecular-visualization">
+          <div class="molecular-header">
+            <div class="section-icon">
+              <i class="fas fa-project-diagram"></i>
+            </div>
+            <h2 class="molecular-title">
+              <span data-i18n-en="3D Molecular Structure" data-i18n-fa="ساختار مولکولی سه‌بعدی">3D Molecular Structure</span>
+            </h2>
+          </div>
+          <div class="molecular-diagram">
+            <div id="molecular-canvas"></div>
+          </div>
+          <div class="molecular-info">
+            <div class="molecular-label">
+              <span class="color-swatch molecular-blue"></span>
+              <span data-i18n-en="Carbon (C)" data-i18n-fa="کربن (C)">Carbon (C)</span>
+            </div>
+            <div class="molecular-label">
+              <span class="color-swatch molecular-red"></span>
+              <span data-i18n-en="Oxygen (O)" data-i18n-fa="اکسیژن (O)">Oxygen (O)</span>
+            </div>
+            <div class="molecular-label">
+              <span class="color-swatch molecular-gray"></span>
+              <span data-i18n-en="Hydrogen (H)" data-i18n-fa="هیدروژن (H)">Hydrogen (H)</span>
+            </div>
+          </div>
+          <div class="capacity-note">
+            <span
+              data-i18n-en="Interactive 3D visualization of benzoic acid highlighting the aromatic ring and the carboxyl group (–COOH) that define its acidity and reactivity toward benzoate salts, esters, and benzoyl derivatives."
+              data-i18n-fa="نمایش سه‌بعدی تعاملی از اسید بنزوئیک با تأکید بر حلقه آروماتیک و گروه کربوکسیل (–COOH) که منشأ اسیدیته و واکنش‌پذیری آن برای تولید بنزوات‌ها، استرها و مشتقات بنزوئیل هستند."
+              >Interactive 3D visualization of benzoic acid highlighting the aromatic ring and the carboxyl group (–COOH) that define its acidity and reactivity toward benzoate salts, esters, and benzoyl derivatives.</span
+            >
+          </div>
+        </div>
+
+        <div class="feedstock-section">
+          <div class="feedstock-header">
+            <div class="section-icon">
+              <i class="fas fa-industry"></i>
+            </div>
+            <h2 class="feedstock-title">
+              <span data-i18n-en="Production Process &amp; Capacity" data-i18n-fa="فرآیند تولید و ظرفیت">Production Process &amp; Capacity</span>
+            </h2>
+          </div>
+
+          <div class="process-info">
+            <i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary)"></i>
+            <span data-i18n-en="Benzoic acid is typically produced by" data-i18n-fa="اسید بنزوئیک معمولاً از طریق">Benzoic acid is typically produced by</span>
+            <span class="process-highlight">
+              <span data-i18n-en="catalytic air oxidation of toluene" data-i18n-fa="اکسیداسیون هوا-کاتالیستی تولوئن">catalytic air oxidation of toluene</span>
+            </span>
+            <span data-i18n-en=" followed by crystallization, filtration, and drying." data-i18n-fa=" و سپس تبلور، فیلتراسیون و خشک‌کردن تولید می‌شود."
+              > followed by crystallization, filtration, and drying.</span
+            >
+          </div>
+
+          <div class="process-selector">
+            <button class="process-btn active" data-process="oxidation">
+              <span data-i18n-en="Synthesis Route (Toluene Oxidation)" data-i18n-fa="مسیر سنتز (اکسیداسیون تولوئن)">Synthesis Route (Toluene Oxidation)</span>
+            </button>
+            <button class="process-btn" data-process="downstream">
+              <span data-i18n-en="Downstream Route (Benzoates / Resins)" data-i18n-fa="مسیر پایین‌دستی (بنزوات‌ها / رزین‌ها)"
+                >Downstream Route (Benzoates / Resins)</span
+              >
+            </button>
+          </div>
+
+          <div class="process-stages">
+            <div class="stage">
+              <div class="stage-title">
+                <span class="stage-number">1</span>
+                <span data-i18n-en="Feedstock Preparation" data-i18n-fa="آماده‌سازی خوراک">Feedstock Preparation</span>
+              </div>
+              <div class="stage-description">
+                <span
+                  data-i18n-en="Toluene feed is conditioned; catalysts/solvent system and oxygen/air supply are prepared with controls for temperature and off-gas."
+                  data-i18n-fa="خوراک تولوئن آماده‌سازی می‌شود؛ سیستم کاتالیستی/حلال و تأمین اکسیژن/هوا با کنترل‌های دما و آف‌گس آماده می‌گردد."
+                  >Toluene feed is conditioned; catalysts/solvent system and oxygen/air supply are prepared with controls for temperature and off-gas.</span
+                >
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-title">
+                <span class="stage-number">2</span>
+                <span data-i18n-en="Oxidation Reaction" data-i18n-fa="واکنش اکسیداسیون">Oxidation Reaction</span>
+              </div>
+              <div class="stage-description">
+                <span
+                  data-i18n-en="Liquid-phase oxidation converts toluene to benzoic acid; selectivity is managed via catalyst choice (often Co/Mn systems) and temperature control."
+                  data-i18n-fa="اکسیداسیون فاز مایع، تولوئن را به اسید بنزوئیک تبدیل می‌کند؛ گزینش‌پذیری با انتخاب کاتالیست (اغلب سیستم‌های Co/Mn) و کنترل دما مدیریت می‌شود."
+                  >Liquid-phase oxidation converts toluene to benzoic acid; selectivity is managed via catalyst choice (often Co/Mn systems) and temperature control.</span
+                >
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-title">
+                <span class="stage-number">3</span>
+                <span data-i18n-en="Crystallization &amp; Solid Handling" data-i18n-fa="تبلور و کار با جامد">Crystallization &amp; Solid Handling</span>
+              </div>
+              <div class="stage-description">
+                <span
+                  data-i18n-en="Crystallization separates benzoic acid; filtration/centrifugation and washing improve purity; drying sets moisture and particle specs."
+                  data-i18n-fa="تبلور، اسید بنزوئیک را جدا می‌کند؛ فیلتراسیون/سانتریفیوژ و شستشو خلوص را افزایش می‌دهد؛ خشک‌کردن به مشخصات رطوبت و دانه‌بندی می‌رسد."
+                  >Crystallization separates benzoic acid; filtration/centrifugation and washing improve purity; drying sets moisture and particle specs.</span
+                >
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-title">
+                <span class="stage-number">4</span>
+                <span data-i18n-en="Storage &amp; Packaging" data-i18n-fa="ذخیره‌سازی و بسته‌بندی">Storage &amp; Packaging</span>
+              </div>
+              <div class="stage-description">
+                <span
+                  data-i18n-en="Packed as flakes/powder (bags/big-bags); dust control and product hygiene are key for food/feed and high-purity grades."
+                  data-i18n-fa="در قالب پرک/پودر (کیسه/بیگ‌بگ) بسته‌بندی می‌شود؛ کنترل گرد و غبار و بهداشت محصول برای گریدهای غذایی/خوراکی و خلوص بالا کلیدی است."
+                  >Packed as flakes/powder (bags/big-bags); dust control and product hygiene are key for food/feed and high-purity grades.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="plant-capacity">
+            <div class="capacity-card">
+              <div class="capacity-title">
+                <i class="fas fa-industry"></i>
+                <span data-i18n-en="Minimum Capacity" data-i18n-fa="حداقل ظرفیت">Minimum Capacity</span>
+              </div>
+              <div class="capacity-value"><span data-i18n-en="10K T/Y" data-i18n-fa="۱۰ هزار تن/سال">10K T/Y</span></div>
+              <div class="capacity-location">
+                <span data-i18n-en="Specialty / regional benzoate &amp; resin intermediates" data-i18n-fa="واحدهای تخصصی/منطقه‌ای برای بنزوات‌ها و حدواسط‌های رزین"
+                  >Specialty / regional benzoate &amp; resin intermediates</span
+                >
+              </div>
+            </div>
+
+            <div class="capacity-card">
+              <div class="capacity-title">
+                <i class="fas fa-industry"></i>
+                <span data-i18n-en="Maximum Capacity" data-i18n-fa="حداکثر ظرفیت">Maximum Capacity</span>
+              </div>
+              <div class="capacity-value"><span data-i18n-en="200K T/Y" data-i18n-fa="۲۰۰ هزار تن/سال">200K T/Y</span></div>
+              <div class="capacity-location">
+                <span data-i18n-en="World-scale oxidation + crystallization complexes" data-i18n-fa="مجتمع‌های مقیاس‌جهانی اکسیداسیون + تبلور"
+                  >World-scale oxidation + crystallization complexes</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="capacity-note">
+            <span
+              data-i18n-en="Benzoic acid is a key aromatic intermediate: strong pull comes from benzoate preservatives and resin/plasticizer chains—while solid handling requires dust control and hygiene for sensitive grades."
+              data-i18n-fa="اسید بنزوئیک یک حدواسط آروماتیک کلیدی است: کشش تقاضا عمدتاً از بنزوات‌های نگهدارنده و زنجیره‌های رزین/پلاستی‌سایزر ناشی می‌شود—در عین حال، کار با جامد نیازمند کنترل گرد و غبار و رعایت بهداشت برای گریدهای حساس است."
+              >Benzoic acid is a key aromatic intermediate: strong pull comes from benzoate preservatives and resin/plasticizer chains—while solid handling requires dust control and hygiene for sensitive grades.</span
+            >
+          </div>
+        </div>
+
+        <div class="applications-section">
+          <div class="applications-header">
+            <div class="section-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <h2 class="applications-title">
+              <span data-i18n-en="Industry Applications" data-i18n-fa="کاربردهای صنعتی">Industry Applications</span>
+            </h2>
+          </div>
+
+          <div class="industry-tags">
+            <div class="industry-tag"><span data-i18n-en="Benzoates (Preservatives)" data-i18n-fa="بنزوات‌ها (نگهدارنده‌ها)">Benzoates (Preservatives)</span></div>
+            <div class="industry-tag"><span data-i18n-en="Alkyd Resins &amp; Coatings" data-i18n-fa="رزین‌های آلکیدی و پوشش‌ها">Alkyd Resins &amp; Coatings</span></div>
+            <div class="industry-tag"><span data-i18n-en="Plasticizers &amp; Lubricant Additives" data-i18n-fa="پلاستی‌سایزرها و افزودنی‌های روانکار">Plasticizers &amp; Lubricant Additives</span></div>
+            <div class="industry-tag"><span data-i18n-en="Benzoyl Intermediates" data-i18n-fa="حدواسط‌های بنزوئیل">Benzoyl Intermediates</span></div>
+            <div class="industry-tag"><span data-i18n-en="Food/Feed &amp; Pharma Uses" data-i18n-fa="کاربردهای غذایی/خوراکی و دارویی">Food/Feed &amp; Pharma Uses</span></div>
+          </div>
+
+          <div class="application-chart">
+            <canvas id="applicationsChart" width="400" height="220"></canvas>
+          </div>
+
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #2563eb"></span>
+              <span><span data-i18n-en="Benzoates / Preservatives (42%)" data-i18n-fa="بنزوات‌ها / نگهدارنده‌ها (۴۲٪)">Benzoates / Preservatives (42%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #8b5cf6"></span>
+              <span><span data-i18n-en="Resins &amp; Coatings (23%)" data-i18n-fa="رزین‌ها و پوشش‌ها (۲۳٪)">Resins &amp; Coatings (23%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #10b981"></span>
+              <span><span data-i18n-en="Plasticizers / Additives (16%)" data-i18n-fa="پلاستی‌سایزرها / افزودنی‌ها (۱۶٪)">Plasticizers / Additives (16%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #f59e0b"></span>
+              <span><span data-i18n-en="Benzoyl Intermediates (14%)" data-i18n-fa="حدواسط‌های بنزوئیل (۱۴٪)">Benzoyl Intermediates (14%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #ef4444"></span>
+              <span><span data-i18n-en="Others (5%)" data-i18n-fa="سایر (۵٪)">Others (5%)</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header license-header">
+            <div class="section-icon">
+              <i class="fas fa-certificate"></i>
+            </div>
+            <h2 class="section-title">
+              <span data-i18n-en="Top Technology / Equipment Providers" data-i18n-fa="برترین ارائه‌دهندگان فناوری/تجهیزات">Top Technology / Equipment Providers</span>
+            </h2>
+          </div>
+
+          <p style="color: #475569; margin-bottom: 15px; line-height: 1.5">
+            <span
+              data-i18n-en="Commercial benzoic acid relies on robust oxidation control (selectivity, off-gas handling) plus solid separation and crystallization. Many projects are executed as integrated process + equipment packages rather than a single standardized license."
+              data-i18n-fa="تولید صنعتی اسید بنزوئیک به کنترل دقیق اکسیداسیون (گزینش‌پذیری، مدیریت آف‌گس) و همچنین جداسازی جامد و تبلور متکی است. بسیاری از پروژه‌ها بیشتر به‌صورت پکیج‌های فرآیند + تجهیزات اجرا می‌شوند تا یک لایسنس استاندارد واحد."
+              >Commercial benzoic acid relies on robust oxidation control (selectivity, off-gas handling) plus solid separation and crystallization. Many projects are executed as integrated process + equipment packages rather than a single standardized license.</span
+            >
+          </p>
+
+          <div class="license-providers">
+            <div class="provider-item">
+              <div class="provider-rank">1</div>
+              <div class="provider-info">
+                <div class="provider-name">Sulzer (Crystallization)</div>
+                <div class="provider-details"><span data-i18n-en="Crystallization &amp; solid separation know-how | Global" data-i18n-fa="دانش تبلور و جداسازی جامد | جهانی"
+                  >Crystallization &amp; solid separation know-how | Global</span></div>
+                <div class="provider-licenses"><span data-i18n-en="High-purity grades, particle control" data-i18n-fa="گریدهای خلوص بالا، کنترل دانه‌بندی"
+                  >High-purity grades, particle control</span></div>
+              </div>
+            </div>
+
+            <div class="provider-item">
+              <div class="provider-rank">2</div>
+              <div class="provider-info">
+                <div class="provider-name">GEA / Drying Systems</div>
+                <div class="provider-details"><span data-i18n-en="Drying &amp; solids handling | Global" data-i18n-fa="خشک‌کردن و هندلینگ جامدات | جهانی"
+                  >Drying &amp; solids handling | Global</span></div>
+                <div class="provider-licenses"><span data-i18n-en="Hygienic design for food/feed grades" data-i18n-fa="طراحی بهداشتی برای گریدهای غذایی/خوراکی"
+                  >Hygienic design for food/feed grades</span></div>
+              </div>
+            </div>
+
+            <div class="provider-item">
+              <div class="provider-rank">3</div>
+              <div class="provider-info">
+                <div class="provider-name">Catalyst &amp; Oxidation Packages</div>
+                <div class="provider-details"><span data-i18n-en="Co/Mn oxidation systems | Global" data-i18n-fa="سیستم‌های اکسیداسیون Co/Mn | جهانی"
+                  >Co/Mn oxidation systems | Global</span></div>
+                <div class="provider-licenses"><span data-i18n-en="Selectivity + off-gas/VOC controls" data-i18n-fa="گزینش‌پذیری + کنترل آف‌گس/VOC"
+                  >Selectivity + off-gas/VOC controls</span></div>
+              </div>
+            </div>
+
+            <div class="provider-item">
+              <div class="provider-rank">4</div>
+              <div class="provider-info">
+                <div class="provider-name">EPC / FEED Houses</div>
+                <div class="provider-details"><span data-i18n-en="Oxidation reactors, crystallizers, utilities | Global" data-i18n-fa="راکتور اکسیداسیون، کریستالایزر، یوتیلیتی | جهانی"
+                  >Oxidation reactors, crystallizers, utilities | Global</span></div>
+                <div class="provider-licenses"><span data-i18n-en="Turnkey delivery &amp; revamps" data-i18n-fa="تحویل EPC/ریوَمپ"
+                  >Turnkey delivery &amp; revamps</span></div>
+              </div>
+            </div>
+
+            <div class="provider-item">
+              <div class="provider-rank">5</div>
+              <div class="provider-info">
+                <div class="provider-name">Integrated Producers (Know-how)</div>
+                <div class="provider-details"><span data-i18n-en="BA → benzoates/derivatives integration | Global" data-i18n-fa="یکپارچگی BA → بنزوات‌ها/مشتقات | جهانی"
+                  >BA → benzoates/derivatives integration | Global</span></div>
+                <div class="provider-licenses"><span data-i18n-en="Purity management and grade slate" data-i18n-fa="مدیریت خلوص و سبد گرید"
+                  >Purity management and grade slate</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /main-content -->
+
+      <div class="sidebar">
+        <div class="market-insights">
+          <div class="market-header">
+            <div class="section-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <h2 class="market-title">
+              <span data-i18n-en="Global Demand Analysis" data-i18n-fa="تحلیل تقاضای جهانی">Global Demand Analysis</span>
+            </h2>
+          </div>
+
+          <p class="market-description">
+            <span
+              data-i18n-en="Benzoic acid demand is driven by preservative chains (benzoates) and by resin/plasticizer intermediates. Asia leads consumption due to food, additives, and downstream manufacturing, while Europe and North America remain important for high-purity and formulated markets."
+              data-i18n-fa="تقاضای اسید بنزوئیک عمدتاً توسط زنجیره نگهدارنده‌ها (بنزوات‌ها) و همچنین حدواسط‌های رزین/پلاستی‌سایزر هدایت می‌شود. آسیا به‌دلیل صنایع غذایی، افزودنی‌ها و تولیدات پایین‌دستی در مصرف پیشتاز است و اروپا و آمریکای شمالی نیز برای گریدهای خلوص بالا و بازار محصولات فرموله اهمیت دارند."
+              >Benzoic acid demand is driven by preservative chains (benzoates) and by resin/plasticizer intermediates. Asia leads consumption due to food, additives, and downstream manufacturing, while Europe and North America remain important for high-purity and formulated markets.</span
+            >
+          </p>
+
+          <div class="demand-chart-container">
+            <canvas id="demandChart" width="400" height="250"></canvas>
+          </div>
+
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #2563eb"></span>
+              <span><span data-i18n-en="Asia-Pacific (58%)" data-i18n-fa="آسیا-اقیانوسیه (۵۸٪)">Asia-Pacific (58%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #8b5cf6"></span>
+              <span><span data-i18n-en="North America (18%)" data-i18n-fa="آمریکای شمالی (۱۸٪)">North America (18%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #10b981"></span>
+              <span><span data-i18n-en="Europe (19%)" data-i18n-fa="اروپا (۱۹٪)">Europe (19%)</span></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #f59e0b"></span>
+              <span><span data-i18n-en="Middle East &amp; Africa (5%)" data-i18n-fa="خاورمیانه و آفریقا (۵٪)">Middle East &amp; Africa (5%)</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="key-commodity">
+          <div class="companies-header">
+            <div class="section-icon">
+              <i class="fas fa-industry"></i>
+            </div>
+            <h2 class="companies-title">
+              <span data-i18n-en="Production Capacity Distribution" data-i18n-fa="توزیع ظرفیت تولید">Production Capacity Distribution</span>
+            </h2>
+          </div>
+
+          <div class="property-grid" style="grid-template-columns: 1fr">
+            <div class="property-item">
+              <div class="property-label"><span data-i18n-en="Global Capacity" data-i18n-fa="ظرفیت جهانی">Global Capacity</span></div>
+              <div class="property-value" style="color: var(--primary)">
+                <span data-i18n-en="≈ 0.84M T/Y (indicative)" data-i18n-fa="حدود ۰.۸۴ میلیون تن/سال (تقریبی)">≈ 0.84M T/Y (indicative)</span>
+              </div>
+            </div>
+            <div class="property-item">
+              <div class="property-label"><span data-i18n-en="Asia-Pacific Share" data-i18n-fa="سهم آسیا-اقیانوسیه">Asia-Pacific Share</span></div>
+              <div class="property-value" style="color: var(--primary)">58%</div>
+            </div>
+            <div class="property-item">
+              <div class="property-label"><span data-i18n-en="North America Share" data-i18n-fa="سهم آمریکای شمالی">North America Share</span></div>
+              <div class="property-value" style="color: var(--primary)">18%</div>
+            </div>
+            <div class="property-item">
+              <div class="property-label"><span data-i18n-en="Europe Share" data-i18n-fa="سهم اروپا">Europe Share</span></div>
+              <div class="property-value" style="color: var(--primary)">19%</div>
+            </div>
+            <div class="property-item">
+              <div class="property-label"><span data-i18n-en="Other Regions" data-i18n-fa="سایر مناطق">Other Regions</span></div>
+              <div class="property-value" style="color: var(--primary)">5%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-icon" style="background: rgba(239, 115, 51, 0.1); color: #ef7333">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <h2 class="section-title">
+              <span data-i18n-en="Capital Expenditure Analysis" data-i18n-fa="تحلیل هزینه سرمایه‌گذاری (CAPEX)">Capital Expenditure Analysis</span>
+            </h2>
+          </div>
+
+          <p style="color: #475569; margin-bottom: 20px; line-height: 1.5">
+            <span
+              data-i18n-en="CAPEX depends on oxidation reactor design, off-gas/VOC handling, crystallization/filtration train, drying &amp; dust control, and grade requirements (industrial vs. food/feed/high purity)."
+              data-i18n-fa="CAPEX به طراحی راکتور اکسیداسیون، مدیریت آف‌گس/VOC، قطار تبلور/فیلتراسیون، خشک‌کردن و کنترل گرد و غبار، و الزامات گرید (صنعتی در برابر غذایی/خوراکی/خلوص بالا) وابسته است."
+              >CAPEX depends on oxidation reactor design, off-gas/VOC handling, crystallization/filtration train, drying &amp; dust control, and grade requirements (industrial vs. food/feed/high purity).</span
+            >
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 25px">
+            <div style="background: #f8fafc; border-radius: 16px; padding: 20px; border-left: 4px solid #ef7333">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px">
+                <h3 style="font-weight: 600; color: var(--dark); display: flex; align-items: center; gap: 8px">
+                  <i class="fas fa-industry" style="color: #ef7333"></i>
+                  <span data-i18n-en="Standard CAPEX (100K T/Y Benzoic Acid Plant)" data-i18n-fa="CAPEX استاندارد (واحد ۱۰۰ هزار تن/سال اسید بنزوئیک)"
+                    >Standard CAPEX (100K T/Y Benzoic Acid Plant)</span
+                  >
+                </h3>
+                <div style="background: rgba(239, 115, 51, 0.1); color: #ef7333; padding: 5px 12px; border-radius: 12px; font-weight: 600">
+                  <span data-i18n-en="Oxidation + Crystallization" data-i18n-fa="اکسیداسیون + تبلور">Oxidation + Crystallization</span>
+                </div>
+              </div>
+
+              <div style="font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; font-weight: 700; color: #ef7333; margin-bottom: 10px; text-align: center">
+                <span data-i18n-en="$60-120M" data-i18n-fa="۶۰ تا ۱۲۰ میلیون دلار">$60-120M</span>
+              </div>
+
+              <div style="text-align: center; color: #64748b; font-size: 0.95rem; margin-bottom: 15px">
+                <span data-i18n-en="Indicative range: oxidation, crystallizers, filtration, dryers, dust &amp; VOC controls" data-i18n-fa="بازه تقریبی: اکسیداسیون، کریستالایزر، فیلتراسیون، خشک‌کن، کنترل گرد و غبار و VOC"
+                  >Indicative range: oxidation, crystallizers, filtration, dryers, dust &amp; VOC controls</span
+                >
+              </div>
+
+              <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; position: relative">
+                <div
+                  style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); transform: translateX(-100%); animation: shimmer 1.5s infinite"
+                ></div>
+                <div style="height: 100%; width: 70%; background: linear-gradient(to right, #f97316, #ef7333); border-radius: 3px"></div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px">
+              <div style="background: #f8fafc; border-radius: 12px; padding: 15px; border-left: 3px solid #f97316">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #ef7333; font-weight: 600">
+                  <i class="fas fa-cogs"></i> <span data-i18n-en="Process Technology" data-i18n-fa="فناوری فرآیند">Process Technology</span>
+                </div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark)">
+                  <span data-i18n-en="$6-12M" data-i18n-fa="۶ تا ۱۲ میلیون دلار">$6-12M</span>
+                </div>
+                <div style="color: #64748b; font-size: 0.85rem; margin-top: 4px">
+                  <span data-i18n-en="Oxidation control, grade slate, QA specs" data-i18n-fa="کنترل اکسیداسیون، سبد گرید، مشخصات کیفی"
+                    >Oxidation control, grade slate, QA specs</span
+                  >
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border-radius: 12px; padding: 15px; border-left: 3px solid #f59e0b">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #f59e0b; font-weight: 600">
+                  <i class="fas fa-hard-hat"></i> <span data-i18n-en="Construction" data-i18n-fa="ساخت و اجرا">Construction</span>
+                </div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark)">
+                  <span data-i18n-en="$18-35M" data-i18n-fa="۱۸ تا ۳۵ میلیون دلار">$18-35M</span>
+                </div>
+                <div style="color: #64748b; font-size: 0.85rem; margin-top: 4px">
+                  <span data-i18n-en="Civil/steel, piping, safety, VOC handling" data-i18n-fa="عمران/سازه، پایپینگ، ایمنی، مدیریت VOC"
+                    >Civil/steel, piping, safety, VOC handling</span
+                  >
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border-radius: 12px; padding: 15px; border-left: 3px solid #f59e0b">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #f59e0b; font-weight: 600">
+                  <i class="fas fa-cube"></i> <span data-i18n-en="Equipment &amp; Machinery" data-i18n-fa="تجهیزات و ماشین‌آلات">Equipment &amp; Machinery</span>
+                </div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark)">
+                  <span data-i18n-en="$28-55M" data-i18n-fa="۲۸ تا ۵۵ میلیون دلار">$28-55M</span>
+                </div>
+                <div style="color: #64748b; font-size: 0.85rem; margin-top: 4px">
+                  <span data-i18n-en="Reactors, crystallizers, filters, dryers, dust control" data-i18n-fa="راکتور، کریستالایزر، فیلتر، خشک‌کن، کنترل گرد و غبار"
+                    >Reactors, crystallizers, filters, dryers, dust control</span
+                  >
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border-radius: 12px; padding: 15px; border-left: 3px solid #f97316">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #f97316; font-weight: 600">
+                  <i class="fas fa-project-diagram"></i> <span data-i18n-en="Engineering &amp; Services" data-i18n-fa="مهندسی و خدمات">Engineering &amp; Services</span>
+                </div>
+                <div style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark)">
+                  <span data-i18n-en="$8-18M" data-i18n-fa="۸ تا ۱۸ میلیون دلار">$8-18M</span>
+                </div>
+                <div style="color: #64748b; font-size: 0.85rem; margin-top: 4px">
+                  <span data-i18n-en="Design, commissioning, HAZOP/PSM, training" data-i18n-fa="طراحی، راه‌اندازی، HAZOP/PSM، آموزش"
+                    >Design, commissioning, HAZOP/PSM, training</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="key-companies">
+          <div class="companies-header">
+            <div class="section-icon">
+              <i class="fas fa-city"></i>
+            </div>
+            <h2 class="companies-title">
+              <span data-i18n-en="Key Manufacturers" data-i18n-fa="تولیدکنندگان کلیدی">Key Manufacturers</span>
+            </h2>
+          </div>
+
+          <ul class="company-list">
+            <li class="company-item">
+              <div class="company-flag"><span data-i18n-en="CN" data-i18n-fa="چین">CN</span></div>
+              <div>
+                <div class="company-name">Wuhan Youji</div>
+                <div class="company-country"><span data-i18n-en="Large-scale benzoic acid &amp; preservation chain (noted ~200 kt/y BA capacity in industry profiles)" data-i18n-fa="تولید مقیاس‌بالا در زنجیره نگهدارنده‌ها (در پروفایل‌های صنعتی ~۲۰۰ هزار تن/سال BA ذکر شده)"
+                  >Large-scale benzoic acid &amp; preservation chain (noted ~200 kt/y BA capacity in industry profiles)</span></div>
+              </div>
+            </li>
+
+            <li class="company-item">
+              <div class="company-flag"><span data-i18n-en="US/EU" data-i18n-fa="آمریکا/اروپا">US/EU</span></div>
+              <div>
+                <div class="company-name">LANXESS (ex-Emerald Kalama)</div>
+                <div class="company-country"><span data-i18n-en="Integrated benzoic acid &amp; derivatives portfolio for food and industrial uses" data-i18n-fa="پرتفوی یکپارچه اسید بنزوئیک و مشتقات برای کاربردهای غذایی و صنعتی"
+                  >Integrated benzoic acid &amp; derivatives portfolio for food and industrial uses</span></div>
+              </div>
+            </li>
+
+            <li class="company-item">
+              <div class="company-flag"><span data-i18n-en="CN" data-i18n-fa="چین">CN</span></div>
+              <div>
+                <div class="company-name">Tianjin Dongda Chemical Group</div>
+                <div class="company-country"><span data-i18n-en="Benzoic acid + sodium benzoate focus; multiple grades" data-i18n-fa="تمرکز بر اسید بنزوئیک و سدیم‌بنزوات؛ گریدهای متنوع"
+                  >Benzoic acid + sodium benzoate focus; multiple grades</span></div>
+              </div>
+            </li>
+
+            <li class="company-item">
+              <div class="company-flag"><span data-i18n-en="IN" data-i18n-fa="هند">IN</span></div>
+              <div>
+                <div class="company-name">I G Petrochemicals (IGPL)</div>
+                <div class="company-country"><span data-i18n-en="Benzoic acid manufacturing linked to broader aromatic value chains" data-i18n-fa="تولید اسید بنزوئیک در ارتباط با زنجیره‌های آروماتیک"
+                  >Benzoic acid manufacturing linked to broader aromatic value chains</span></div>
+              </div>
+            </li>
+
+            <li class="company-item">
+              <div class="company-flag"><span data-i18n-en="Global" data-i18n-fa="جهانی">Global</span></div>
+              <div>
+                <div class="company-name">Benzoate Producers (Downstream)</div>
+                <div class="company-country"><span data-i18n-en="Sodium/potassium benzoate and preservative formulations" data-i18n-fa="تولیدکنندگان سدیم/پتاسیم‌بنزوات و فرمولاسیون‌های نگهدارنده"
+                  >Sodium/potassium benzoate and preservative formulations</span></div>
+              </div>
+            </li>
+
+            <li class="company-item">
+              <div class="company-flag"><span data-i18n-en="Global" data-i18n-fa="جهانی">Global</span></div>
+              <div>
+                <div class="company-name">Resin &amp; Plasticizer Chains</div>
+                <div class="company-country"><span data-i18n-en="Demand pull from alkyd resins, coatings, and specialty esters" data-i18n-fa="کشش تقاضا از رزین‌های آلکیدی، پوشش‌ها و استرهای تخصصی"
+                  >Demand pull from alkyd resins, coatings, and specialty esters</span></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- /sidebar -->
+    </div>
+    <!-- /content-grid -->
+
+    <div class="design-credit">
+      <div class="credit-header">
+        <div class="credit-icon">
+          <i class="fas fa-hard-hat"></i>
+        </div>
+        <h2 class="credit-title"><span data-i18n-en="Engineering Design Credit" data-i18n-fa="هزینه طراحی مهندسی">Engineering Design Credit</span></h2>
+      </div>
+      <div class="credit-details">
+        <p><span data-i18n-en="This chemical database entry was developed and designed by Ali Hosseinpour." data-i18n-fa="این پایگاه‌داده شیمیایی توسط علی حسین‌پور گردآوری و تدوین شده است."
+          >This chemical database entry was developed and designed by Ali Hosseinpour.</span></p>
+      </div>
+      <div class="contact-info">
+        <a class="contact-item" href="tel:+989162926778">
+          <i class="fas fa-phone"></i>
+          <span>+989162926778</span>
+        </a>
+        <a class="contact-item" href="mailto:hosseinpour431@gmail.com">
+          <i class="fas fa-envelope"></i>
+          <span>hosseinpour431@gmail.com</span>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      <p><span data-i18n-en="Chemical Farm © 2025 | Comprehensive chemical intelligence for industry professionals" data-i18n-fa="کمیکال فارم © 2025| هوشمندی جامع شیمی برای متخصصان صنعت"
+        >Chemical Farm © 2025 | Comprehensive chemical intelligence for industry professionals</span></p>
+      <p class="footer-note"><span data-i18n-en="Data verified through authoritative chemical databases and industry reports" data-i18n-fa="داده‌ها با اتکا به پایگاه‌های معتبر شیمیایی و گزارش‌های صنعتی راستی‌آزمایی شده‌اند"
+        >Data verified through authoritative chemical databases and industry reports</span></p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      initMolecularVisualization();
+      initDemandPieChart();
+      initApplicationsPieChart();
+
+      // Process selector bilingual-safe
+      const processTemplates = {
+        oxidation: {
+          infoHTML: `
+            <i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+            <span data-i18n-en="Benzoic acid is produced via " data-i18n-fa="اسید بنزوئیک از طریق ">Benzoic acid is produced via </span>
+            <span class="process-highlight"><span data-i18n-en="catalytic air oxidation of toluene" data-i18n-fa="اکسیداسیون هوا-کاتالیستی تولوئن">catalytic air oxidation of toluene</span></span>
+            <span data-i18n-en=" followed by crystallization, filtration, and drying."
+                  data-i18n-fa=" و سپس تبلور، فیلتراسیون و خشک‌کردن."> followed by crystallization, filtration, and drying.</span>
+          `,
+          stages: [
+            {
+              en: "Condition toluene feed; prepare catalyst/solvent system and air/oxygen supply with off-gas safeguards.",
+              fa: "خوراک تولوئن آماده‌سازی می‌شود؛ سیستم کاتالیستی/حلال و تأمین هوا/اکسیژن با حفاظت‌های آف‌گس آماده می‌گردد."
+            },
+            {
+              en: "Liquid-phase oxidation converts toluene to benzoic acid; control temperature and catalyst to manage selectivity and by-products.",
+              fa: "اکسیداسیون فاز مایع، تولوئن را به اسید بنزوئیک تبدیل می‌کند؛ کنترل دما و کاتالیست برای گزینش‌پذیری و محصولات جانبی انجام می‌شود."
+            },
+            {
+              en: "Crystallize and separate solids (filtration/centrifuge); washing improves purity for food/feed or high-purity grades.",
+              fa: "تبلور و جداسازی جامد (فیلتراسیون/سانتریفیوژ) انجام می‌شود؛ شستشو خلوص را برای گریدهای غذایی/خوراکی یا خلوص بالا افزایش می‌دهد."
+            },
+            {
+              en: "Dry and package as flakes/powder; implement dust control and hygiene controls to meet grade specifications.",
+              fa: "خشک‌کردن و بسته‌بندی به صورت پرک/پودر؛ کنترل گرد و غبار و الزامات بهداشتی برای رسیدن به مشخصات گرید."
+            }
+          ]
+        },
+        downstream: {
+          infoHTML: `
+            <i class="fas fa-info-circle" style="margin-inline-end: 6px; color: var(--primary);"></i>
+            <span data-i18n-en="Benzoic acid is widely used to make " data-i18n-fa="اسید بنزوئیک به‌طور گسترده برای تولید ">Benzoic acid is widely used to make </span>
+            <span class="process-highlight"><span data-i18n-en="benzoate salts and specialty esters" data-i18n-fa="نمک‌های بنزوات و استرهای تخصصی">benzoate salts and specialty esters</span></span>
+            <span data-i18n-en=" used in preservation, resins, and plasticizer chains."
+                  data-i18n-fa=" که در نگهدارنده‌ها، رزین‌ها و زنجیره‌های پلاستی‌سایزر کاربرد دارند."> used in preservation, resins, and plasticizer chains.</span>
+          `,
+          stages: [
+            {
+              en: "Neutralize benzoic acid with NaOH/KOH to produce sodium/potassium benzoate for preservative applications.",
+              fa: "خنثی‌سازی اسید بنزوئیک با NaOH/KOH برای تولید سدیم/پتاسیم‌بنزوات جهت کاربردهای نگهدارنده."
+            },
+            {
+              en: "Esterification produces benzoate esters used as plasticizers and specialty additives; control water removal and purity.",
+              fa: "استریفیکاسیون، استرهای بنزواتی را برای پلاستی‌سایزرها و افزودنی‌های تخصصی تولید می‌کند؛ کنترل حذف آب و خلوص ضروری است."
+            },
+            {
+              en: "Quality control focuses on purity, color/odor, moisture, and particle size (for solids) or acidity profile (for salts/solutions).",
+              fa: "کنترل کیفیت بر خلوص، رنگ/بو، رطوبت و دانه‌بندی (برای جامد) یا پروفایل اسیدیته (برای نمک/محلول) تمرکز دارد."
+            },
+            {
+              en: "Packaging and logistics emphasize hygiene for food/feed grades and dust control in powders.",
+              fa: "بسته‌بندی و لجستیک بر بهداشت برای گریدهای غذایی/خوراکی و کنترل گرد و غبار در پودرها تأکید دارد."
+            }
+          ]
+        }
+      };
+
+      function setProcess(processType) {
+        const tpl = processTemplates[processType] || processTemplates.oxidation;
+
+        const infoBox = document.querySelector(".process-info");
+        if (infoBox) infoBox.innerHTML = tpl.infoHTML;
+
+        const stageDescs = Array.from(document.querySelectorAll(".stage-description"));
+        stageDescs.forEach((node, i) => {
+          const st = tpl.stages[i];
+          if (!st) return;
+          node.innerHTML = `<span data-i18n-en="${st.en.replace(/"/g, "&quot;")}" data-i18n-fa="${st.fa.replace(/"/g, "&quot;")}">${st.en}</span>`;
+        });
+
+        if (window.ChemI18n && typeof window.ChemI18n.refresh === "function") window.ChemI18n.refresh();
+      }
+
+      document.querySelectorAll(".process-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".process-btn").forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+          setProcess(this.getAttribute("data-process"));
+        });
+      });
+
+      const activeBtn = document.querySelector(".process-btn.active");
+      setProcess(activeBtn ? activeBtn.getAttribute("data-process") : "oxidation");
+
+      setTimeout(() => {
+        document.querySelectorAll(".section-card, .market-insights, .key-companies, .key-commodity").forEach((card, index) => {
+          setTimeout(() => {
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }, 150 * index);
+        });
+      }, 100);
+    });
+
+    function initDemandPieChart() {
+      const ctx = document.getElementById("demandChart").getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Asia-Pacific", "North America", "Europe", "Middle East & Africa"],
+          datasets: [
+            {
+              data: [58, 18, 19, 5],
+              backgroundColor: ["#2563eb", "#8b5cf6", "#10b981", "#f59e0b"],
+              borderWidth: 1
+            }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+    }
+
+    function initApplicationsPieChart() {
+      const ctx = document.getElementById("applicationsChart").getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Benzoates / Preservatives", "Resins & Coatings", "Plasticizers / Additives", "Benzoyl Intermediates", "Others"],
+          datasets: [
+            {
+              data: [42, 23, 16, 14, 5],
+              backgroundColor: ["#2563eb", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444"],
+              borderWidth: 1
+            }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+    }
+
+    function initMolecularVisualization() {
+      const container = document.getElementById("molecular-canvas");
+      if (!container) return;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue("--molecule-bg").trim() || "#f8fafc");
+
+      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.z = 8;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(1, 1, 1);
+      scene.add(directionalLight);
+
+      const moleculeGroup = new THREE.Group();
+      scene.add(moleculeGroup);
+
+      // Stylized benzoic acid: benzene ring + carboxyl group (–COOH)
+      const ringR = 2.0;
+      const ring = [];
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        ring.push(new THREE.Vector3(Math.cos(a) * ringR, Math.sin(a) * ringR, 0));
+      }
+      // Attach COOH to ring[0]
+      const cCarb = new THREE.Vector3(ring[0].x + 1.2, ring[0].y + 0.0, 0.0);
+      const o1 = new THREE.Vector3(cCarb.x + 0.9, cCarb.y + 0.5, 0.0); // carbonyl O
+      const o2 = new THREE.Vector3(cCarb.x + 0.9, cCarb.y - 0.5, 0.0); // hydroxyl O
+      const hOH = new THREE.Vector3(o2.x + 0.6, o2.y - 0.3, 0.0);
+
+      function createAtom(position, color, size, name) {
+        const geometry = new THREE.SphereGeometry(size, 32, 32);
+        const material = new THREE.MeshPhongMaterial({ color, shininess: 100, specular: 0x333333 });
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.copy(position);
+        sphere.userData = { name };
+        moleculeGroup.add(sphere);
+        return sphere;
+      }
+
+      function createBond(a, b, color, radius = 0.12) {
+        const direction = new THREE.Vector3().subVectors(b.position, a.position);
+        const midpoint = new THREE.Vector3().addVectors(a.position, b.position).multiplyScalar(0.5);
+        const length = direction.length();
+        const geometry = new THREE.CylinderGeometry(radius, radius, length, 32);
+        const material = new THREE.MeshPhongMaterial({ color, shininess: 50 });
+        const cylinder = new THREE.Mesh(geometry, material);
+        cylinder.position.copy(midpoint);
+        cylinder.lookAt(b.position);
+        cylinder.rotateX(Math.PI / 2);
+        moleculeGroup.add(cylinder);
+        return cylinder;
+      }
+
+      const atoms = [];
+      // Ring carbons
+      for (let i = 0; i < 6; i++) atoms.push(createAtom(ring[i], 0x1e40af, 0.38, "C"));
+      // Carboxyl carbon
+      const carbC = createAtom(cCarb, 0x1e40af, 0.38, "C");
+      atoms.push(carbC);
+      // Oxygens and H
+      const oAtom1 = createAtom(o1, 0xef4444, 0.33, "O");
+      const oAtom2 = createAtom(o2, 0xef4444, 0.33, "O");
+      const hAtom = createAtom(hOH, 0x64748b, 0.24, "H");
+      atoms.push(oAtom1, oAtom2, hAtom);
+
+      // Ring bonds
+      for (let i = 0; i < 6; i++) createBond(atoms[i], atoms[(i + 1) % 6], 0x475569, 0.11);
+
+      // Attach COOH
+      createBond(atoms[0], carbC, 0x475569, 0.12);
+      // C=O (double bond stylized as two close cylinders)
+      createBond(carbC, oAtom1, 0x475569, 0.10);
+      const offset = new THREE.Vector3(0, 0, 0.12);
+      const c2 = carbC.clone(); c2.position.add(offset);
+      const o12 = oAtom1.clone(); o12.position.add(offset);
+      moleculeGroup.add(c2); moleculeGroup.add(o12);
+      createBond(c2, o12, 0x475569, 0.08);
+
+      // C–O–H
+      createBond(carbC, oAtom2, 0x475569, 0.10);
+      createBond(oAtom2, hAtom, 0x475569, 0.08);
+
+      function animate() {
+        requestAnimationFrame(animate);
+        moleculeGroup.rotation.y += 0.005;
+        moleculeGroup.rotation.x += 0.002;
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener("resize", () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+
+      window.addEventListener("chemThemeChange", () => {
+        try {
+          const bg = getComputedStyle(document.documentElement).getPropertyValue("--molecule-bg").trim() || "#f8fafc";
+          scene.background = new THREE.Color(bg);
+          renderer.render(scene, camera);
+        } catch (e) {}
+      });
+
+      animate();
+    }
+  </script>
+
+  <script>
+    (function () {
+      const langBtn = document.getElementById("langToggle");
+      const langLabel = document.getElementById("langLabel");
+      const themeBtn = document.getElementById("themeToggle");
+
+      function renderI18n(el, lang) {
+        const en = el.getAttribute("data-i18n-en") ?? "";
+        const fa = el.getAttribute("data-i18n-fa") ?? "";
+        if (el.tagName === "TITLE") {
+          el.textContent = lang === "fa" ? fa : en;
+          return;
+        }
+        el.textContent = lang === "fa" ? fa : en; // pure language
+      }
+
+      function applyLang(lang) {
+        document.documentElement.setAttribute("lang", lang);
+        document.documentElement.setAttribute("dir", lang === "fa" ? "rtl" : "ltr");
+        if (langLabel) langLabel.textContent = lang === "fa" ? "EN" : "FA";
+        document.querySelectorAll("[data-i18n-en][data-i18n-fa]").forEach((el) => renderI18n(el, lang));
+      }
+
+      function getLang() {
+        return document.documentElement.getAttribute("lang") || "en";
+      }
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        const icon = themeBtn?.querySelector("i");
+        if (icon) {
+          icon.classList.remove("fa-moon", "fa-sun");
+          icon.classList.add(theme === "dark" ? "fa-sun" : "fa-moon");
+        }
+        window.dispatchEvent(new CustomEvent("chemThemeChange", { detail: { theme } }));
+      }
+
+      function getTheme() {
+        return document.documentElement.getAttribute("data-theme") || "light";
+      }
+
+      window.ChemI18n = { applyLang, getLang, refresh: () => applyLang(getLang()) };
+
+      const savedLang = localStorage.getItem("chem_lang");
+      const autoLang = (navigator.language || "").toLowerCase().startsWith("fa") ? "fa" : "en";
+      applyLang(savedLang || autoLang);
+
+      langBtn?.addEventListener("click", () => {
+        const next = getLang() === "fa" ? "en" : "fa";
+        localStorage.setItem("chem_lang", next);
+        applyLang(next);
+      });
+
+      const savedTheme = localStorage.getItem("chem_theme");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
+
+      themeBtn?.addEventListener("click", () => {
+        const next = getTheme() === "dark" ? "light" : "dark";
+        localStorage.setItem("chem_theme", next);
+        applyTheme(next);
+      });
+    })();
+  </script>
+
+  <!-- SOURCES (for data verification; updateable):
+    - Merck/Millipore product info (Benzoic acid 100130): mp ~122.4°C; bp ~249°C; density ~1.26 g/cm3; solubility ~2.9 g/L; ignition ~570°C
+    - Carl Roth SDS (Benzoic acid 9722): flash point ~121°C (closed cup); bp ~249°C (ECHA)
+    - PubChem / Wikipedia: molecular weight 122.12 g/mol; solubility ~3.44 g/L (25°C)
+    - Sulzer crystallization news: notes Wuhan Youji BA capacity ~200,000 t/a (industry profile)
+    - Market sizing is shown as “indicative” using recent market research ranges around ~$1.0–1.2B for 2024
+  -->
+</body>
+
+
+
+
+
+
+
+</html>
