@@ -1,0 +1,2791 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Chemical Farm | Interactive Chemical & Petrochemical Catalog</title>
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+  // Pre-paint language setup (avoid EN/FA flash)
+  (()=>{ 
+    try {
+      const l = localStorage.getItem('cf_lang') || ((navigator.language||'').toLowerCase().startsWith('fa') ? 'fa' : 'en');
+      document.documentElement.classList.toggle('lang-fa', l==='fa');
+      document.documentElement.lang = l==='fa' ? 'fa' : 'en';
+      document.documentElement.dir  = l==='fa' ? 'rtl' : 'ltr';
+    } catch {}
+  })();
+  </script>
+  <style>
+
+:root {
+  /* پس‌زمینه: روشن‌تر و ملایم‌تر (خاکستری/سرمه‌ای پخته) */
+  --bg: #1E293B;  /* سرمه‌ای-خاکستری روشن‌تر */
+  --bg2: #0F172A; /* سرمه‌ای کلاسیک (که قبلاً رنگ بالایی بود) */
+  
+  /* سطوح (کارت‌ها و پنل‌ها): کمی شفاف‌تر و روشن‌تر */
+  --surface: rgba(255, 255, 255, 0.07);
+  --surface2: rgba(255, 255, 255, 0.12);
+  --stroke: rgba(255, 255, 255, 0.15);
+  --stroke2: rgba(255, 255, 255, 0.25);
+
+  /* بقیه متغیرها (رنگ دکمه‌ها و متن) دقیقاً مثل قبل بماند */
+  --accent: #3B82F6;  
+  --accent2: #06B6D4; 
+  --accent3: #8B5CF6; 
+
+  --text: #F8FAFC;
+  --muted: #94A3B8;
+  --muted2: #64748B;
+  
+  /* Shadows: Deep but realistic */
+  --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --shadow2: 0 10px 25px rgba(0, 0, 0, 0.3);
+
+  /* Geometry: Slightly sharper for a professional B2B look */
+  --r: 16px; 
+  --r2: 12px;
+  --r3: 8px;
+  --max: 1280px;
+
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  --fa: "Vazirmatn", "Vazir", "IRANSans", "B Zar", "B Nazanin", Tahoma, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+
+  --ease: cubic-bezier(0.25, 1, 0.3, 1);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--muted2) 50%, transparent);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--muted) 80%, transparent);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: var(--sans);
+  color: var(--text);
+  background:
+    radial-gradient(900px 520px at 18% -10%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 65%),
+    radial-gradient(900px 520px at 78% -18%, color-mix(in oklab, var(--accent2) 10%, transparent), transparent 68%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 1;
+  mix-blend-mode: overlay;
+}
+
+a{color:inherit}
+button, input, select{font:inherit}
+::selection{ background: color-mix(in oklab, var(--accent) 40%, transparent); }
+
+.container{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 18px 18px 84px;
+}
+
+.header{
+  position: sticky;
+  top:0;
+  z-index: 40;
+  padding: 14px 18px;
+  backdrop-filter: blur(20px);
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--stroke) 80%, transparent);
+}
+.headerIn{
+  max-width: var(--max);
+  margin: 0 auto;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width: 210px;
+}
+.logo{
+  width:38px; height:38px;
+  border-radius: var(--r2);
+  background:
+    radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.9), transparent 60%),
+    radial-gradient(16px 16px at 70% 70%, rgba(255,255,255,.15), transparent 70%),
+    linear-gradient(135deg, color-mix(in oklab, var(--accent) 90%, transparent), color-mix(in oklab, var(--accent) 20%, transparent));
+  box-shadow: 0 4px 15px color-mix(in oklab, var(--accent) 30%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
+}
+.brandText{
+  display:flex; flex-direction:column; line-height:1.12;
+}
+.brandText b{ letter-spacing:.2px; font-size:15px; color: #fff; }
+.brandText span{ color:var(--muted); font-size:12px; }
+
+.command{
+  flex: 1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width: 260px;
+}
+.search{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  border: 1px solid var(--stroke);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  position:relative;
+  transition: all 0.2s var(--ease);
+}
+.search:focus-within{
+  background: color-mix(in oklab, var(--surface) 90%, transparent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.search svg{ width:18px; height:18px; color: var(--muted); flex:0 0 auto; transition: color 0.2s; }
+.search:focus-within svg { color: var(--accent); }
+.search input{
+  width:100%;
+  border:0; outline:0;
+  background:transparent;
+  color: var(--text);
+  font-size: 13px;
+}
+.search input::placeholder{ color:var(--muted2); }
+.khint{
+  display:flex; gap:6px; align-items:center;
+  color: var(--muted2);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding-left:6px;
+}
+.key{
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+}
+
+.suggest{
+  position:absolute;
+  left:0; right:0; top: calc(100% + 8px);
+  background: var(--bg);
+  border: 1px solid var(--stroke);
+  border-radius: var(--r2);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  display:none;
+}
+.suggest.show{ display:block; }
+.sItem{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding: 10px 12px;
+  cursor:pointer;
+  border-top: 1px solid color-mix(in oklab, var(--stroke) 50%, transparent);
+  transition: background .18s var(--ease);
+}
+.sItem:first-child{ border-top:0; }
+.sItem:hover, .sItem.active{ background: var(--surface2); }
+.sItem b{ font-size:13px; font-weight:600; color: #fff; }
+.sMeta{ margin-left:auto; display:flex; gap:8px; align-items:center; color: var(--muted); font-size:12px; }
+.sMeta code{ font-family: var(--mono); font-size:11px; padding:2px 6px; border-radius:6px; background: var(--surface); border:1px solid var(--stroke); color: var(--accent2); }
+
+.actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.pill{
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  color: var(--muted);
+  font-size: 12px;
+}
+.pill b{ color: var(--text); font-weight: 600; }
+
+.iconBtn{
+  width:38px; height:38px;
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  color: var(--text);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition: all 0.2s var(--ease);
+}
+.iconBtn:hover{
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+}
+.iconBtn svg{ width:18px; height:18px; }
+
+.mainTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding: 18px 0 10px;
+}
+.h1{
+  font-size: 18px;
+  letter-spacing:.2px;
+  margin:0;
+  color: #fff;
+}
+.lead{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 65ch;
+}
+.summaryRow{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top: 10px;
+}
+
+/* Professional B2B Data Tags */
+.fchip {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--c, var(--surface)) 10%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--c, var(--stroke)) 30%, transparent);
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  transition: all 0.2s var(--ease);
+}
+
+.fchip:hover {
+  background: color-mix(in oklab, var(--c, var(--surface)) 20%, var(--surface));
+  border-color: var(--c, var(--accent));
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--c, var(--accent)) 15%, transparent);
+}
+
+.fchip.on {
+  background: var(--c, var(--accent));
+  border-color: var(--c, var(--accent));
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 15px color-mix(in oklab, var(--c, var(--accent)) 35%, transparent);
+}
+
+.fchip .dot {
+  width: 8px; height: 8px; 
+  border-radius: 999px;
+  background: var(--c, var(--accent));
+}
+
+.fchip.on .dot {
+  background: rgba(255,255,255,0.9);
+}
+
+.badgeLine{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.seg{
+  display:flex;
+  gap:4px;
+  padding: 4px;
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+}
+.seg button{
+  border:0;
+  background:transparent;
+  color: var(--muted);
+  font-size:12px;
+  padding: 6px 12px;
+  border-radius: var(--r3);
+  cursor:pointer;
+  transition: all 0.2s var(--ease);
+  font-weight: 500;
+}
+.seg button.on{
+  color: #fff;
+  background: var(--surface2);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.select{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  transition: border-color 0.2s;
+}
+.select:focus-within { border-color: var(--accent); }
+.select svg{ width:16px; height:16px; color: var(--muted); }
+.select select{
+  border:0; outline:0;
+  background:transparent;
+  color: var(--text);
+  font-size:12px;
+  font-weight: 500;
+}
+.select select option { background: var(--bg); color: var(--text); }
+.toggle{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding: 8px 12px;
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  color: var(--muted);
+  font-size:12px;
+  cursor:pointer;
+  user-select:none;
+  font-weight: 500;
+}
+.toggle input{ accent-color: var(--accent); }
+
+.grid{
+  display:grid;
+  gap:16px; /* Space out cards a bit more for clean data look */
+  grid-template-columns: repeat(12, 1fr);
+  margin-top: 16px;
+}
+@media (max-width: 1100px){ .grid{ grid-template-columns: repeat(8, 1fr);} }
+@media (max-width: 820px){ .grid{ grid-template-columns: repeat(6, 1fr);} .brand{min-width:auto} .khint{display:none} }
+@media (max-width: 560px){ .grid{ grid-template-columns: repeat(4, 1fr);} }
+
+/* Data Card Design */
+.card{
+  grid-column: span 4;
+  border-radius: var(--r);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  box-shadow: var(--shadow2);
+  overflow:hidden;
+  position:relative;
+  cursor:pointer;
+  transition: all 0.2s var(--ease);
+}
+.card:hover{
+  transform: translateY(-2px);
+  border-color: var(--stroke2);
+  background: var(--surface2);
+  box-shadow: var(--shadow);
+}
+.card:focus-within{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.cardIn{ padding: 16px; position:relative; }
+.titleRow{ display:flex; gap:10px; align-items:flex-start; }
+.titleRow h3{
+  margin:0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff;
+}
+.submeta{ margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+
+.metaGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+.meta{
+  display:flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: var(--r3);
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--stroke);
+}
+.meta span{ color: var(--muted); font-size:11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.meta b{ font-family: var(--mono); font-size:12px; color: var(--text); font-weight:600; }
+
+.chips{
+  display:flex; gap:8px; flex-wrap:wrap;
+  margin-top: 14px;
+}
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding: 4px 8px;
+  border-radius: 6px; /* Structured B2B Tag */
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.2);
+  color: var(--muted);
+  font-size: 11px;
+}
+.chip strong{ color: var(--text); font-weight:600; }
+.chip .miniDot{
+  width:6px; height:6px; border-radius:999px;
+  background: color-mix(in oklab, var(--accent) 78%, transparent);
+}
+.chip.haz{ border-color: color-mix(in oklab, #EF4444 50%, transparent); color: #EF4444; background: rgba(239, 68, 68, 0.05); }
+
+.desc{
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 42px;
+}
+
+.cardActions{
+  margin-left:auto;
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+.cBtn{
+  width:32px; height:32px;
+  border-radius: var(--r3);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  color: var(--muted);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition: all 0.2s var(--ease);
+}
+.cBtn:hover{ border-color: var(--text); color: var(--text); }
+.cBtn.on{
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 15%, transparent);
+  color: var(--accent);
+}
+
+.footer{
+  margin-top: 24px;
+  color: var(--muted2);
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+/* Modals & Backdrops */
+.backdrop{
+  position:fixed;
+  inset:0;
+  background: rgba(2, 6, 23, 0.8); /* Slate 950 with opacity */
+  backdrop-filter: blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index: 60;
+  padding: 18px;
+}
+.backdrop.show{ display:flex; }
+.modal{
+  width:min(900px, 100%);
+  border-radius: var(--r);
+  background: var(--bg);
+  border: 1px solid var(--stroke2);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  transform: translateY(12px) scale(0.98);
+  opacity:.0;
+  transition: all .2s var(--ease);
+}
+.backdrop.show .modal{ transform: translateY(0) scale(1); opacity:1; }
+
+.mHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--stroke);
+  background: var(--surface);
+}
+.mHead h2{ margin:0; font-size: 18px; color: #fff; }
+.subline{ margin-top: 6px; color: var(--muted); font-size: 13px; }
+
+.mBody{
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 16px;
+  padding: 24px;
+}
+@media (max-width: 900px){
+  .mBody{ grid-template-columns:1fr; }
+}
+.box{
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.15);
+  padding: 18px;
+}
+.box h4{ margin:0 0 14px; font-size: 12px; color: var(--text); letter-spacing:.5px; text-transform: uppercase; font-weight: 600; display:flex; align-items:center; gap:8px;}
+.box h4::before { content:''; display:block; width:4px; height:12px; background:var(--accent); border-radius:2px; }
+
+.kv{ display:grid; grid-template-columns: 140px 1fr; gap: 10px 12px; }
+.k{ color: var(--muted); font-size: 13px; }
+.v{ color: var(--text); font-size: 13px; font-family: var(--mono); overflow-wrap:anywhere; font-weight: 500; }
+
+.badges{ display:flex; gap:8px; flex-wrap:wrap; }
+.badge{
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+}
+.badge.strong{
+  color: #fff;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.mBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 20px; padding-top:20px; border-top: 1px solid var(--stroke); }
+.primaryBtn, .ghostBtn{
+  border-radius: var(--r3);
+  padding: 10px 16px;
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  color: var(--text);
+  cursor:pointer;
+  transition: all 0.2s var(--ease);
+  font-weight: 500;
+  font-size: 13px;
+}
+.primaryBtn{
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.primaryBtn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.ghostBtn:hover{ background: var(--surface2); color: #fff; }
+
+/* Compare bar */
+.compareBar{
+  position:fixed;
+  left: 24px; right:24px; bottom: 24px;
+  max-width: var(--max);
+  margin: 0 auto;
+  background: var(--bg);
+  border: 1px solid var(--stroke2);
+  border-radius: var(--r);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  padding: 12px 16px;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  z-index: 55;
+}
+.compareBar.show{ display:flex; }
+.pins{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.pin{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding: 6px 12px;
+  border-radius: var(--r3);
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.2);
+  color: var(--text);
+  font-size: 13px;
+}
+.pin b{ color: #fff; font-weight:600; }
+.pin button{
+  width:24px; height:24px;
+  border-radius: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor:pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+.pin button:hover { color: #EF4444; }
+
+/* Filter drawer */
+.drawerBackdrop{
+  position:fixed; inset:0;
+  background: rgba(2, 6, 23, 0.6);
+  backdrop-filter: blur(4px);
+  display:none;
+  z-index: 58;
+}
+.drawerBackdrop.show{ display:block; }
+.drawer{
+  position:fixed;
+  top: 0; right: 0;
+  height: 100%;
+  width: min(400px, 90vw);
+  background: var(--bg);
+  border-left: 1px solid var(--stroke2);
+  box-shadow: var(--shadow);
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events:none;
+  transition: all .3s var(--ease);
+  z-index: 59;
+  display:flex;
+  flex-direction:column;
+}
+.drawer.show{
+  transform: translateX(0);
+  opacity:1;
+  pointer-events:auto;
+}
+.drawerHead{
+  padding: 20px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom: 1px solid var(--stroke);
+  background: var(--surface);
+}
+.drawerHead b{ font-size: 15px; color: #fff; }
+.drawerHead span{ display:block; margin-top:4px; color: var(--muted); font-size: 13px; }
+.drawerBody{
+  padding: 16px 20px 24px;
+  overflow:auto;
+}
+.group{
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.15);
+}
+.group h5{ margin:0 0 12px; font-size: 12px; color: var(--text); text-transform: uppercase; letter-spacing:.5px; }
+.familyList{ display:flex; flex-wrap:wrap; gap:8px; }
+.smallRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+.clearAll{
+  width:100%;
+  margin-top: 16px;
+  border-radius: var(--r3);
+  padding: 10px;
+  border: 1px solid var(--stroke);
+  background: transparent;
+  color: var(--muted);
+  cursor:pointer;
+  transition: all 0.2s var(--ease);
+  font-weight: 500;
+}
+.clearAll:hover{ border-color: #EF4444; color: #EF4444; background: rgba(239, 68, 68, 0.05); }
+
+/* Toast */
+.toast{
+  position: fixed;
+  left: 24px; bottom: 92px;
+  z-index: 80;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.toastMsg{
+  max-width: 360px;
+  padding: 12px 16px;
+  border-radius: var(--r2);
+  background: var(--bg2);
+  border: 1px solid var(--stroke2);
+  box-shadow: var(--shadow);
+  color: #fff;
+  font-size: 13px;
+  transition: all 0.3s var(--ease);
+  border-left: 4px solid var(--accent);
+}
+.toastMsg b{ display:block; margin-bottom: 2px; }
+
+/* Language */
+.langBtn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: var(--r2);
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+  color: var(--muted);
+  cursor:pointer;
+  user-select:none;
+  transition: all .2s var(--ease);
+}
+.langBtn:hover{
+  background: var(--surface2);
+  color: #fff;
+}
+.langBtn svg{ width:16px; height:16px; }
+.langBtn span{ font-size: 12px; font-weight:600; }
+
+/* RTL support */
+html.lang-fa body{ font-family: var(--fa); }
+html.lang-fa .search input{ direction: rtl; text-align: right; }
+html.lang-fa .khint{ display:none; }
+html.lang-fa .sMeta{ margin-left:0; margin-right:auto; }
+html.lang-fa .cardActions{ margin-left:0; margin-right:auto; }
+html.lang-fa .toast{ left:auto; right:24px; }
+html.lang-fa .drawer{ left:0; right:auto; border-left:0; border-right: 1px solid var(--stroke2); transform: translateX(-100%); }
+html.lang-fa .drawer.show{ transform: translateX(0); }
+html.lang-fa .mBody .kv{ grid-template-columns: 160px 1fr; }
+html.lang-fa .toastMsg { border-left: 1px solid var(--stroke2); border-right: 4px solid var(--accent); }
+html.lang-fa .box h4::before { margin-left: 8px; margin-right:0; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="headerIn">
+    <div class="brand" title="Chemical Farm">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="brandText">
+        <b id="brandName">Chemical Farm</b>
+        <span id="brandSubtitle">Fast search • merged families • compare & favorites</span>
+      </div>
+    </div>
+
+    <div class="command">
+      <div class="search" role="search" aria-label="Search chemicals">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="q" autocomplete="off" placeholder="Search name / formula / CAS / family…  (Try: ethylene • C2H4 • cas:74-85-1 • fam:solvent)"/>
+        <div class="khint" aria-hidden="true">
+          <span class="key">/</span>
+          <span class="key">Ctrl</span><span>+</span><span class="key">K</span>
+        </div>
+
+        <div class="suggest" id="suggest" role="listbox" aria-label="Suggestions"></div>
+      </div>
+      <button class="iconBtn" id="clearBtn" title="Clear search" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="actions">
+      <button class="langBtn" id="langBtn" type="button" aria-label="Language">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 2a15 15 0 0 1 0 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 2a15 15 0 0 0 0 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span id="langLabel">English</span>
+      </button>
+
+      <span class="pill" id="totalPill"><b id="totalCount">—</b> <span id="totalLabel">total</span></span>
+      <span class="pill" id="shownPill"><b id="shownCount">—</b> <span id="shownLabel">shown</span></span>
+
+      <button class="iconBtn" id="filtersBtn" title="Filters" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="iconBtn" id="helpBtn" title="Shortcuts" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 18h.01M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-.7.5-1.2 1-1.2 2.2v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="mainTop">
+    <div>
+      <h1 class="h1" id="mainH1">Browse chemicals as a clean, interactive catalog</h1>
+      <p class="lead" id="mainLead">Categories are merged into compact <b>Families</b> so you can filter without drowning in dozens of tags. Use favorites and pin up to 4 items to compare.</p>
+      <div class="summaryRow" id="activeChips"></div>
+    </div>
+
+    <div class="badgeLine">
+      <div class="seg" aria-label="Hazard filter" id="hazSeg">
+        <button type="button" class="on" data-haz="any">All</button>
+        <button type="button" data-haz="haz">Hazard</button>
+        <button type="button" data-haz="non">Non-hazard</button>
+      </div>
+
+      <label class="toggle" title="Show favorites only">
+        <input id="favOnly" type="checkbox"/> <span id="favOnlyLbl">Favorites</span>
+      </label>
+
+      <label class="toggle" title="Show items that have a details page">
+        <input id="hasPage" type="checkbox"/> <span id="hasPageLbl">Has page</span>
+      </label>
+
+      <div class="select" title="Sorting">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 7h10M9 12h6M11 17h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <select id="sort"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="summaryRow" id="familyChips" aria-label="Family filters"></div>
+
+  <div class="grid" id="grid" aria-label="Chemical cards"></div>
+
+  <div class="footer" id="footerTip"></div>
+</div>
+
+<div class="drawerBackdrop" id="drawerBackdrop" aria-hidden="true"></div>
+<aside class="drawer" id="drawer" aria-label="Filters">
+  <div class="drawerHead">
+    <div>
+      <b id="drawerTitle">Filters</b>
+      <span id="drawerSubtitle">Families are the primary grouping (merged categories).</span>
+    </div>
+    <button class="iconBtn" id="drawerCloseBtn" title="Close" type="button" style="border:none; background:transparent">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="drawerBody">
+    <div class="group">
+      <h5 id="stateGroupTitle">State (25°C, 1 bar)</h5>
+      <div class="smallRow">
+        <div class="select" style="width:100%">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <select id="state" style="width:100%"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h5 id="familiesGroupTitle">Families</h5>
+      <div class="familyList" id="familyList"></div>
+    </div>
+
+    <div class="group">
+      <h5 id="advancedGroupTitle">Advanced</h5>
+      <div class="smallRow" style="flex-direction: column; align-items: flex-start;">
+        <label class="toggle" style="width:100%">
+          <input id="hasPage2" type="checkbox"/> <span id="hasPageLbl2">Has page</span>
+        </label>
+        <label class="toggle" style="width:100%">
+          <input id="favOnly2" type="checkbox"/> <span id="favOnlyLbl2">Favorites</span>
+        </label>
+      </div>
+      <button class="clearAll" id="clearAllBtn" type="button">Clear all filters</button>
+    </div>
+  </div>
+</aside>
+
+<div class="compareBar" id="compareBar">
+  <div class="pins" id="pins"></div>
+  <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+    <button class="primaryBtn" id="compareBtn" type="button">Compare</button>
+    <button class="ghostBtn" id="clearPinsBtn" type="button">Clear</button>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <div class="mHead">
+      <div>
+        <h2 id="mTitle">—</h2>
+        <div class="subline" id="mSub">—</div>
+      </div>
+      <button class="iconBtn" id="closeBtn" title="Close" type="button" style="border:none; background:transparent">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="mBody">
+      <div class="box">
+        <h4 id="modalTechTitle">Technical</h4>
+        <div class="kv" id="kv"></div>
+        <div class="mBtns">
+          <button class="primaryBtn" id="openPageBtn" type="button">Open page</button>
+          <button class="ghostBtn" id="copyBtn" type="button">Copy</button>
+          <button class="ghostBtn" id="pinBtn" type="button">Pin to compare</button>
+        </div>
+      </div>
+      <div class="box">
+        <h4 id="modalUsesTitle">Uses & tags</h4>
+        <div id="mBadges" class="badges" style="margin-top:0"></div>
+        <p id="mDesc" style="margin:16px 0 0; color: var(--text); line-height:1.7; font-size:13px"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="cmpBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <div class="mHead">
+      <div>
+        <h2 id="cmpTitle">Compare</h2>
+        <div class="subline" id="cmpSubtitle">Side-by-side key fields (best for 2–4 items)</div>
+      </div>
+      <button class="iconBtn" id="cmpCloseBtn" title="Close" type="button" style="border:none; background:transparent">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="mBody" style="grid-template-columns:1fr; gap:16px; padding: 16px 24px 24px;">
+      <div class="box" style="overflow:auto; background: transparent; border:none; padding:0;">
+        <table id="cmpTable" style="width:100%; border-collapse:separate; border-spacing:0 8px; font-size:13px"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="helpBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="width:min(720px, 100%)">
+    <div class="mHead">
+      <div>
+        <h2 id="helpTitle">Shortcuts & tips</h2>
+        <div class="subline" id="helpSubtitle">Fast navigation without extra filters.</div>
+      </div>
+      <button class="iconBtn" id="helpCloseBtn" title="Close" type="button" style="border:none; background:transparent">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="mBody" style="grid-template-columns:1fr; gap:16px;">
+      <div class="box">
+        <h4 id="helpKeyboardTitle">Keyboard</h4>
+        <div class="badges" id="helpKeyboardBadges" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+      </div>
+      <div class="box">
+        <h4 id="helpSyntaxTitle">Search syntax</h4>
+        <div class="badges" id="helpSyntaxBadges" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <p id="helpPara" style="margin:16px 0 0; color:var(--muted); line-height:1.6; font-size:12px; border-top: 1px solid var(--stroke); padding-top:12px;"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+const chemicals = [
+  {name:"1,3-Butadiene", nameFa:"1,3-بوتادین", formula:"C4H6", category:"Monomer/Diolefin", use:"تولید SBR، BR، ABS، لاستیک‌های نیتریل", useEn:"Production of SBR, BR, ABS, nitrile rubbers", cas:"106-99-0", hazard:true, page:"1_3_butadiene.html"},
+  {name:"1,3-Propanediol (PDO)", nameFa:"1,3-پروپان‌دی‌ال", formula:"C3H8O2", category:"Diol", use:"تولید پلی‌استر PTT، پلی‌ال‌های تخصصی", useEn:"Production of PTT polyester and specialty polyols", cas:"504-63-2", hazard:false, page:"1_3_propanediol.html"},
+  {name:"1,4-Butanediol (BDO)", nameFa:"1,4-بوتان‌دی‌ال", formula:"C4H10O2", category:"Diol", use:"تولید PBT، PTMEG (پلی‌اورتان)، GBL", useEn:"Production of PBT, PTMEG (polyurethane), and GBL", cas:"110-63-4", hazard:true, page:"1_4_butanediol.html"},
+  {name:"1-Decene", nameFa:"1-دسن", formula:"C10H20", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"872-05-9", hazard:false, page:"1_decene.html"},
+  {name:"1-Dodecene", nameFa:"1-دودسن", formula:"C12H24", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"112-41-4", hazard:false, page:"1_dodecene.html"},
+  {name:"1-Eicosene", nameFa:"1-ایکوسن", formula:"C20H40", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"3452-07-1", hazard:false, page:"1_eicosene.html"},
+  {name:"1-Heptene", nameFa:"1-هپتن", formula:"C7H14", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"592-76-7", hazard:false, page:"1_heptene.html"},
+  {name:"1-Hexadecene", nameFa:"1-هگزادسن", formula:"C16H32", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"629-73-2", hazard:false, page:"1_hexadecene.html"},
+  {name:"1-Hexene", nameFa:"1-هگزن", formula:"C6H12", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"592-41-6", hazard:false, page:"1_hexene.html"},
+  {name:"1-Nonene", nameFa:"1-نونن", formula:"C9H18", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"124-11-8", hazard:false, page:"1_nonene.html"},
+  {name:"1-Octadecene", nameFa:"1-اکتادسن", formula:"C18H36", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"112-88-9", hazard:false, page:"1_octadecene.html"},
+  {name:"1-Octene", nameFa:"1-اکتن", formula:"C8H16", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"111-66-0", hazard:false, page:"1_octene.html"},
+  {name:"1-Pentadecene", nameFa:"1-پنتادسن", formula:"C15H30", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"13360-61-7", hazard:false, page:"1_pentadecene.html"},
+  {name:"1-Tetradecene", nameFa:"1-تترادسن", formula:"C14H28", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"1120-36-1", hazard:false, page:"1_tetradecene.html"},
+  {name:"1-Tridecene", nameFa:"1-تریدسن", formula:"C13H26", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"2437-56-1", hazard:false, page:"1_tridecene.html"},
+  {name:"1-Undecene", nameFa:"1-اندسن", formula:"C11H22", category:"Monomer/Comonomer", use:"کومونومر LLDPE/HDPE، مواد اولیه سطح‌فعال‌ها/الکل‌ها", useEn:"Comonomer for LLDPE/HDPE; feedstock for surfactants and alcohols", cas:"821-95-4", hazard:false, page:"1_undecene.html"},
+  {name:"2-Ethylhexanol (2-EH)", nameFa:"2-اتیل‌هگزانول", formula:"C8H18O", category:"Alcohol", use:"تولید نرم‌کننده‌ها (DIOP, DEHP)، اکریلات 2-EH", useEn:"Production of plasticizers (e.g., DEHP) and 2-EH acrylate", cas:"104-76-7", hazard:true, page:"2_ethylhexanol.html"},
+  {name:"2-Ethylhexyl Acrylate (2-EHA)", nameFa:"اکریلات 2-اتیل‌هگزیل", formula:"C11H20O2", category:"Ester/Monomer", use:"چسب‌های حساس به فشار", useEn:"Pressure-sensitive adhesives", cas:"103-11-7", hazard:true, page:"2_ethylhexyl_acrylate.html"},
+  {name:"ABS", nameFa:"اکریلونیتریل-بوتادین-استایرن", formula:"(C16H18N·C4H6·C8H8)n", category:"Polymer/Resin", use:"صنایع خودرو، لوازم خانگی", useEn:"Automotive and home appliances", cas:"9003-53-8", hazard:false, page:"abs.html"},
+  {name:"ASA", nameFa:"اکریلونیتریل-استایرن-اکریلات", formula:"(C12H12O2·C8H8·C3H3N)n", category:"Polymer/Resin", use:"قطعات خارجی مقاوم در برابر UV", useEn:"UV-resistant outdoor parts", cas:"25956-22-3", hazard:false, page:"asa.html"},
+  {name:"Acetaldehyde", nameFa:"استالدئید", formula:"C2H4O", category:"Aldehyde", use:"تولید اسید استیک، پیریدین‌ها، پنتااریتریتول", useEn:"Production of acetic acid, pyridines, and pentaerythritol", cas:"75-07-0", hazard:true, page:"acetaldehyde.html"},
+  {name:"Acetic Acid", nameFa:"اسید استیک", formula:"C2H4O2", category:"Carboxylic Acid", use:"تولید VAM، حلال‌های PTA، استرها", useEn:"Production of VAM; solvents and ester derivatives", cas:"64-19-7", hazard:true, page:"acetic_acid.html"},
+  {name:"Acetone", nameFa:"استون", formula:"C3H6O", category:"Solvent/Intermediate", use:"تولید MMA (از طریق استون سیانوهیدرین)، حلال‌ها", useEn:"MMA route (acetone cyanohydrin) and industrial solvent", cas:"67-64-1", hazard:true, page:"acetone.html"},
+  {name:"Acetonitrile", nameFa:"استونیتریل", formula:"C2H3N", category:"Nitrile/Solvent", use:"حلال در صنایع دارویی و بیوتکنولوژی", useEn:"Solvent in pharma and biotech", cas:"75-05-8", hazard:true, page:"acetonitrile.html"},
+  {name:"Acrylic Acid", nameFa:"اسید اکریلیک", formula:"C3H4O2", category:"Unsaturated Acid", use:"تولید SAP (از طریق اسید اکریلیک → SAP)، پوشش‌ها (استرهای اکریلات)", useEn:"Superabsorbents (SAP) and acrylate coatings", cas:"79-10-7", hazard:true, page:"acrylic_acid.html"},
+  {name:"Acrylonitrile", nameFa:"آکریلونیتریل", formula:"C3H3N", category:"Nitrile/Monomer", use:"تولید ABS، SAN، فیبر اکریلیک (PAN)، آدیپونیتریل", useEn:"ABS/SAN, acrylic fiber (PAN), and adiponitrile chain", cas:"107-13-1", hazard:true, page:"acrylonitrile.html"},
+  {name:"Adipic Acid", nameFa:"اسید آدیپیک", formula:"C6H10O4", category:"Dicarboxylic Acid", use:"تولید نایلون 6,6، پلی‌اورتان‌ها", useEn:"Nylon 6,6 and polyurethane applications", cas:"124-04-9", hazard:false, page:"adipic_acid.html"},
+  {name:"Adiponitrile", nameFa:"آدیپونیتریل", formula:"C6H8N2", category:"Nitrile/Intermediate", use:"تولید HMDA → نایلون 6,6", useEn:"HMDA intermediate for Nylon 6,6", cas:"111-69-3", hazard:true, page:"adiponitrile.html"},
+  {name:"Alcohol Ethoxylates (AEO-9)", nameFa:"اتوکسیلات‌های الکلی", formula:"C12-15H25-31(OCH2CH2)9OH", category:"Surfactant", use:"شامپوها، پاک‌کننده‌ها", useEn:"Shampoos and detergents", cas:"68439-50-9", hazard:false, page:"alcohol_ethoxylates.html"},
+  {name:"Aluminum Chloride (AlCl3)", nameFa:"آلومینیوم کلرید", formula:"AlCl3", category:"Catalyst", use:"آلکیلاسیون/استیلاسیون فریدل-کرافتس", useEn:"Friedel–Crafts alkylation/acylation catalyst", cas:"7446-70-0", hazard:true, page:"aluminum_chloride.html"},
+  {name:"Ammonium Nitrate", nameFa:"نیترات آمونیوم", formula:"NH4NO3", category:"Fertilizer/Agrochemical", use:"کود، ANFO", useEn:"Fertilizer and ANFO applications", cas:"6484-52-2", hazard:true, page:"ammonium_nitrate.html"},
+  {name:"Ammonium Sulfate", nameFa:"سولفات آمونیوم", formula:"(NH4)2SO4", category:"Fertilizer/Agrochemical", use:"کود/محصول جانبی کاپرولاکتام", useEn:"Fertilizer; byproduct in caprolactam routes", cas:"7783-20-2", hazard:false, page:"ammonium_sulfate.html"},
+  {name:"Aniline", nameFa:"آنیلین", formula:"C6H5NH2", category:"Aromatic Amine", use:"پیش‌ساز MDI، رنگ‌ها", useEn:"MDI precursor; dyes/pigments", cas:"62-53-3", hazard:true, page:"aniline.html"},
+  {name:"Anthracene", nameFa:"آنتراسن", formula:"C14H10", category:"PAH", use:"رنگ‌ها، تحقیقات", useEn:"Dyes/pigments and research", cas:"120-12-7", hazard:true, page:"anthracene.html"},
+  {name:"Asphalt (Bitumen)", nameFa:"آسفالت (قیر)", formula:"Complex mixture", category:"Refining Product", use:"جاده‌سازی، روفینگ", useEn:"Road construction and roofing", cas:"8052-42-4", hazard:false, page:"asphalt.html"},
+  {name:"BR (Butadiene Rubber)", nameFa:"لاستیک بوتادین", formula:"(C4H6)n", category:"Elastomer", use:"لاستیک‌های خودرو، مودیفایر ضربه", useEn:"Tire rubbers and impact modifier", cas:"9003-17-2", hazard:false, page:"br.html"},
+  {name:"Benzene", nameFa:"بنزن", formula:"C6H6", category:"Aromatic Feedstock", use:"تولید کومین/فنل/استون، استایرن، سیکلوهگزان", useEn:"Cumene/phenol-acetone chain, styrene, cyclohexane", cas:"71-43-2", hazard:true, page:"benzene.html"},
+  {name:"Benzoic Acid", nameFa:"اسید بنزوئیک", formula:"C7H6O2", category:"Aromatic Acid", use:"بنزوات‌ها، نگهدارنده‌ها، نرم‌کننده‌ها (جایگزین DIBP)", useEn:"Benzoates, preservatives, and plasticizer applications", cas:"65-85-0", hazard:false, page:"benzoic_acid.html"},
+  {name:"Brominated FRs (TBBPA)", nameFa:"مِهارکننده‌های شعله برومینه", formula:"C21H20Br4O2", category:"Additive/FR", use:"مِهارکننده شعله اپوکسی/پلی‌کربنات", useEn:"Flame retardant for epoxy and polycarbonate systems", cas:"79-94-7", hazard:true, page:"brominated_frs.html"},
+  {name:"Butenes (1-/2-)", nameFa:"بوتِن‌ها", formula:"C4H8", category:"Monomer", use:"کومونومر LLDPE (1-بوتِن)، MTBE (ایزوبوتِن)", useEn:"LLDPE comonomer (1-butene); MTBE chain (isobutene)", cas:"106-98-9", hazard:true, page:"butenes.html"},
+  {name:"Butyl Acetate", nameFa:"استات بوتیل", formula:"C6H12O2", category:"Ester/Solvent", use:"حلال پوشش‌ها", useEn:"Solvent for coatings", cas:"123-86-4", hazard:true, page:"butyl_acetate.html"},
+  {name:"Butyl Acrylate", nameFa:"اکریلات بوتیل", formula:"C7H12O2", category:"Ester/Monomer", use:"پوشش‌ها، چسب‌ها", useEn:"Coatings and adhesives", cas:"141-32-2", hazard:true, page:"butyl_acrylate.html"},
+  {name:"Butylene Oxide (1,2-Epoxybutane)", nameFa:"اکسید بوتیلن", formula:"C4H8O", category:"Epoxide", use:"پلی‌ال‌های تخصصی", useEn:"Specialty polyols and intermediates", cas:"106-88-7", hazard:true, page:"butylene_oxide.html"},
+  {name:"Butyraldehyde (n-)", nameFa:"بوتیرالدئید", formula:"C4H8O", category:"Aldehyde", use:"تولید 2-EH (از طریق اکسو)، بوتانول", useEn:"Oxo route to 2-EH and butanol chain", cas:"123-72-8", hazard:true, page:"butyraldehyde.html"},
+  {name:"CR (Chloroprene/Neoprene)", nameFa:"کلروپرن/نئوپرن", formula:"(C4H5Cl)n", category:"Elastomer", use:"تایر‌ها، تسمه‌های صنعتی، شیلنگ‌ها", useEn:"Industrial belts, hoses, and rubber goods", cas:"9003-75-6", hazard:true, page:"cr.html"},
+  {name:"Calcium-Zinc Stabilizers", nameFa:"پایدارکننده‌های کلسیم-روی", formula:"Mixed", category:"Additive/Stabilizer", use:"پایدارسازی حرارتی PVC بدون سرب", useEn:"Lead-free PVC thermal stabilizers", cas:"Various", hazard:false, page:"calcium_zinc_stabilizers.html"},
+  {name:"Caprolactam", nameFa:"کاپرولاکتام", formula:"C6H11NO", category:"Intermediate", use:"تولید نایلون 6", useEn:"Nylon 6 feedstock", cas:"105-60-2", hazard:true, page:"caprolactam.html"},
+  {name:"Caprolactone", nameFa:"کاپرولاکتون", formula:"C6H10O2", category:"Intermediate", use:"PCL، پلی‌ال‌های تخصصی", useEn:"PCL and specialty polyols", cas:"502-44-3", hazard:true, page:"caprolactone.html"},
+  {name:"Carbon Dioxide", nameFa:"دی‌اکسید کربن", formula:"CO2", category:"Inorganic Utility", use:"اوره، EOR، کربنات‌ها", useEn:"Urea, EOR, and carbonate processes", cas:"124-38-9", hazard:false, page:"carbon_dioxide.html"},
+  {name:"Carbon Monoxide", nameFa:"مونوکسید کربن", formula:"CO", category:"Inorganic Utility", use:"گاز سنتز، الکل‌های اکسو، اسید استیک", useEn:"Syngas, oxo-alcohols, and acetic acid routes", cas:"630-08-0", hazard:true, page:"carbon_monoxide.html"},
+  {name:"Chlorine", nameFa:"کلر", formula:"Cl2", category:"Inorganic Utility", use:"VCM/PVC، ترکیبات آلی کلردار", useEn:"PVC chain and chlorinated organics", cas:"7782-50-5", hazard:true, page:"chlorine.html"},
+  {name:"Chloroform (TCM)", nameFa:"کلروفرم", formula:"CHCl3", category:"Solvent", use:"حلال قدیمی", useEn:"Legacy solvent", cas:"67-66-3", hazard:true, page:"chloroform.html"},
+  {name:"Chloroprene", nameFa:"کلروپرن", formula:"C4H5Cl", category:"Monomer", use:"لاستیک CR (نئوپرن)", useEn:"Monomer for CR (neoprene) rubber", cas:"126-99-8", hazard:true, page:"chloroprene.html"},
+  {name:"Cumene (Isopropylbenzene)", nameFa:"کومین (ایزوپروپیل‌بنزن)", formula:"C9H12", category:"Aromatic Intermediate", use:"تولید فنل و استون از طریق هیدروپراکسید کومین", useEn:"Phenol and acetone via cumene hydroperoxide route", cas:"98-82-8", hazard:true, page:"cumene.html"},
+  {name:"Cyclohexane", nameFa:"سیکلوهگزان", formula:"C6H12", category:"Alicyclic Solvent", use:"تولید اسید آدیپیک/کاپرولاکتام (نایلون)", useEn:"Adipic acid / caprolactam (nylon) chain", cas:"110-82-7", hazard:true, page:"cyclohexane.html"},
+  {name:"Cyclohexanedimethanol (CHDM)", nameFa:"سیکلوهگزان‌دی‌متانول", formula:"C8H16O2", category:"Diol", use:"کوپلی‌استر PETG", useEn:"Copolyester PETG", cas:"105-06-6", hazard:false, page:"chdm.html"},
+  {name:"Cyclohexanone", nameFa:"سیکلوهگزانون", formula:"C6H10O", category:"Ketone/Intermediate", use:"کاپرولاکتام (نایلون 6)، اسید آدیپیک", useEn:"Caprolactam (nylon 6) and adipic acid chain", cas:"108-94-1", hazard:true, page:"cyclohexanone.html"},
+  {name:"DEHP / DOP", nameFa:"دی‌اتیل‌هگزیل فتالات", formula:"C24H38O4", category:"Plasticizer", use:"نرم‌کننده PVC", useEn:"PVC plasticizer", cas:"117-81-7", hazard:true, page:"dehp_dop.html"},
+  {name:"DIDP (Diisodecyl Phthalate)", nameFa:"دی‌ایزو‌دسیل فتالات", formula:"C26H42O4", category:"Plasticizer", use:"نرم‌کننده PVC", useEn:"PVC plasticizer", cas:"26761-40-0", hazard:true, page:"didp.html"},
+  {name:"DINP (Diisononyl Phthalate)", nameFa:"دی‌ایزونونیل فتالات", formula:"C26H42O4", category:"Plasticizer", use:"نرم‌کننده PVC", useEn:"PVC plasticizer", cas:"68515-48-0", hazard:true, page:"dinp.html"},
+  {name:"DOA (Dioctyl Adipate)", nameFa:"دی‌اکتیل آدیپات", formula:"C22H42O4", category:"Plasticizer", use:"PVC انعطاف‌پذیر در دمای پایین", useEn:"Low-temperature flexible PVC plasticizer", cas:"123-79-5", hazard:false, page:"doa.html"},
+  {name:"DOTP (Dioctyl Terephthalate)", nameFa:"دی‌اکتیل ترفتالات", formula:"C24H38O4", category:"Plasticizer", use:"نرم‌کننده PVC غیر فتالات", useEn:"Non-phthalate PVC plasticizer", cas:"6422-86-2", hazard:false, page:"dotp.html"},
+  {name:"Diammonium Phosphate (DAP)", nameFa:"دی‌آمونیوم فسفات", formula:"(NH4)2HPO4", category:"Fertilizer/Agrochemical", use:"کود", useEn:"Fertilizer", cas:"7783-28-0", hazard:false, page:"dap.html"},
+  {name:"Dicyclopentadiene (DCPD)", nameFa:"دی‌سیکلو‌پنتادین", formula:"C10H12", category:"Monomer/Resin Feed", use:"رزین‌های هیدروکربن، مودیفایر UPR", useEn:"Hydrocarbon resins; UPR modifier", cas:"77-73-6", hazard:true, page:"dcpd.html"},
+  {name:"Diethanolamine (DEA)", nameFa:"دی‌اتانول‌آمین", formula:"C4H11NO2", category:"Amine", use:"شیرین‌سازی گاز، سطح‌فعال‌ها", useEn:"Gas treating and surfactant intermediates", cas:"111-42-2", hazard:true, page:"dea.html"},
+  {name:"Diethyl Ether", nameFa:"دی‌اتیل اتر", formula:"C4H10O", category:"Solvent", use:"حلال، معرف آزمایشگاهی", useEn:"Solvent and lab reagent", cas:"60-29-7", hazard:true, page:"diethyl_ether.html"},
+  {name:"Diethylene Glycol (DEG)", nameFa:"دی‌اتیلن‌گلیکول", formula:"C4H10O3", category:"Diol/Glycol", use:"رزین‌های پلی‌استر، حلال‌ها", useEn:"Polyester resins and solvents", cas:"111-46-6", hazard:false, page:"deg.html"},
+  {name:"Diethylenetriamine (DETA)", nameFa:"دی‌اتیلن‌تری‌آمین", formula:"C4H13N3", category:"Polyamine", use:"عامل پخت اپوکسی، کلیت‌ها", useEn:"Epoxy curing agent; chelating applications", cas:"111-40-0", hazard:true, page:"deta.html"},
+  {name:"Dimethyl Ether (DME)", nameFa:"دی‌متیل اتر", formula:"C2H6O", category:"Ether", use:"پروپلانت آئروسل، جایگزین LPG، سوخت", useEn:"Aerosol propellant, LPG substitute, fuel", cas:"115-10-6", hazard:true, page:"dme.html"},
+  {name:"Dimethyl Terephthalate (DMT)", nameFa:"دی‌متیل ترفتالات", formula:"C10H10O4", category:"Ester/Intermediate", use:"تولید PET (روش جایگزین)", useEn:"PET intermediate (alternative route)", cas:"120-61-6", hazard:false, page:"dmt.html"},
+  {name:"EBA / EAA / EMA", nameFa:"کوپلیمرهای اتیلن-اکریلیک", formula:"Various", category:"Functional Polyolefins", use:"لایه‌های چسباننده، چسب‌ها", useEn:"Tie-layers and adhesive applications", cas:"Various", hazard:false, page:"functional_polyolefins.html"},
+  {name:"EPDM", nameFa:"اتیلن-پروپیلن-دی‌ان مونومر", formula:"(C2H4·C3H6·C4H6)n", category:"Elastomer", use:"درزگیرهای خودرو، پوشش سقف", useEn:"Automotive seals and roofing membranes", cas:"25038-91-3", hazard:false, page:"epdm.html"},
+  {name:"EPS", nameFa:"پلی‌استایرن حجیم‌شده", formula:"(C8H8)n", category:"Styrenic Foam", use:"عایق، بسته‌بندی", useEn:"Insulation and packaging", cas:"9003-53-6", hazard:false, page:"eps.html"},
+  {name:"ETBE", nameFa:"اتیل ترت-بوتیل اتر", formula:"C6H14O", category:"Ether", use:"اکسیژن‌دهنده بنزین", useEn:"Gasoline oxygenate", cas:"637-92-3", hazard:true, page:"etbe.html"},
+  {name:"EVA", nameFa:"اتیلن-وینیل استات", formula:"(C2H4·C4H6O2)n", category:"Polyolefin Copolymer", use:"فوم‌ها، کپسول‌سازی سلول‌های خورشیدی", useEn:"Foams; solar module encapsulant", cas:"20813-33-6", hazard:false, page:"eva.html"},
+  {name:"Epichlorohydrin (ECH)", nameFa:"اپی‌کلروهیدرین", formula:"C3H5ClO", category:"Chloro-Epoxide", use:"رزین‌های اپوکسی، الاستومرها", useEn:"Epoxy resins and elastomers", cas:"106-89-8", hazard:true, page:"epichlorohydrin.html"},
+  {name:"Epoxy Resins (BPA/F)", nameFa:"رزین‌های اپوکسی", formula:"Various", category:"Thermoset", use:"پوشش‌ها، کامپوزیت‌ها", useEn:"Coatings and composites", cas:"Various", hazard:true, page:"epoxy_resins.html"},
+  {name:"Ethane", nameFa:"اتان", formula:"C2H6", category:"Feedstock/Gas", use:"شکسته‌شدن حرارتی به اتیلن", useEn:"Steam cracking to ethylene", cas:"74-84-0", hazard:true, page:"ethane.html"},
+  {name:"Ethanol (Synthetic)", nameFa:"اتانول (مصنوعی)", formula:"C2H5OH", category:"Alcohol", use:"حلال، ETBE، استالدئید، اسید استیک", useEn:"Solvent; ETBE, acetaldehyde, and acetic acid routes", cas:"64-17-5", hazard:true, page:"ethanol.html"},
+  {name:"Ethyl Acetate", nameFa:"استات اتیل", formula:"C4H8O2", category:"Ester/Solvent", use:"حلال‌های جوهر، پوشش‌ها", useEn:"Solvent for inks and coatings", cas:"141-78-6", hazard:true, page:"ethyl_acetate.html"},
+  {name:"Ethyl Acrylate", nameFa:"اکریلات اتیل", formula:"C5H8O2", category:"Ester/Monomer", use:"پوشش‌ها، چسب‌ها", useEn:"Coatings and adhesives", cas:"140-88-5", hazard:true, page:"ethyl_acrylate.html"},
+  {name:"Ethylbenzene", nameFa:"اتیل‌بنزن", formula:"C8H10", category:"Aromatic Intermediate", use:"تولید استایرن مونومر", useEn:"Styrene monomer production", cas:"100-41-4", hazard:true, page:"ethylbenzene.html"},
+  {name:"Ethylene", nameFa:"اتیلن", formula:"C2H4", category:"Monomer", use:"تولید پلی‌اتیلن، اتیلن اکساید، EDC/VCM، استایرن (از طریق اتیل‌بنزن)", useEn:"PE, EO/MEG, EDC/VCM (PVC), and styrene chain", cas:"74-85-1", hazard:true, page:"ethylene.html"},
+  {name:"Ethylene Dichloride (EDC)", nameFa:"دی‌کلرید اتیلن", formula:"C2H4Cl2", category:"Chloro-Intermediate", use:"تولید VCM/PVC", useEn:"VCM/PVC production", cas:"107-06-2", hazard:true, page:"edc.html"},
+  {name:"Ethylene Glycol (MEG)", nameFa:"اتیلن‌گلیکول", formula:"C2H6O2", category:"Diol/Glycol", use:"تولید PET، ضد یخ", useEn:"PET production and antifreeze", cas:"107-21-1", hazard:true, page:"meg.html"},
+  {name:"Ethylene Oxide (EO)", nameFa:"اتیلن اکساید", formula:"C2H4O", category:"Epoxide", use:"تولید MEG، اتانول‌آمین‌ها، سطح‌فعال‌ها", useEn:"MEG, ethanolamines, and surfactants", cas:"75-21-8", hazard:true, page:"ethylene_oxide.html"},
+  {name:"Ethylenediamine (EDA)", nameFa:"اتیلن‌دی‌آمین", formula:"C2H8N2", category:"Diamine", use:"کلیت‌ها، رزین‌ها", useEn:"Chelates and resin intermediates", cas:"107-15-3", hazard:true, page:"eda.html"},
+  {name:"FKM (Fluoroelastomer)", nameFa:"فلوروالاستومر", formula:"Various", category:"Specialty", use:"درزگیرهای مقاوم در برابر مواد شیمیایی/حرارت", useEn:"Chemical/heat-resistant seals", cas:"Various", hazard:false, page:"fkm.html"},
+  {name:"Flame Retardant – TCPP", nameFa:"مِهارکننده شعله TCPP", formula:"C9H18Cl3O4P", category:"Additive/FR", use:"مِهارکننده شعله در فوم‌های PU", useEn:"Flame retardant for PU foams", cas:"13674-84-5", hazard:true, page:"tcpp.html"},
+  {name:"Formaldehyde", nameFa:"فرمالدئید", formula:"CH2O", category:"Aldehyde", use:"رزین‌ها (UF/MF/PF)، میانی‌های MDI/TDI", useEn:"UF/MF/PF resins; MDI/TDI intermediates", cas:"50-00-0", hazard:true, page:"formaldehyde.html"},
+  {name:"Formic Acid", nameFa:"اسید فرمیک", formula:"CH2O2", category:"Carboxylic Acid", use:"صنایع چرم، لاستیک، علوفه", useEn:"Leather, rubber, and silage applications", cas:"64-18-6", hazard:true, page:"formic_acid.html"},
+  {name:"Gas Oil", nameFa:"گازوئیل", formula:"Complex mixture", category:"Refining Product", use:"دیزل، مواد اولیه FCC", useEn:"Diesel fuel; FCC feedstock", cas:"64742-47-8", hazard:false, page:"gas_oil.html"},
+  {name:"Glycerol", nameFa:"گلیسیرول", formula:"C3H8O3", category:"Triol", use:"پلی‌ال‌ها، اپی‌کلروهیدرین، مواد غذایی/دارویی", useEn:"Polyols, epichlorohydrin routes, food/pharma uses", cas:"56-81-5", hazard:false, page:"glycerol.html"},
+  {name:"Glycol Ethers (E-series)", nameFa:"اتر گلیکول‌ها", formula:"Various", category:"Solvent", use:"پوشش‌ها/پاک‌کننده‌ها (مانند EGBE)", useEn:"Coatings/cleaners (e.g., EGBE)", cas:"Various", hazard:true, page:"glycol_ethers.html"},
+  {name:"HALS (e.g., Tinuvin 770)", nameFa:"پایدارکننده‌های نوری HALS", formula:"C28H52N2O4", category:"Additive/Light Stabilizer", use:"پایداری نوری درازمدت", useEn:"Long-term light stabilization", cas:"52829-07-9", hazard:false, page:"hals.html"},
+  {name:"HDPE", nameFa:"پلی‌اتیلن با چگالی بالا", formula:"(C2H4)n", category:"Polyolefin", use:"لوله‌ها، قالب‌گیری دمشی، فیلم", useEn:"Pipes, blow molding, films", cas:"9002-88-4", hazard:false, page:"hdpe.html"},
+  {name:"HNBR", nameFa:"لاستیک نیتریل هیدروژنه شده", formula:"(C9H12N·C4H6)n", category:"Hydrogenated NBR", use:"درزگیرهای نفت و گاز", useEn:"Oil & gas seals", cas:"264268-74-2", hazard:false, page:"hnbr.html"},
+  {name:"Heptane", nameFa:"هپتان", formula:"C7H16", category:"Solvent", use:"استخراج/پاک‌سازی", useEn:"Extraction and cleaning solvent", cas:"142-82-5", hazard:true, page:"heptane.html"},
+  {name:"Hexamethylenediamine (HMDA)", nameFa:"هگزامتیلن‌دی‌آمین", formula:"C6H16N2", category:"Diamine", use:"تولید نایلون 6,6", useEn:"Nylon 6,6 production", cas:"124-09-4", hazard:true, page:"hmda.html"},
+  {name:"Hexane (n-/mixed)", nameFa:"هگزان", formula:"C6H14", category:"Solvent", use:"استخراج (روغن‌های گیاهی)، چسب‌ها", useEn:"Vegetable oil extraction; adhesives", cas:"110-54-3", hazard:true, page:"hexane.html"},
+  {name:"Hydrochloric Acid", nameFa:"اسید کلریدریک", formula:"HCl", category:"Inorganic Utility", use:"استفاده از محصولات جانبی کلریناسیون، اسیدشستی", useEn:"Pickling/acid washing; chlorination byproduct utilization", cas:"7647-01-0", hazard:true, page:"hcl.html"},
+  {name:"Hydrogen", nameFa:"هیدروژن", formula:"H2", category:"Inorganic Utility", use:"هیدروژناسیون، آمونیاک", useEn:"Hydrogenation; ammonia chain", cas:"1333-74-0", hazard:true, page:"hydrogen.html"},
+  {name:"Hydrogen Peroxide", nameFa:"هیدروژن پراکسید", formula:"H2O2", category:"Inorganic Utility", use:"اپوکسیداسیون، سفیدکننده", useEn:"Oxidant for epoxidation and bleaching", cas:"7722-84-1", hazard:true, page:"hydrogen_peroxide.html"},
+  {name:"IIR (Butyl Rubber)", nameFa:"لاستیک بوتیل", formula:"(C4H8·C4H6)n", category:"Isobutylene-Isoprene", use:"شیره‌های داخلی، حفظ هوا", useEn:"Inner liners; air retention", cas:"9003-52-7", hazard:false, page:"iir.html"},
+  {name:"Isobutane", nameFa:"ایزوبوتان", formula:"C4H10", category:"Feedstock/Gas", use:"آلکیلاسیون، مسیرهای MTBE/TBA", useEn:"Alkylation; MTBE/TBA routes", cas:"75-28-5", hazard:true, page:"isobutane.html"},
+  {name:"Isobutanol", nameFa:"ایزوبوتانول", formula:"C4H10O", category:"Alcohol", use:"حلال، استات ایزوبوتیل", useEn:"Solvent; isobutyl acetate chain", cas:"78-83-1", hazard:true, page:"isobutanol.html"},
+  {name:"Isobutyraldehyde", nameFa:"ایزوبوتیرالدئید", formula:"C4H8O", category:"Aldehyde", use:"نئوپنتیل گلیکول، ایزوبوتانول", useEn:"Neopentyl glycol and isobutanol chain", cas:"78-84-2", hazard:true, page:"isobutyraldehyde.html"},
+  {name:"Isododecane", nameFa:"ایزودودکان", formula:"C12H26", category:"Solvent", use:"آرایشی، جوهرها", useEn:"Cosmetics and inks", cas:"2762-70-1", hazard:false, page:"isododecane.html"},
+  {name:"Isopar / Dearomatized Hydrocarbons", nameFa:"هیدروکربن‌های بدون آروماتیک", formula:"Various", category:"Solvent", use:"پاک‌کننده‌ها، سیالات حفاری", useEn:"Cleaners and drilling fluids", cas:"Various", hazard:false, page:"isopar.html"},
+  {name:"Isophorone Diisocyanate (IPDI)", nameFa:"دی‌ایزوسیانات ایسوفورون", formula:"C12H18N2O2", category:"Isocyanate", use:"پوشش‌های PU", useEn:"PU coatings", cas:"4098-71-9", hazard:true, page:"ipdi.html"},
+  {name:"Isophthalic Acid (IPA)", nameFa:"اسید ایزوفتالیک", formula:"C8H6O4", category:"Aromatic Dicarboxylic Acid", use:"کوپلیمرهای PET، رزین‌ها", useEn:"PET copolymers and resins", cas:"121-91-5", hazard:false, page:"isophthalic_acid.html"},
+  {name:"Isoprene", nameFa:"ایزوپرن", formula:"C5H8", category:"Monomer/Diolefin", use:"لاستیک‌های IR/SIS/SI، مشتقات ترپن", useEn:"IR/SIS/SI rubbers; terpene derivatives", cas:"78-79-5", hazard:true, page:"isoprene.html"},
+  {name:"Isopropanol (IPA)", nameFa:"ایزوپروپانول", formula:"C3H8O", category:"Alcohol", use:"حلال‌ها، مسیر استون", useEn:"Solvent; acetone chain", cas:"67-63-0", hazard:true, page:"isopropanol.html"},
+  {name:"Kerosene / Jet A-1", nameFa:"نفت چراغ / جت A-1", formula:"Complex mixture", category:"Refining Product", use:"سوخت هواپیما، حلال‌ها", useEn:"Jet fuel and solvents", cas:"8008-20-6", hazard:true, page:"kerosene.html"},
+  {name:"LAB Sulfonic Acid (LABSA)", nameFa:"اسید سولفونیک خطی آلکیل‌بنزن", formula:"C10-14H21-29SO3H", category:"Surfactant", use:"خنثی‌شده به LAS", useEn:"Neutralized to LAS", cas:"27176-87-0", hazard:false, page:"labsa.html"},
+  {name:"LAS (Linear Alkylbenzene Sulfonate)", nameFa:"سولفونات خطی آلکیل‌بنزن", formula:"C10-14H21-29SO3Na", category:"Surfactant", use:"مواد شوینده", useEn:"Detergents", cas:"25155-30-0", hazard:false, page:"las.html"},
+  {name:"LDPE", nameFa:"پلی‌اتیلن با چگالی کم", formula:"(C2H4)n", category:"Polyolefin", use:"فیلم، پوشش", useEn:"Films and coatings", cas:"9002-88-4", hazard:false, page:"ldpe.html"},
+  {name:"LLDPE", nameFa:"پلی‌اتیلن با چگالی خطی کم", formula:"(C2H4)n", category:"Polyolefin", use:"فیلم (با کومونومر C4/C6/C8)", useEn:"Films (C4/C6/C8 comonomers)", cas:"9002-88-4", hazard:false, page:"lldpe.html"},
+  {name:"LPG (Propane/Butane mix)", nameFa:"گاز مایع (مخلوط پروپان/بوتان)", formula:"C3H8/C4H10", category:"Refining Product", use:"سوخت، مواد اولیه پتروشیمی", useEn:"Fuel and petrochemical feedstock", cas:"68476-85-7", hazard:true, page:"lpg.html"},
+  {name:"Lauric Acid", nameFa:"اسید لوریک", formula:"C12H24O2", category:"Fatty Acid", use:"سطوح‌فعال، روان‌کننده‌ها", useEn:"Surfactants and lubricants", cas:"143-07-7", hazard:false, page:"lauric_acid.html"},
+  {name:"Linear Alkylbenzene (LAB)", nameFa:"آلکیل‌بنزن خطی", formula:"C10-14H22-30", category:"Surfactant Feed", use:"پایه شوینده‌های LABSA/LAS", useEn:"Feedstock for LABSA/LAS detergents", cas:"68583-32-6", hazard:false, page:"lab.html"},
+  {name:"MIBK (Methyl Isobutyl Ketone)", nameFa:"متیل ایزوبوتیل کتون", formula:"C6H12O", category:"Ketone/Solvent", use:"حلال، مواد شیمیایی لاستیک", useEn:"Solvent; rubber chemicals", cas:"108-10-1", hazard:true, page:"mibk.html"},
+  {name:"MTBE", nameFa:"متیل ترت-بوتیل اتر", formula:"C5H12O", category:"Ether", use:"اکسیژن‌دهنده بنزین، مشتق ایزوبوتِن", useEn:"Gasoline oxygenate; isobutene derivative", cas:"1634-04-2", hazard:true, page:"mtbe.html"},
+  {name:"Maleic Anhydride (MA)", nameFa:"انیدرید مالئیک", formula:"C4H2O3", category:"Anhydride", use:"رزین‌های پلی‌استر غیراتشاعی (UPR)، 1,4-BDO", useEn:"UPR polyester resins; BDO chain", cas:"108-31-6", hazard:true, page:"maleic_anhydride.html"},
+  {name:"Melamine-Formaldehyde (MF)", nameFa:"ملامین-فرمالدئید", formula:"(C3H6N6·CH2O)n", category:"Thermoset", use:"لایه‌ها، ظروف غذا", useEn:"Laminates and molded goods", cas:"9003-08-5", hazard:false, page:"mf.html"},
+  {name:"Metallocene Catalysts", nameFa:"کاتالیست‌های متالوسن", formula:"Various", category:"Catalyst", use:"پلیمریزاسیون پلی‌اولفین‌ها (mPE, rPP)", useEn:"Polyolefin polymerization (mPE, specialty PP)", cas:"Various", hazard:false, page:"metallocene_catalysts.html"},
+  {name:"Methacrylic Acid", nameFa:"اسید متاکریلیک", formula:"C4H6O2", category:"Unsaturated Acid", use:"PMMA (از طریق MMA)، پوشش‌ها", useEn:"PMMA chain (via MMA) and coatings", cas:"79-41-4", hazard:true, page:"methacrylic_acid.html"},
+  {name:"Methane", nameFa:"متان", formula:"CH4", category:"Feedstock/Gas", use:"LNG/LPG، گاز سنتز، آمونیاک/اوره (جنبه اصلی گاز طبیعی)", useEn:"Natural gas basis: LNG, syngas, ammonia/urea", cas:"74-82-8", hazard:true, page:"methane.html"},
+  {name:"Methanol", nameFa:"متانول", formula:"CH3OH", category:"Alcohol", use:"تولید فرمالدئید، اسید استیک، MTBE/DME، MTO/DMTO", useEn:"Formaldehyde, acetic acid, MTBE/DME, and MTO/DMTO", cas:"67-56-1", hazard:true, page:"methanol.html"},
+  {name:"Methyl Acrylate", nameFa:"اکریلات متیل", formula:"C4H6O2", category:"Ester/Monomer", use:"اکریل‌ها، چسب‌ها", useEn:"Acrylics and adhesives", cas:"96-33-3", hazard:true, page:"methyl_acrylate.html"},
+  {name:"Methyl Ethyl Ketone (MEK)", nameFa:"متیل اتیل کتون", formula:"C4H8O", category:"Ketone/Solvent", use:"پوشش‌ها، چسب‌ها", useEn:"Coatings and adhesives solvent", cas:"78-93-3", hazard:true, page:"mek.html"},
+  {name:"Methyl Methacrylate (MMA)", nameFa:"متیل متاکریلات", formula:"C5H8O2", category:"Ester/Monomer", use:"PMMA، پوشش‌ها", useEn:"PMMA and coatings", cas:"80-62-6", hazard:true, page:"mma.html"},
+  {name:"Methylene Chloride (DCM)", nameFa:"دی‌کلرومتان", formula:"CH2Cl2", category:"Solvent", use:"حذفکننده‌های رنگ، دارو", useEn:"Paint stripper and pharma solvent/intermediate", cas:"75-09-2", hazard:true, page:"dcm.html"},
+  {name:"Methylene Diphenyl Diisocyanate (MDI)", nameFa:"دی‌فنیل‌متان دی‌ایزوسیانات", formula:"C15H10N2O2", category:"Isocyanate", use:"پلی‌اورتان‌ها (فوم‌های سخت)", useEn:"Polyurethanes (rigid foams)", cas:"101-68-8", hazard:true, page:"mdi.html"},
+  {name:"Microcrystalline Wax", nameFa:"موم میکروکریستالی", formula:"Complex mixture", category:"Refining Product", use:"چسب‌ها، آرایشی", useEn:"Adhesives and cosmetics", cas:"63231-59-4", hazard:false, page:"microcrystalline_wax.html"},
+  {name:"Monoammonium Phosphate (MAP)", nameFa:"مونوآمونیوم فسفات", formula:"NH4H2PO4", category:"Fertilizer/Agrochemical", use:"کود", useEn:"Fertilizer", cas:"7722-76-1", hazard:false, page:"map.html"},
+  {name:"Monoethanolamine (MEA)", nameFa:"اتانول‌آمین", formula:"C2H7NO", category:"Amine", use:"شیرین‌سازی گاز، سطح‌فعال‌ها", useEn:"Gas treating and surfactant intermediates", cas:"141-43-5", hazard:true, page:"mea.html"},
+  {name:"m-Cresol", nameFa:"m-کرزول", formula:"C7H8O", category:"Phenolic", use:"رزین‌ها، حلال‌ها", useEn:"Resins and solvents", cas:"108-39-4", hazard:true, page:"m_cresol.html"},
+  {name:"m-Xylene", nameFa:"m-زایلن", formula:"C8H10", category:"Aromatic Intermediate", use:"تولید اسید ایزوفتالیک", useEn:"Isophthalic acid chain", cas:"108-38-3", hazard:true, page:"m_xylene.html"},
+  {name:"NBR (Acrylonitrile-Butadiene Rubber)", nameFa:"لاستیک آکریلونیتریل-بوتادین", formula:"(C8H8·C4H6)n", category:"Nitrile Rubber", use:"شیلنگ‌ها/درزگیرهای مقاوم در برابر روغن", useEn:"Oil-resistant hoses and seals", cas:"9003-56-1", hazard:false, page:"nbr.html"},
+  {name:"NR (Natural Rubber)", nameFa:"لاستیک طبیعی", formula:"(C5H8)n", category:"Diene Rubber", use:"لاستیک‌ها، کالاهای لاستیکی عمومی", useEn:"General rubber goods", cas:"9006-04-6", hazard:false, page:"nr.html"},
+  {name:"Naphtha", nameFa:"نافتا", formula:"Complex mixture", category:"Refining Product", use:"مواد اولیه شکسته‌شدن حرارتی؛ تبدیل به آروماتیک‌ها", useEn:"Steam cracking feedstock; aromatics production", cas:"8030-30-6", hazard:true, page:"naphtha.html"},
+  {name:"Nitric Acid", nameFa:"اسید نیتریک", formula:"HNO3", category:"Inorganic Utility", use:"کودها، نیتراسیون‌ها", useEn:"Fertilizers and nitration chemistry", cas:"7697-37-2", hazard:true, page:"nitric_acid.html"},
+  {name:"Nitrobenzene", nameFa:"نیتروبنزن", formula:"C6H5NO2", category:"Intermediate", use:"تولید آنیلین", useEn:"Aniline production", cas:"98-95-3", hazard:true, page:"nitrobenzene.html"},
+  {name:"Nitrogen", nameFa:"نیتروژن", formula:"N2", category:"Inorganic Utility", use:"اینرت‌سازی، پوشش‌دهی", useEn:"Inerting and blanketing", cas:"7727-37-9", hazard:false, page:"nitrogen.html"},
+  {name:"Nonylphenol Ethoxylates (NPEO-9)", nameFa:"اتوکسیلات نونیل‌فنول", formula:"C15H24O(CH2CH2O)9H", category:"Surfactant", use:"شوینده‌های صنعتی (در حال حذف در برخی مناطق)", useEn:"Industrial detergents (phase-out in some regions)", cas:"9016-45-9", hazard:true, page:"npeo.html"},
+  {name:"n-Butane", nameFa:"n-بوتان", formula:"C4H10", category:"Feedstock/Gas", use:"شکسته‌شدن، ایزومریزاسیون؛ مواد اولیه آلکیلاسیون", useEn:"Cracking/isomerization; alkylation feed", cas:"106-97-8", hazard:true, page:"n_butane.html"},
+  {name:"n-Butanol", nameFa:"n-بوتانول", formula:"C4H10O", category:"Alcohol", use:"استرهای اکریلات (اکریلات بوتیل)، نرم‌کننده‌ها", useEn:"Acrylate esters (butyl acrylate) and plasticizers", cas:"71-36-3", hazard:true, page:"n_butanol.html"},
+  {name:"n-Propanol", nameFa:"n-پروپانول", formula:"C3H8O", category:"Alcohol", use:"حلال، استرهای پروپیونات", useEn:"Solvent; propionate esters", cas:"71-23-8", hazard:true, page:"n_propanol.html"},
+  {name:"Oleic Acid", nameFa:"اسید اولئیک", formula:"C18H34O2", category:"Fatty Acid", use:"سطوح‌فعال، روان‌کننده‌ها", useEn:"Surfactants and lubricants", cas:"112-80-1", hazard:false, page:"oleic_acid.html"},
+  {name:"Organotin Stabilizers", nameFa:"پایدارکننده‌های ارگانوتین", formula:"Various", category:"Additive/Stabilizer", use:"پایدارسازی PVC سخت", useEn:"Rigid PVC stabilization", cas:"Various", hazard:true, page:"organotin_stabilizers.html"},
+  {name:"Oxygen", nameFa:"اکسیژن", formula:"O2", category:"Inorganic Utility", use:"اکسیداسیون‌ها، EO/PO", useEn:"Oxidation; EO/PO processes", cas:"7782-44-7", hazard:false, page:"oxygen.html"},
+  {name:"o-Cresol", nameFa:"o-کرزول", formula:"C7H8O", category:"Phenolic", use:"رزین‌ها، حلال‌ها", useEn:"Resins and solvents", cas:"95-48-7", hazard:true, page:"o_cresol.html"},
+  {name:"o-Xylene", nameFa:"o-زایلن", formula:"C8H10", category:"Aromatic Intermediate", use:"تولید انیدرید فتالیک", useEn:"Phthalic anhydride chain", cas:"95-47-6", hazard:true, page:"o_xylene.html"},
+  {name:"PA6 (Nylon-6)", nameFa:"نایلون 6", formula:"(C12H22N2O2)n", category:"Polyamide", use:"فیبرها، کاربردهای مهندسی", useEn:"Fibers and engineering applications", cas:"25038-54-4", hazard:false, page:"pa6.html"},
+  {name:"PA66 (Nylon-6,6)", nameFa:"نایلون 6,6", formula:"(C24H44N4O8)n", category:"Polyamide", use:"کاربردهای مهندسی، فیبرها", useEn:"Engineering parts and fibers", cas:"29950-27-2", hazard:false, page:"pa66.html"},
+  {name:"PBT", nameFa:"پلی‌بوتیلن ترفتالات", formula:"(C12H14O5)n", category:"Engineering Polyester", use:"کانکتورها، قطعات خودرو", useEn:"Connectors and automotive parts", cas:"26072-60-0", hazard:false, page:"pbt.html"},
+  {name:"PC", nameFa:"پلی‌کربنات", formula:"(C16H14O3)n", category:"Engineering", use:"رسانه‌های نوری، شیشه‌های ضد ضربه", useEn:"Optical media and impact-resistant glazing", cas:"25037-45-0", hazard:false, page:"pc.html"},
+  {name:"PEEK", nameFa:"پلی‌اتر اتر کتون", formula:"(C19H12O3)n", category:"High-Performance", use:"صنایع هوا و فضا، نفت و گاز", useEn:"Aerospace and oil & gas", cas:"21747-65-5", hazard:false, page:"peek.html"},
+  {name:"PEI (Ultem)", nameFa:"پلی‌اتریمید (آلتِم)", formula:"(C22H10N2O5)n", category:"High-Performance", use:"هوا و فضا/الکترونیک", useEn:"Aerospace and electronics", cas:"21708-60-3", hazard:false, page:"pei.html"},
+  {name:"PET (Bottle/Film/Resin)", nameFa:"پلی‌اتیلن ترفتالات", formula:"(C10H8O4)n", category:"Polyester", use:"بطری‌ها، فیبرها", useEn:"Bottles and fibers", cas:"25038-59-9", hazard:false, page:"pet.html"},
+  {name:"PETG (CHDM-modified)", nameFa:"پلی‌اتیلن ترفتالات گلایکول", formula:"(C14H18O5)n", category:"Copolyester", use:"فرم‌دهی حرارتی، محصولات پزشکی", useEn:"Thermoforming and medical products", cas:"25038-59-9", hazard:false, page:"petg.html"},
+  {name:"PI (Polyimide)", nameFa:"پلی‌ایمید", formula:"Various", category:"High-Performance", use:"فیلم‌ها، الکترونیک", useEn:"Films and electronics", cas:"Various", hazard:false, page:"pi.html"},
+  {name:"PMMA", nameFa:"پلی‌متیل متاکریلات", formula:"(C5H8O2)n", category:"Acrylic", use:"صفحات، قطعات نوری", useEn:"Sheets and optical parts", cas:"9011-14-7", hazard:false, page:"pmma.html"},
+  {name:"POM (Acetal)", nameFa:"پلی‌اکسی‌متیلن (استال)", formula:"(CH2O)n", category:"Engineering", use:"چرخ‌دنده‌ها، قطعات دقیق", useEn:"Gears and precision parts", cas:"9002-81-7", hazard:false, page:"pom.html"},
+  {name:"PP (Homo/Copolymer)", nameFa:"پلی‌پروپیلن", formula:"(C3H6)n", category:"Polyolefin", use:"قالب‌گیری، فیلم، فیبر", useEn:"Molding, films, fibers", cas:"9003-07-0", hazard:false, page:"pp.html"},
+  {name:"PPS", nameFa:"پلی‌فنیلن سولفید", formula:"(C6H4S)n", category:"High-Performance", use:"خودرو/الکتریکی", useEn:"Automotive and electrical", cas:"26329-72-8", hazard:false, page:"pps.html"},
+  {name:"PS (GPPS/HIPS)", nameFa:"پلی‌استایرن", formula:"(C8H8)n", category:"Styrenic", use:"لوازم خانگی، بسته‌بندی", useEn:"Appliances and packaging", cas:"9003-53-6", hazard:false, page:"ps.html"},
+  {name:"PTFE", nameFa:"پلی‌تترافلوئورواتیلن", formula:"(C2F4)n", category:"Fluoropolymer", use:"غیرچسبنده، درزگیرها", useEn:"Non-stick coatings and seals", cas:"9002-84-0", hazard:false, page:"ptfe.html"},
+  {name:"PU (Polyurethane – Foams/Elastomers)", nameFa:"پلی‌اورتان", formula:"Various", category:"Urethane", use:"فوم‌ها، CASE", useEn:"Foams and CASE applications", cas:"Various", hazard:false, page:"pu.html"},
+  {name:"PVC (Rigid/Flexible)", nameFa:"پلی‌وینیل کلراید", formula:"(C2H3Cl)n", category:"Vinyl Polymer", use:"لوله‌ها، نمایه‌ها، کابل‌ها", useEn:"Pipes, profiles, cables", cas:"9002-86-2", hazard:false, page:"pvc.html"},
+  {name:"PVDF", nameFa:"پلی‌وینیلیدن فلوراید", formula:"(C2H2F2)n", category:"Fluoropolymer", use:"باتری‌ها، تجهیزات شیمیایی", useEn:"Batteries and chemical equipment", cas:"24937-79-9", hazard:false, page:"pvdf.html"},
+  {name:"Paraffin Wax", nameFa:"موم پارافین", formula:"C20H42 to C40H82", category:"Refining Product", use:"شمع‌ها، اندازه‌گیری تخته، بسته‌بندی", useEn:"Candles and packaging", cas:"8002-74-2", hazard:false, page:"paraffin_wax.html"},
+  {name:"Perchloroethylene (PCE)", nameFa:"پرکلرواتیلن", formula:"C2Cl4", category:"Solvent", use:"خشکشویی/حذف چربی فلزات", useEn:"Dry cleaning and metal degreasing", cas:"127-18-4", hazard:true, page:"pce.html"},
+  {name:"Phenol", nameFa:"فنل", formula:"C6H5OH", category:"Intermediate", use:"رزین‌های فنولی، BPA، کاپرولاکتام", useEn:"Phenolic resins, BPA chain, caprolactam chain", cas:"108-95-2", hazard:true, page:"phenol.html"},
+  {name:"Phenolic Resins (PF)", nameFa:"رزین‌های فنولی", formula:"(C6H6O)n", category:"Thermoset", use:"ساینده‌ها، قالب‌گیری", useEn:"Abrasives and molding compounds", cas:"9003-35-6", hazard:false, page:"pf.html"},
+  {name:"Phthalic Anhydride (PA)", nameFa:"انیدرید فتالیک", formula:"C8H4O3", category:"Anhydride", use:"نرم‌کننده‌ها، رزین‌های آلکید", useEn:"Plasticizers and alkyd resins", cas:"85-44-9", hazard:true, page:"phthalic_anhydride.html"},
+  {name:"Potash (MOP)", nameFa:"پتاس (کلرید پتاسیم)", formula:"KCl", category:"Potassium Fertilizer", use:"کود", useEn:"Fertilizer", cas:"7447-40-7", hazard:false, page:"potash.html"},
+  {name:"Propane", nameFa:"پروپان", formula:"C3H8", category:"Feedstock/Gas", use:"دی‌هیدروژناسیون (PDH) به پروپیلن؛ LPG", useEn:"PDH to propylene; LPG component", cas:"74-98-6", hazard:true, page:"propane.html"},
+  {name:"Propionic Acid", nameFa:"اسید پروپیونیک", formula:"C3H6O2", category:"Carboxylic Acid", use:"نگهدارنده‌ها، پروپیونات سلولز", useEn:"Preservatives and cellulose propionates", cas:"79-09-4", hazard:false, page:"propionic_acid.html"},
+  {name:"Propylene", nameFa:"پروپیلن", formula:"C3H6", category:"Monomer", use:"تولید PP، PO، آکریلونیتریل، کومین/فنل/استون", useEn:"PP, PO, acrylonitrile, and phenol/acetone chain", cas:"115-07-1", hazard:true, page:"propylene.html"},
+  {name:"Propylene Glycol (PG)", nameFa:"پروپیلن‌گلیکول", formula:"C3H8O2", category:"Diol/Glycol", use:"رزین‌های پلی‌استر غیراتشاعی، ضد یخ", useEn:"UPR resins and antifreeze", cas:"57-55-6", hazard:false, page:"pg.html"},
+  {name:"Propylene Oxide (PO)", nameFa:"پروپیلن اکساید", formula:"C3H6O", category:"Epoxide", use:"پلی‌ال‌های پلی‌اتر، گلیکول‌های پروپیلن", useEn:"Polyether polyols and propylene glycols", cas:"75-56-9", hazard:true, page:"propylene_oxide.html"},
+  {name:"p-Cresol", nameFa:"p-کرزول", formula:"C7H8O", category:"Phenolic", use:"آنتی‌اکسیدان‌ها، رزین‌ها", useEn:"Antioxidants and resins", cas:"106-44-5", hazard:true, page:"p_cresol.html"},
+  {name:"p-Xylene", nameFa:"p-زایلن", formula:"C8H10", category:"Aromatic Intermediate", use:"تولید PTA/PET", useEn:"PTA/PET chain", cas:"106-42-3", hazard:true, page:"p_xylene.html"},
+  {name:"Raney Nickel", nameFa:"نیکل رانی", formula:"Ni", category:"Catalyst", use:"هیدروژناسیون‌ها", useEn:"Hydrogenation catalyst", cas:"7440-02-0", hazard:true, page:"raney_nickel.html"},
+  {name:"SAN", nameFa:"استایرن-آکریلونیتریل", formula:"(C8H8·C3H3N)n", category:"Styrenic", use:"ظروف خانگی، مخلوط‌ها", useEn:"Housewares and blends", cas:"9003-53-6", hazard:false, page:"san.html"},
+  {name:"SBR (Styrene-Butadiene Rubber)", nameFa:"لاستیک استایرن-بوتادین", formula:"(C8H8·C4H6)n", category:"Synthetic Diene", use:"لاستیک‌ها، کفش", useEn:"Rubber goods and footwear", cas:"9003-53-6", hazard:false, page:"sbr.html"},
+  {name:"SIS/SBS (Styrenic Block Copolymers)", nameFa:"کوپلیمرهای بلوکی استایرنی", formula:"(C8H8·C4H6)n", category:"TPE", use:"چسب‌ها، کفش", useEn:"Adhesives and footwear", cas:"9003-53-6", hazard:false, page:"sbs_sis.html"},
+  {name:"SLES (Sodium Laureth Sulfate)", nameFa:"سولفات سدیم لورت", formula:"C12H25(OCH2CH2)nOSO3Na", category:"Surfactant", use:"شامپو/شوینده‌های منزل", useEn:"Shampoos and household detergents", cas:"68891-38-3", hazard:false, page:"sles.html"},
+  {name:"SLS (Sodium Lauryl Sulfate)", nameFa:"سولفات سدیم لوریل", formula:"C12H25OSO3Na", category:"Surfactant", use:"سطح‌فعال آنیونی", useEn:"Anionic surfactant", cas:"151-21-3", hazard:false, page:"sls.html"},
+  {name:"Sodium Hydroxide (Caustic Soda)", nameFa:"سود کاستیک", formula:"NaOH", category:"Inorganic Utility", use:"خنثی‌سازی، کاغذ و خمیر کاغذ، آلومینایی", useEn:"Neutralization; pulp & paper; alumina", cas:"1310-73-2", hazard:true, page:"naoh.html"},
+  {name:"Sodium Hypochlorite", nameFa:"هیپوکلریت سدیم", formula:"NaOCl", category:"Inorganic Utility", use:"سفیدکننده، ضدعفونی", useEn:"Bleach and disinfection", cas:"7681-52-9", hazard:true, page:"sodium_hypochlorite.html"},
+  {name:"Stearic Acid", nameFa:"اسید استئاریک", formula:"C18H36O2", category:"Fatty Acid", use:"لاستیک، شمع‌ها، پایدارکننده‌ها", useEn:"Rubber, candles, stabilizers", cas:"57-11-4", hazard:false, page:"stearic_acid.html"},
+  {name:"Styrene Monomer (SM)", nameFa:"استایرن مونومر", formula:"C8H8", category:"Monomer", use:"تولید PS، ABS، SBR (SBS)", useEn:"PS, ABS, SBR/SBS production", cas:"100-42-5", hazard:true, page:"styrene.html"},
+  {name:"Sulfur (Elemental)", nameFa:"گوگرد (عنصری)", formula:"S", category:"Inorganic Utility", use:"اسید سولفوریک، ولکانیزاسیون", useEn:"Sulfuric acid and vulcanization", cas:"7704-34-9", hazard:false, page:"sulfur.html"},
+  {name:"Sulfuric Acid", nameFa:"اسید سولفوریک", formula:"H2SO4", category:"Inorganic Utility", use:"نیتراسیون/سولفاتاسیون، آلکیلاسیون", useEn:"Nitration/sulfation; alkylation", cas:"7664-93-9", hazard:true, page:"sulfuric_acid.html"},
+  {name:"TPU (Thermoplastic Polyurethane)", nameFa:"پلی‌اورتان ترموپلاستیک", formula:"Various", category:"TPE-U", use:"کفش، کابل‌ها", useEn:"Footwear and cables", cas:"Various", hazard:false, page:"tpu.html"},
+  {name:"Terephthalic Acid (PTA/TPA)", nameFa:"اسید ترفتالیک", formula:"C8H6O4", category:"Aromatic Dicarboxylic Acid", use:"رزین/فیبرهای PET", useEn:"PET resins and fibers", cas:"100-21-0", hazard:false, page:"pta.html"},
+  {name:"Titanium Tetrachloride (TiCl4)", nameFa:"تیتانیوم تتراکلرید", formula:"TiCl4", category:"Catalyst/Intermediate", use:"پیش‌ساز کاتالیست، کلریناسیون", useEn:"Catalyst precursor; chlorination chemistry", cas:"7550-45-0", hazard:true, page:"ticl4.html"},
+  {name:"Toluene", nameFa:"تولوئن", formula:"C7H8", category:"Aromatic Feedstock", use:"تولید TDI، حلال‌ها، بنزن/زایلن از ترانس‌آلکیلاسیون", useEn:"TDI chain; solvents; benzene/xylene via transalkylation", cas:"108-88-3", hazard:true, page:"toluene.html"},
+  {name:"Toluene (solvent use)", nameFa:"تولوئن (استفاده به عنوان حلال)", formula:"C7H8", category:"Solvent", use:"پوشش‌ها/جوهرها", useEn:"Coatings and inks solvent", cas:"108-88-3", hazard:true, page:"toluene_solvent.html"},
+  {name:"Toluene Diisocyanate (TDI)", nameFa:"تولوئن دی‌ایزوسیانات", formula:"C9H6N2O2", category:"Isocyanate", use:"پلی‌اورتان‌ها (فوم‌های انعطاف)", useEn:"Flexible polyurethane foams", cas:"26471-62-5", hazard:true, page:"tdi.html"},
+  {name:"Trichloroethylene (TCE)", nameFa:"تری‌کلرواتیلن", formula:"C2HCl3", category:"Solvent", use:"حذف چربی/حلال", useEn:"Degreasing solvent", cas:"79-01-6", hazard:true, page:"tce.html"},
+  {name:"Triethanolamine (TEA)", nameFa:"تری‌اتانول‌آمین", formula:"C6H15NO3", category:"Amine", use:"کمک آسیاب سیمان، سطح‌فعال‌ها", useEn:"Cement grinding aid; surfactant intermediate", cas:"102-71-6", hazard:false, page:"tea.html"},
+  {name:"Triethylene Glycol (TEG)", nameFa:"تری‌اتیلن‌گلیکول", formula:"C6H14O4", category:"Diol/Glycol", use:"خشک‌سازی گاز، حلال‌ها", useEn:"Gas dehydration and solvents", cas:"112-27-6", hazard:false, page:"teg.html"},
+  {name:"UHMWPE", nameFa:"پلی‌اتیلن با وزن مولکولی بسیار بالا", formula:"(C2H4)n", category:"High-MW Polyolefin", use:"فیبرها، قطعات سایشی", useEn:"Fibers and wear parts", cas:"9002-88-4", hazard:false, page:"uhmwpe.html"},
+  {name:"UV Absorber 531 (BP-12)", nameFa:"جذب‌کننده UV 531", formula:"C21H26O3", category:"Additive/UV Absorber", use:"محافظت در برابر UV در پوشش‌ها/پلاستیک‌ها", useEn:"UV protection in plastics and coatings", cas:"1843-05-6", hazard:false, page:"uv_absorber_531.html"},
+  {name:"Unsaturated Polyester Resin (UPR)", nameFa:"رزین پلی‌استر غیراتشاعی", formula:"Various", category:"Thermoset", use:"کامپوزیت‌های FRP", useEn:"FRP composites", cas:"Various", hazard:true, page:"upr.html"},
+  {name:"Urea", nameFa:"اوره", formula:"CH4N2O", category:"Fertilizer/Agrochemical", use:"کود دانه‌ای/گرانولی؛ رزین‌ها (UF)", useEn:"Granular fertilizer; UF resin chain", cas:"57-13-6", hazard:false, page:"urea.html"},
+  {name:"Urea-Formaldehyde (UF)", nameFa:"اوره-فرمالدئید", formula:"(CH4N2O·CH2O)n", category:"Thermoset", use:"پنل‌های چوب", useEn:"Wood panels resins", cas:"9011-06-1", hazard:true, page:"uf.html"},
+  {name:"Vinyl Acetate Monomer (VAM)", nameFa:"مونومر استات وینیل", formula:"C4H6O2", category:"Ester/Monomer", use:"PVA/PVOH، EVA", useEn:"PVAc/PVOH chain and EVA", cas:"108-05-4", hazard:true, page:"vam.html"},
+  {name:"Vinyl Chloride Monomer (VCM)", nameFa:"مونومر وینیل کلراید", formula:"C2H3Cl", category:"Monomer", use:"تولید PVC", useEn:"PVC production", cas:"75-01-4", hazard:true, page:"vcm.html"},
+  {name:"Vinyl Ester Resins", nameFa:"رزین‌های وینیل استر", formula:"Various", category:"Thermoset", use:"کامپوزیت‌های مقاوم در برابر خوردگی", useEn:"Corrosion-resistant composites", cas:"Various", hazard:true, page:"vinyl_ester_resins.html"},
+  {name:"Vinylidene Chloride (VDC)", nameFa:"وینیلیدن کلراید", formula:"C2H2Cl2", category:"Monomer", use:"رزین‌های PVDC با خاصیت مانع", useEn:"Barrier PVDC resins", cas:"563-47-3", hazard:true, page:"vdc.html"},
+  {name:"White Oil (Mineral Oil)", nameFa:"روغن سفید (روغن معدنی)", formula:"Complex mixture", category:"Refining Product", use:"روغن پایه در آرایشی/دارویی", useEn:"Base oil for cosmetics/pharma", cas:"8042-47-5", hazard:false, page:"white_oil.html"},
+  {name:"White Spirit (Mineral Spirits)", nameFa:"گازوئیل سفید", formula:"Complex mixture", category:"Solvent", use:"کم‌رنگ‌کننده نقاشی/پاک‌کننده", useEn:"Paint thinner and cleaner", cas:"8052-41-3", hazard:true, page:"white_spirit.html"},
+  {name:"Xylene (mixed isomers)", nameFa:"زایلن (مخلوط ایزومرها)", formula:"C8H10", category:"Solvent", use:"پوشش‌ها/جوهرها", useEn:"Coatings and inks solvent", cas:"1330-20-7", hazard:true, page:"xylene_mixed.html"},
+  {name:"Xylene – o, m, p", nameFa:"زایلن‌های o، m، p", formula:"C8H10", category:"Aromatic Solvent", use:"حلال، مواد اولیه PTA/PA/IPA", useEn:"Solvent; feedstock for PTA/PA/IPA chains", cas:"1330-20-7", hazard:true, page:"xylene_isomers.html"},
+  {name:"Y-Zeolite FCC Catalyst", nameFa:"کاتالیست زئولیت Y برای FCC", formula:"Various", category:"Catalyst", use:"خانواده کاتالیست FCC", useEn:"FCC catalyst family", cas:"Various", hazard:false, page:"y_zeolite.html"},
+  {name:"ZSM-5 Zeolite", nameFa:"زئولیت ZSM-5", formula:"NaAlSi5O12", category:"Catalyst", use:"افزایش پروپیلن در FCC، آروماتیک‌سازی", useEn:"Propylene boosting in FCC; aromatization", cas:"69744-52-3", hazard:false, page:"zsm_5.html"},
+  {name:"Zeolite Y (FAU, Y-Zeolite)", nameFa:"زئولیت Y (FAU، زئولیت Y)", formula:"Na56[(AlO2)56(SiO2)136]", category:"Catalyst", use:"کاتالیست شکستن FCC", useEn:"FCC cracking catalyst", cas:"1318-02-1", hazard:false, page:"zeolite_y.html"},
+  {name:"Ziegler-Natta Catalysts", nameFa:"کاتالیست‌های زیگلر-ناتا", formula:"Various", category:"Catalyst", use:"پلیمریزاسیون پلی‌اولفین‌ها", useEn:"Polyolefin polymerization", cas:"Various", hazard:false, page:"ziegler_natta.html"},
+  {name:"Zinc Stearate", nameFa:"استئارات روی", formula:"Zn(C18H35O2)2", category:"Additive/Lubricant", use:"آزادکننده قالب در PVC/استایرن‌ها", useEn:"Mold release for PVC/styrenics", cas:"557-05-1", hazard:false, page:"zinc_stearate.html"},
+  {name:"Zirconium Octoate", nameFa:"اکتوات زیرکونیوم", formula:"Zr(C8H15O2)4", category:"Additive/Drier", use:"خشک‌کننده پوشش‌ها", useEn:"Coatings drier", cas:"13632-73-8", hazard:true, page:"zirconium_octoate.html"},
+  {name:"Metallurgical-grade Silicon", nameFa:"سیلیکن متال (گرید متالورژیکی)", formula:"Si", category:"Silicon & Silicones", use:"خوراک تولید پلی‌سیلیکون و سیلیکون‌ها، آلیاژسازی آلومینیوم", useEn:"Feedstock for polysilicon/silicones; Al alloying; glass & ceramics", cas:"7440-21-3", hazard:false, page:"metallurgical_silicon.html"},
+  {name:"Polysilicon", nameFa:"پلی‌سیلیکون", formula:"Si", category:"Silicon & Silicones", use:"ماده اصلی تولید ویفرهای خورشیدی و نیمه‌رساناها", useEn:"Primary material for solar wafers and semiconductor-grade silicon products", cas:"7440-21-3", hazard:false, page:"polysilicon.html"},
+  {name:"Trichlorosilane (TCS)", nameFa:"تری‌کلروسیلان", formula:"HSiCl3", category:"Silicon & Silicones", use:"واسط کلیدی در تولید پلی‌سیلیکون و مشتقات سیلان", useEn:"Key intermediate for polysilicon production and silane derivatives", cas:"10025-78-2", hazard:true, page:"trichlorosilane.html"},
+  {name:"Silane", nameFa:"سیلان", formula:"SiH4", category:"Silicon & Silicones", use:"گاز فرایندی برای لایه‌نشانی (CVD) در نیمه‌رسانا", useEn:"Process gas for CVD deposition in semiconductor and solar manufacturing", cas:"7803-62-5", hazard:true, page:"silane.html"},
+  {name:"Octamethylcyclotetrasiloxane (D4)", nameFa:"اکتامتیل‌سیکلو‌تتراسیلوکسان (D4)", formula:"C8H24O4Si4", category:"Silicon & Silicones", use:"واسط تولید سیلیکون‌ها، PDMS", useEn:"Intermediate for silicones, PDMS polymers, and silicone rubbers", cas:"556-67-2", hazard:true, page:"d4.html"},
+  {name:"Decamethylcyclopentasiloxane (D5)", nameFa:"دکامتیل‌سیکلو‌پنتاسیلوکسان (D5)", formula:"C10H30O5Si5", category:"Silicon & Silicones", use:"حلال/سیال سیلیکونی در محصولات مراقبت شخصی", useEn:"Silicone fluid used as solvent/carrier in personal care and industrial applications", cas:"541-02-6", hazard:true, page:"d5.html"},
+  {name:"Dodecamethylcyclohexasiloxane (D6)", nameFa:"دودکامتیل‌سیکلو‌هگزا‌سیلوکسان (D6)", formula:"C12H36O6Si6", category:"Silicon & Silicones", use:"سیال سیلیکونی برای فرمولاسیون‌ها", useEn:"Silicone fluid for formulations and silicone polymer production", cas:"540-97-6", hazard:true, page:"d6.html"},
+  {name:"Dimethyl Silicone Fluid (PDMS Oil)", nameFa:"روغن سیلیکون (PDMS)", formula:"(C2H6OSi)n", category:"Silicon & Silicones", use:"روانکارها، ضدکف، عایق", useEn:"Lubricants, antifoams, insulation, and personal care formulations", cas:"63148-62-9", hazard:false, page:"pdms_oil.html"},
+  {name:"Silicone Rubber (VMQ)", nameFa:"لاستیک سیلیکونی (VMQ)", formula:"—", category:"Silicon & Silicones", use:"الاستومر برای قطعات دما بالا، درزگیرها", useEn:"High-temperature elastomer for seals, cables, and medical applications", cas:"SIL-RUB", hazard:false, page:"silicone_rubber_vmq.html"},
+  {name:"Fumed Silica", nameFa:"سیلیکا دودزا (Fumed Silica)", formula:"SiO2", category:"Silica & Fillers", use:"پرکننده و عامل رئولوژی", useEn:"Filler/rheology modifier for silicones, coatings, resins and composites", cas:"112945-52-5", hazard:false, page:"fumed_silica.html"},
+  {name:"Precipitated Silica", nameFa:"سیلیکا رسوبی", formula:"SiO2", category:"Silica & Fillers", use:"پرکننده لاستیک/تایر", useEn:"Rubber/tire filler; detergents and abrasive applications", cas:"7631-86-9", hazard:false, page:"precipitated_silica.html"},
+  {name:"Ethylene Carbonate (EC)", nameFa:"اتیلن کربنات (EC)", formula:"C3H4O3", category:"Battery & Electronics", use:"حلال الکترولیت باتری لیتیوم‌یون", useEn:"Li-ion battery electrolyte solvent; carbonate intermediate", cas:"96-49-1", hazard:false, page:"ethylene_carbonate.html"},
+  {name:"Dimethyl Carbonate (DMC)", nameFa:"دی‌متیل کربنات (DMC)", formula:"C3H6O3", category:"Battery & Electronics", use:"حلال/جزء الکترولیت باتری", useEn:"Solvent & Li-ion electrolyte component; green methylation reagent; fuel additive", cas:"616-38-6", hazard:true, page:"dimethyl_carbonate.html"},
+  {name:"Ethyl Methyl Carbonate (EMC)", nameFa:"اتیل‌متیل کربنات (EMC)", formula:"C4H8O3", category:"Battery & Electronics", use:"حلال الکترولیت باتری لیتیوم‌یون", useEn:"Li-ion battery electrolyte solvent", cas:"623-53-0", hazard:true, page:"ethyl_methyl_carbonate.html"},
+  {name:"Diethyl Carbonate (DEC)", nameFa:"دی‌اتیل کربنات (DEC)", formula:"C5H10O3", category:"Battery & Electronics", use:"حلال الکترولیت باتری", useEn:"Battery electrolyte solvent and industrial solvent", cas:"105-58-8", hazard:true, page:"diethyl_carbonate.html"},
+  {name:"Propylene Carbonate (PC, solvent)", nameFa:"پروپیلن کربنات", formula:"C4H6O3", category:"Battery & Electronics", use:"حلال قطبی و جزء الکترولیت باتری", useEn:"Polar solvent and battery electrolyte component", cas:"108-32-7", hazard:false, page:"propylene_carbonate.html"},
+  {name:"N-Methyl-2-pyrrolidone (NMP)", nameFa:"ان-متیل-2-پیرولیدون (NMP)", formula:"C5H9NO", category:"Solvent", use:"حلال قطبی در پلیمرها و باتری", useEn:"Polar solvent in polymers and batteries (EHS-restricted)", cas:"872-50-4", hazard:true, page:"nmp.html"},
+  {name:"Dimethylformamide (DMF)", nameFa:"دی‌متیل‌فرم‌آمید (DMF)", formula:"C3H7NO", category:"Solvent", use:"حلال قطبی برای پلیمرها و الیاف مصنوعی", useEn:"Polar solvent for polymers and synthetic fibers", cas:"68-12-2", hazard:true, page:"dmf.html"},
+  {name:"Dimethylacetamide (DMAc)", nameFa:"دی‌متیل‌استامید (DMAc)", formula:"C4H9NO", category:"Solvent", use:"حلال برای الیاف، پوشش‌ها", useEn:"Solvent for fibers, coatings and engineering polymers", cas:"127-19-5", hazard:true, page:"dmac.html"},
+  {name:"Acetic Anhydride", nameFa:"انیدرید استیک", formula:"C4H6O3", category:"Anhydride", use:"استیلاسیون، سلولز استات و داروسازی", useEn:"Acetylation reagent; cellulose acetate; pharma intermediate", cas:"108-24-7", hazard:true, page:"acetic_anhydride.html"},
+  {name:"Carbon Black (N220/N330 etc.)", nameFa:"کربن بلک", formula:"C", category:"Carbon Material", use:"پرکننده لاستیک/تایر", useEn:"Rubber/tire filler, pigment, conductive additive", cas:"1333-86-4", hazard:false, page:"carbon_black.html"},
+  {name:"BHT (Antioxidant)", nameFa:"آنتی‌اکسیدان BHT", formula:"C15H24O", category:"Additive", use:"پایدارکننده اکسیداسیون در پلیمرها", useEn:"Oxidation stabilizer for polymers and fuels", cas:"128-37-0", hazard:false, page:"bht.html"},
+  {name:"Bisphenol A (BPA)", nameFa:"بیسفنول A (BPA)", formula:"C15H16O2", category:"Intermediate", use:"خوراک تولید پلی‌کربنات و رزین‌های اپوکسی", useEn:"Feedstock for polycarbonate and epoxy resins", cas:"80-05-7", hazard:true, page:"bpa.html"},
+  {name:"Alkyl Polyglucoside (APG)", nameFa:"آلکیل پلی‌گلوکوزید (APG)", formula:"—", category:"Surfactant", use:"سورفکتانت سبز برای شوینده‌ها", useEn:"Green surfactant for detergents and personal care", cas:"APG", hazard:false, page:"apg.html"},
+  {name:"Polyethylene Wax", nameFa:"واکس پلی‌اتیلن", formula:"—", category:"Polymer", use:"کمک‌فرایند و افزودنی در پلیمر", useEn:"Processing aid for polymers, masterbatch and coatings", cas:"PEWAX", hazard:false, page:"polyethylene_wax.html"},
+  {name:"Polyvinyl Acetate (PVAc)", nameFa:"پلی‌وینیل استات (PVAc)", formula:"—", category:"Polymer", use:"چسب چوب و امولسیون‌ها", useEn:"Wood glue and emulsions", cas:"PVAc", hazard:false, page:"pvac.html"},
+  {name:"Polyvinyl Alcohol (PVOH/PVA)", nameFa:"پلی‌وینیل الکل (PVOH/PVA)", formula:"—", category:"Polymer", use:"فیلم محلول، چسب", useEn:"Water-soluble films, adhesives, textile sizing", cas:"9002-89-5", hazard:false, page:"pvoh.html"},
+  {name:"Hydrogen Chloride (gas)", nameFa:"گاز هیدروژن کلرید", formula:"HCl", category:"Inorganic", use:"خوراک تولید اسید کلریدریک", useEn:"Feedstock for hydrochloric acid and chlorination chemistry", cas:"7647-01-0", hazard:true, page:"hydrogen_chloride_gas.html"},
+  {name:"Sebacic Acid", nameFa:"اسید سباسیک", formula:"C10H18O4", category:"Acid", use:"پلاستی‌سایزرها و پلی‌آمیدها", useEn:"Plasticizers and polyamides", cas:"111-20-6", hazard:false, page:"sebacic_acid.html"},
+  {name:"Sorbitol", nameFa:"سوربیتول", formula:"C6H14O6", category:"Polyol", use:"مواد شوینده، سورفکتانت", useEn:"Detergents, surfactants and polyol applications", cas:"50-70-4", hazard:false, page:"sorbitol.html"},
+  {name:"Ammonia (Anhydrous)", nameFa:"آمونیاک (بی‌آب)", formula:"NH3", category:"Inorganic Utility", use:"خوراک تولید اوره/آمونیاک", useEn:"Feedstock for urea/ammonia chain and refining uses", cas:"7664-41-7", hazard:true, page:"ammonia.html"},
+  {name:"Hydrogen Sulfide", nameFa:"هیدروژن سولفید", formula:"H2S", category:"Acid Gas", use:"گاز ترش؛ خوراک واحد گوگردزدایی", useEn:"Sour gas component; feed to sulfur recovery/Claus units", cas:"7783-06-4", hazard:true, page:"hydrogen_sulfide.html"},
+  {name:"Sulfur Dioxide", nameFa:"دی‌اکسید گوگرد", formula:"SO2", category:"Inorganic Utility", use:"تولید سولفیت‌ها/بی‌سولفیت‌ها", useEn:"Production of sulfites/bisulfites; chemical processes", cas:"7446-09-5", hazard:true, page:"sulfur_dioxide.html"},
+  {name:"Carbonyl Sulfide (COS)", nameFa:"کربونیل سولفید", formula:"COS", category:"Acid Gas", use:"جزء گاز ترش؛ حذف در واحدهای شیرین‌سازی", useEn:"Sour-gas component removed in sweetening units", cas:"463-58-1", hazard:true, page:"carbonyl_sulfide.html"},
+  {name:"Sulfolane", nameFa:"سولفولان", formula:"C4H8O2S", category:"Solvent", use:"حلال استخراج آروماتیک‌ها (BTX)", useEn:"Aromatics (BTX) extraction solvent in refineries", cas:"126-33-0", hazard:true, page:"sulfolane.html"},
+  {name:"Methyldiethanolamine (MDEA)", nameFa:"متیل‌دی‌اتانول‌آمین (MDEA)", formula:"C5H13NO2", category:"Amine", use:"جذب H2S/CO2 در واحدهای شیرین‌سازی گاز", useEn:"Absorption of H2S/CO2 in gas sweetening", cas:"105-59-9", hazard:true, page:"mdea.html"},
+  {name:"Piperazine (PZ)", nameFa:"پیپرازین", formula:"C4H10N2", category:"Amine", use:"افزودنی در سیستم‌های آمینی", useEn:"Activator/additive in amine gas treating systems", cas:"110-85-0", hazard:true, page:"piperazine.html"},
+  {name:"2-Amino-2-methyl-1-propanol (AMP)", nameFa:"AMP", formula:"C4H11NO", category:"Amine", use:"حلال/افزودنی سیستم‌های جذب CO2", useEn:"Solvent/additive for CO2 capture systems", cas:"124-68-5", hazard:true, page:"amp.html"},
+  {name:"Morpholine", nameFa:"مورفولین", formula:"C4H9NO", category:"Amine", use:"بازدارنده خوردگی", useEn:"Corrosion inhibitor and chemical intermediate", cas:"110-91-8", hazard:true, page:"morpholine.html"},
+  {name:"Carbon Disulfide", nameFa:"کربن دی‌سولفید", formula:"CS2", category:"Sulfur Chemical", use:"واسط شیمیایی", useEn:"Chemical intermediate (cellulose/resins) and industrial solvent", cas:"75-15-0", hazard:true, page:"carbon_disulfide.html"},
+  {name:"Methanethiol (Methyl Mercaptan)", nameFa:"متیل‌مرکاپتان", formula:"CH4S", category:"Sulfur Chemical", use:"واسط مواد شیمیایی گوگردی", useEn:"Intermediate for methionine and sulfur chemicals", cas:"74-93-1", hazard:true, page:"methanethiol.html"},
+  {name:"Ethanethiol (Ethyl Mercaptan)", nameFa:"اتیل‌مرکاپتان", formula:"C2H6S", category:"Odorant", use:"بو دهنده گاز", useEn:"Gas odorant and chemical intermediate", cas:"75-08-1", hazard:true, page:"ethanethiol.html"},
+  {name:"tert-Butyl Mercaptan (TBM)", nameFa:"ترت-بوتیل‌مرکاپتان", formula:"C4H10S", category:"Odorant", use:"بو دهنده گاز طبیعی/LPG", useEn:"Odorant for natural gas/LPG", cas:"75-66-1", hazard:true, page:"tbm.html"},
+  {name:"Dimethyl Sulfide (DMS)", nameFa:"دی‌متیل‌سولفید", formula:"C2H6S", category:"Sulfur Chemical", use:"واسط شیمیایی", useEn:"Chemical intermediate in sulfur chemistry", cas:"75-18-3", hazard:true, page:"dimethyl_sulfide.html"},
+  {name:"Dimethyl Disulfide (DMDS)", nameFa:"دی‌متیل‌دی‌سولفید", formula:"C2H6S2", category:"Sulfur Chemical", use:"سولفیدینگ کاتالیست‌های هیدروتریتینگ", useEn:"Sulfiding agent for hydrotreating catalysts", cas:"624-92-0", hazard:true, page:"dmds.html"},
+  {name:"Acetylene", nameFa:"استیلن", formula:"C2H2", category:"Monomer/Gas", use:"گاز صنعتی", useEn:"Industrial gas and specialty synthesis feedstock", cas:"74-86-2", hazard:true, page:"acetylene.html"},
+  {name:"Isobutylene (Isobutene)", nameFa:"ایزوبوتن", formula:"C4H8", category:"Olefin", use:"خوراک MTBE/TBA", useEn:"Feed to MTBE/TBA, alkylation and polyisobutylene", cas:"115-11-7", hazard:true, page:"isobutylene.html"},
+  {name:"tert-Butyl Alcohol (TBA)", nameFa:"ترت-بوتانول", formula:"C4H10O", category:"Alcohol", use:"واسط MTBE/ETBE", useEn:"Intermediate for ethers (MTBE/ETBE) and industrial solvent", cas:"75-65-0", hazard:true, page:"tba.html"},
+  {name:"n-Pentane", nameFa:"n-پنتان", formula:"C5H12", category:"Hydrocarbon", use:"حلال و جزء NGL", useEn:"Foam blowing agent, solvent, NGL component", cas:"109-66-0", hazard:true, page:"n_pentane.html"},
+  {name:"Isopentane", nameFa:"ایزوپنتان", formula:"C5H12", category:"Hydrocarbon", use:"Blowing agent", useEn:"Blowing agent and NGL component", cas:"78-78-4", hazard:true, page:"isopentane.html"},
+  {name:"Cyclopentane", nameFa:"سیکلوپنتان", formula:"C5H10", category:"Hydrocarbon", use:"Blowing agent فوم PU", useEn:"Industrial PU foam blowing agent", cas:"287-92-3", hazard:true, page:"cyclopentane.html"},
+  {name:"n-Octane", nameFa:"n-اکتان", formula:"C8H18", category:"Hydrocarbon", use:"حلال", useEn:"Solvent and fuel/lab standard", cas:"111-65-9", hazard:true, page:"n_octane.html"},
+  {name:"Isooctane (2,2,4-Trimethylpentane)", nameFa:"ایزو‌اکتان", formula:"C8H18", category:"Hydrocarbon", use:"استاندارد عدد اکتان", useEn:"Octane rating reference and solvent", cas:"540-84-1", hazard:true, page:"isooctane.html"},
+  {name:"Methylcyclohexane", nameFa:"متیل‌سیکلوهگزان", formula:"C7H14", category:"Hydrocarbon/Solvent", use:"حلال", useEn:"Solvent and component of some refinery cuts", cas:"108-87-2", hazard:true, page:"methylcyclohexane.html"},
+  {name:"Naphthalene", nameFa:"نفتالین", formula:"C10H8", category:"PAH/Aromatic", use:"واسط انیدرید فتالیک", useEn:"Intermediate for phthalic anhydride and resins/additives", cas:"91-20-3", hazard:true, page:"naphthalene.html"},
+  {name:"Biphenyl", nameFa:"بی‌فنیل", formula:"C12H10", category:"Aromatic", use:"سیالات انتقال حرارت", useEn:"Heat-transfer fluids and chemical intermediate", cas:"92-52-4", hazard:true, page:"biphenyl.html"},
+  {name:"Hydrofluoric Acid", nameFa:"اسید هیدروفلوئوریک", formula:"HF", category:"Inorganic Utility", use:"آلکیلاسیون (HF)", useEn:"HF alkylation and fluorochemical production", cas:"7664-39-3", hazard:true, page:"hydrofluoric_acid.html"},
+  {name:"Vinylidene Fluoride (VDF)", nameFa:"وینیلیدن فلوراید", formula:"C2H2F2", category:"Monomer", use:"مونومر PVDF", useEn:"Monomer for PVDF", cas:"75-38-7", hazard:true, page:"vdf.html"},
+  {name:"Tetrafluoroethylene (TFE)", nameFa:"تترافلوئورواتیلن", formula:"C2F4", category:"Monomer", use:"مونومر PTFE", useEn:"Monomer for PTFE", cas:"116-14-3", hazard:true, page:"tfe.html"},
+  {name:"Hydrogen Cyanide (HCN)", nameFa:"سیانید هیدروژن", formula:"HCN", category:"Intermediate", use:"خوراک مسیرهای نیتریلی", useEn:"Feedstock for adiponitrile and nitrile chemistry", cas:"74-90-8", hazard:true, page:"hcn.html"},
+  {name:"Allyl Chloride", nameFa:"آلیل کلرید", formula:"C3H5Cl", category:"Chloro-Intermediate", use:"مسیر اپی‌کلروهیدرین", useEn:"Intermediate for epichlorohydrin/epoxy routes and chemicals", cas:"107-05-1", hazard:true, page:"allyl_chloride.html"},
+  {name:"Acrolein", nameFa:"آکرولئین", formula:"C3H4O", category:"Aldehyde", use:"واسط تولید آکریلیک‌اسید", useEn:"Intermediate for acrylic acid/methionine and resins", cas:"107-02-8", hazard:true, page:"acrolein.html"},
+  {name:"Propionaldehyde", nameFa:"پروپیون‌آلدئید", formula:"C3H6O", category:"Aldehyde", use:"واسط شیمیایی", useEn:"Intermediate for alcohols/acids and chemical synthesis", cas:"123-38-6", hazard:true, page:"propionaldehyde.html"},
+  {name:"Furfural", nameFa:"فورفورال", formula:"C5H4O2", category:"Solvent/Intermediate", use:"حلال استخراج آروماتیک", useEn:"Solvent for aromatics/base oil extraction in refining", cas:"98-01-1", hazard:true, page:"furfural.html"},
+  {name:"Tetrahydrofuran (THF)", nameFa:"تتراهیدروفوران", formula:"C4H8O", category:"Solvent/Intermediate", use:"حلال", useEn:"Solvent; intermediate to PTMEG (polyurethanes)", cas:"109-99-9", hazard:true, page:"thf.html"},
+  {name:"1,4-Dioxane", nameFa:"1,4-دی‌اکسان", formula:"C4H8O2", category:"Solvent", use:"حلال صنعتی", useEn:"Industrial solvent (EHS-restricted)", cas:"123-91-1", hazard:true, page:"1_4_dioxane.html"},
+  {name:"Dimethyl Sulfoxide (DMSO)", nameFa:"دی‌متیل‌سولفوکسید", formula:"C2H6OS", category:"Solvent", use:"حلال قطبی صنعتی", useEn:"Polar industrial/pharma solvent", cas:"67-68-5", hazard:true, page:"dmso.html"},
+  {name:"Sodium Carbonate (Soda Ash)", nameFa:"کربنات سدیم", formula:"Na2CO3", category:"Inorganic Utility", use:"تنظیم pH", useEn:"pH control, water treatment, refining utilities", cas:"497-19-8", hazard:false, page:"sodium_carbonate.html"},
+  {name:"Sodium Bicarbonate", nameFa:"بی‌کربنات سدیم", formula:"NaHCO3", category:"Inorganic Utility", use:"تنظیم pH", useEn:"pH control, neutralization and treatments", cas:"144-55-8", hazard:false, page:"sodium_bicarbonate.html"},
+  {name:"Sodium Chloride", nameFa:"کلرید سدیم", formula:"NaCl", category:"Inorganic Utility", use:"نمک صنعتی", useEn:"Brine/industrial salt and process uses", cas:"7647-14-5", hazard:false, page:"sodium_chloride.html"},
+  {name:"Potassium Hydroxide (Caustic Potash)", nameFa:"سود پتاس", formula:"KOH", category:"Inorganic Utility", use:"خنثی‌سازی", useEn:"Neutralization and industrial synthesis", cas:"1310-58-3", hazard:true, page:"koh.html"},
+  {name:"Potassium Carbonate", nameFa:"کربنات پتاسیم", formula:"K2CO3", category:"Inorganic Utility", use:"تنظیم pH", useEn:"CO2 absorption (some processes) and pH control", cas:"584-08-7", hazard:false, page:"potassium_carbonate.html"},
+  {name:"Calcium Chloride", nameFa:"کلرید کلسیم", formula:"CaCl2", category:"Inorganic Utility", use:"خشک‌کننده", useEn:"Desiccant, brine and industrial uses", cas:"10043-52-4", hazard:false, page:"calcium_chloride.html"},
+  {name:"Calcium Carbonate", nameFa:"کربنات کلسیم", formula:"CaCO3", category:"Filler/Inorganic", use:"پرکننده صنعتی", useEn:"Industrial filler and neutralization", cas:"471-34-1", hazard:false, page:"calcium_carbonate.html"},
+  {name:"Calcium Hydroxide (Hydrated Lime)", nameFa:"هیدروکسید کلسیم (آهک هیدراته)", formula:"Ca(OH)2", category:"Inorganic Utility", use:"خنثی‌سازی اسیدها", useEn:"Acid neutralization; water/wastewater treatment", cas:"1305-62-0", hazard:true, page:"calcium_hydroxide.html"},
+  {name:"Aluminum Oxide (Alumina)", nameFa:"آلومینا", formula:"Al2O3", category:"Adsorbent/Catalyst Support", use:"پایه کاتالیست‌ها", useEn:"Catalyst support and industrial adsorbent", cas:"1344-28-1", hazard:false, page:"alumina.html"},
+  {name:"Activated Carbon", nameFa:"کربن فعال", formula:"C", category:"Adsorbent", use:"تصفیه آب و گاز", useEn:"VOC adsorption; water and gas purification", cas:"7440-44-0", hazard:false, page:"activated_carbon.html"},
+  {name:"Phosphoric Acid", nameFa:"اسید فسفریک", formula:"H3PO4", category:"Inorganic Utility", use:"تولید فسفات‌ها", useEn:"Phosphate production, corrosion inhibition, treatment", cas:"7664-38-2", hazard:true, page:"phosphoric_acid.html"},
+  {name:"Sodium Sulfite", nameFa:"سولفیت سدیم", formula:"Na2SO3", category:"Water Treatment", use:"اکسیژن‌زدا در بویلر", useEn:"Oxygen scavenger for boiler/industrial water", cas:"7757-83-7", hazard:false, page:"sodium_sulfite.html"},
+  {name:"Sodium Bisulfite", nameFa:"بی‌سولفیت سدیم", formula:"NaHSO3", category:"Water Treatment", use:"دی‌کلره‌کردن", useEn:"Dechlorination and oxygen scavenging", cas:"7631-90-5", hazard:false, page:"sodium_bisulfite.html"},
+  {name:"Sodium Metabisulfite", nameFa:"متابی‌سولفیت سدیم", formula:"Na2S2O5", category:"Water Treatment", use:"دی‌کلره‌کردن", useEn:"Dechlorination and oxidant control", cas:"7681-57-4", hazard:false, page:"sodium_metabisulfite.html"},
+  {name:"Sodium Thiosulfate", nameFa:"تیوسولفات سدیم", formula:"Na2S2O3", category:"Water Treatment", use:"دی‌کلره‌کردن", useEn:"Dechlorination and oxidant neutralization", cas:"7772-98-7", hazard:false, page:"sodium_thiosulfate.html"},
+  {name:"Ammonium Persulfate", nameFa:"پرسولفات آمونیوم", formula:"(NH4)2S2O8", category:"Oxidant", use:"آغازگر پلیمریزاسیون", useEn:"Polymerization initiator and industrial oxidant", cas:"7727-54-0", hazard:true, page:"ammonium_persulfate.html"},
+  {name:"Sodium Persulfate", nameFa:"پرسولفات سدیم", formula:"Na2S2O8", category:"Oxidant", use:"اکسیدکننده", useEn:"Oxidant and polymerization initiator", cas:"7775-27-1", hazard:true, page:"sodium_persulfate.html"},
+  {name:"Glutaraldehyde", nameFa:"گلوتارآلدئید", formula:"C5H8O2", category:"Biocide", use:"بایوساید در آب صنعتی", useEn:"Biocide for industrial water and oil & gas", cas:"111-30-8", hazard:true, page:"glutaraldehyde.html"},
+  {name:"HEDP (Etidronic Acid)", nameFa:"HEDP", formula:"C2H8O7P2", category:"Antiscalant", use:"ضد‌رسوب", useEn:"Antiscalant and corrosion control in industrial water", cas:"2809-21-4", hazard:true, page:"hedp.html"},
+  {name:"ATMP", nameFa:"ATMP", formula:"C3H12NO9P3", category:"Antiscalant", use:"ضد‌رسوب", useEn:"Antiscalant for water systems and injection", cas:"6419-19-8", hazard:true, page:"atmp.html"},
+  {name:"DTPMP", nameFa:"DTPMP", formula:"C9H28N3O15P5", category:"Antiscalant", use:"ضد‌رسوب", useEn:"High-performance antiscalant for hard/injection waters", cas:"15827-60-8", hazard:true, page:"dtpmp.html"},
+  {name:"Cyclohexylamine", nameFa:"سیکلوهگزیل‌آمین", formula:"C6H13N", category:"Amine", use:"بازدارنده خوردگی", useEn:"Corrosion inhibitor and chemical intermediate", cas:"108-91-8", hazard:true, page:"cyclohexylamine.html"},
+  {name:"Octadecylamine", nameFa:"اکتادسیل‌آمین", formula:"C18H39N", category:"Amine", use:"بازدارنده خوردگی", useEn:"Filming amine corrosion inhibitor", cas:"124-30-1", hazard:true, page:"octadecylamine.html"},
+  {name:"TBC (4-tert-Butylcatechol)", nameFa:"TBC", formula:"C10H14O2", category:"Inhibitor", use:"مهارکننده پلیمریزاسیون", useEn:"Polymerization inhibitor for monomers (styrene/acrylates)", cas:"98-29-3", hazard:true, page:"tbc.html"},
+  {name:"MEHQ (4-Methoxyphenol)", nameFa:"MEHQ", formula:"C7H8O2", category:"Inhibitor", use:"مهارکننده پلیمریزاسیون", useEn:"Polymerization inhibitor for acrylates/methacrylates", cas:"150-76-5", hazard:true, page:"mehq.html"},
+  {name:"Hydroquinone", nameFa:"هیدروکینون", formula:"C6H6O2", category:"Inhibitor", use:"مهارکننده صنعتی", useEn:"Industrial inhibitor/antioxidant", cas:"123-31-9", hazard:true, page:"hydroquinone.html"},
+  {name:"Di-tert-Butyl Peroxide (DTBP)", nameFa:"دی‌ترت‌بوتیل‌پراکسید", formula:"C8H18O2", category:"Initiator", use:"آغازگر پلیمریزاسیون", useEn:"Polymerization initiator and polymer crosslinking", cas:"110-05-4", hazard:true, page:"dtbp.html"},
+  {name:"tert-Butyl Hydroperoxide (TBHP)", nameFa:"ترت‌بوتیل‌هیدروپراکسید", formula:"C4H10O2", category:"Oxidant/Initiator", use:"اکسیدکننده صنعتی", useEn:"Industrial oxidant/initiator", cas:"75-91-2", hazard:true, page:"tbhp.html"},
+  {name:"Cumene Hydroperoxide", nameFa:"هیدروپراکسید کومین", formula:"C9H12O2", category:"Oxidant/Initiator", use:"اکسیدکننده در مسیرهای شیمیایی", useEn:"Oxidant/initiator in chemical routes", cas:"80-15-9", hazard:true, page:"cumene_hydroperoxide.html"},
+  {name:"TOTM (Tris(2-ethylhexyl) Trimellitate)", nameFa:"TOTM", formula:"C33H54O6", category:"Plasticizer", use:"نرم‌کننده PVC", useEn:"Low-migration PVC plasticizer (cable/high-temp)", cas:"3319-31-1", hazard:false, page:"totm.html"},
+  {name:"ATBC (Acetyl Tributyl Citrate)", nameFa:"ATBC", formula:"C20H34O8", category:"Plasticizer", use:"نرم‌کننده عمومی PVC", useEn:"General non-phthalate plasticizer for PVC", cas:"77-90-7", hazard:false, page:"atbc.html"},
+  {name:"DINCH", nameFa:"DINCH", formula:"C26H48O4", category:"Plasticizer", use:"نرم‌کننده غیر فتالاتی PVC", useEn:"Non-phthalate PVC plasticizer", cas:"166412-78-8", hazard:false, page:"dinch.html"},
+  {name:"2-Butoxyethanol (EGBE)", nameFa:"2-بوتوکسی‌اتانول", formula:"C6H14O2", category:"Solvent", use:"حلال صنعتی", useEn:"Industrial solvent/cleaner and formulations", cas:"111-76-2", hazard:true, page:"egbe.html"},
+  {name:"Diethylene Glycol Monobutyl Ether (Butyl Carbitol)", nameFa:"بوتیل کاربیتول", formula:"C8H18O3", category:"Solvent", use:"حلال صنعتی", useEn:"Industrial solvent for coatings/cleaners", cas:"112-34-5", hazard:true, page:"butyl_carbitol.html"},
+  {name:"Diethylene Glycol Monoethyl Ether (Carbitol)", nameFa:"کاربیتول", formula:"C6H14O3", category:"Solvent", use:"حلال قطبی صنعتی", useEn:"Polar industrial solvent", cas:"111-90-0", hazard:true, page:"carbitol.html"},
+  {name:"Diisopropyl Ether", nameFa:"دی‌ایزوپروپیل اتر", formula:"C6H14O", category:"Solvent", use:"حلال", useEn:"Solvent and chemical intermediate", cas:"108-20-3", hazard:true, page:"diisopropyl_ether.html"},
+  {name:"MIBC (Methyl Isobutyl Carbinol)", nameFa:"MIBC", formula:"C6H14O", category:"Solvent", use:"حلال صنعتی", useEn:"Solvent/process aid and industrial uses", cas:"108-11-2", hazard:true, page:"mibc.html"},
+  {name:"Cyclopentanone", nameFa:"سیکلوپنتانون", formula:"C5H8O", category:"Ketone/Solvent", use:"حلال صنعتی", useEn:"Industrial solvent and intermediate", cas:"120-92-3", hazard:true, page:"cyclopentanone.html"},
+  {name:"Acetylacetone (2,4-Pentanedione)", nameFa:"استیل‌استون", formula:"C5H8O2", category:"Chelating Agent", use:"کمپلکس‌کننده فلزات", useEn:"Metal chelator and chemical intermediate", cas:"123-54-6", hazard:true, page:"acetylacetone.html"},
+  {name:"Succinic Acid", nameFa:"اسید سوکسینیک", formula:"C4H6O4", category:"Dicarboxylic Acid", use:"رزین‌ها", useEn:"Resins/plasticizers and chemical routes", cas:"110-15-6", hazard:false, page:"succinic_acid.html"},
+  {name:"Maleic Acid", nameFa:"اسید مالئیک", formula:"C4H4O4", category:"Dicarboxylic Acid", use:"رزین‌ها", useEn:"Resins and additives", cas:"110-16-7", hazard:true, page:"maleic_acid.html"},
+  {name:"Fumaric Acid", nameFa:"اسید فوماریک", formula:"C4H4O4", category:"Dicarboxylic Acid", use:"رزین‌های UPR", useEn:"UPR resins and additives", cas:"110-17-8", hazard:false, page:"fumaric_acid.html"},
+  {name:"Phthalic Acid", nameFa:"اسید فتالیک", formula:"C8H6O4", category:"Aromatic Dicarboxylic Acid", use:"رزین‌ها", useEn:"Resins/esters related to PA chain", cas:"88-99-3", hazard:false, page:"phthalic_acid.html"},
+  {name:"Glutaric Acid", nameFa:"اسید گلوتاریک", formula:"C5H8O4", category:"Dicarboxylic Acid", use:"رزین‌ها", useEn:"Resins and chemical intermediates", cas:"110-94-1", hazard:false, page:"glutaric_acid.html"},
+  {name:"Ethylidene Norbornene (ENB)", nameFa:"اتیلیدن نوربورنن (ENB)", formula:"C9H12", category:"Monomer", use:"مونومر سوم EPDM", useEn:"Third monomer for EPDM (cure/structure)", cas:"16219-75-3", hazard:true, page:"enb.html"},
+  {name:"Norbornene", nameFa:"نوربورنن", formula:"C7H10", category:"Monomer", use:"واسط پلیمری", useEn:"Polymer and chemical intermediate", cas:"498-66-8", hazard:true, page:"norbornene.html"},
+  {name:"Hexamethylene Diisocyanate (HDI)", nameFa:"هگزامتیلن دی‌ایزوسیانات (HDI)", formula:"C8H12N2O2", category:"Isocyanate", use:"پوشش‌های پلی‌اورتان", useEn:"Aliphatic polyurethane coatings", cas:"822-06-0", hazard:true, page:"hdi.html"},
+  {name:"4,4'-Dicyclohexylmethane Diisocyanate (H12MDI)", nameFa:"H12MDI", formula:"C15H22N2O2", category:"Isocyanate", use:"پلی‌اورتان‌ها", useEn:"UV-resistant polyurethane systems", cas:"5124-30-1", hazard:true, page:"h12mdi.html"},
+  {name:"Triethylenetetramine (TETA)", nameFa:"تری‌اتیلن تترا آمین", formula:"C6H18N4", category:"Polyamine", use:"سخت‌کننده اپوکسی", useEn:"Epoxy curing agent and inhibitor formulations", cas:"112-24-3", hazard:true, page:"teta.html"},
+  {name:"Tetraethylenepentamine (TEPA)", nameFa:"تترااتیلن پنتا آمین", formula:"C8H23N5", category:"Polyamine", use:"سخت‌کننده اپوکسی", useEn:"Epoxy/resin curing and industrial uses", cas:"112-57-2", hazard:true, page:"tepa.html"},
+  {name:"Methylamine", nameFa:"متیل‌آمین", formula:"CH5N", category:"Amine", use:"واسط شیمیایی", useEn:"Chemical intermediate for multiple industries", cas:"74-89-5", hazard:true, page:"methylamine.html"},
+  {name:"Dimethylamine", nameFa:"دی‌متیل‌آمین", formula:"C2H7N", category:"Amine", use:"واسط شیمیایی", useEn:"Chemical intermediate for solvents and auxiliaries", cas:"124-40-3", hazard:true, page:"dimethylamine.html"},
+  {name:"Trimethylamine", nameFa:"تری‌متیل‌آمین", formula:"C3H9N", category:"Amine", use:"واسط شیمیایی", useEn:"Intermediate for quaternary ammonium salts", cas:"75-50-3", hazard:true, page:"trimethylamine.html"},
+  {name:"Sodium Nitrite", nameFa:"نیتریت سدیم", formula:"NaNO2", category:"Inorganic Utility", use:"بازدارنده خوردگی", useEn:"Corrosion inhibition and industrial chemistry", cas:"7632-00-0", hazard:true, page:"sodium_nitrite.html"},
+  {name:"Sodium Nitrate", nameFa:"نیترات سدیم", formula:"NaNO3", category:"Inorganic Utility", use:"اکسیدکننده/کود", useEn:"Oxidizer/fertilizer and chemical uses", cas:"7631-99-4", hazard:false, page:"sodium_nitrate.html"},
+  {name:"Ammonium Chloride", nameFa:"کلرید آمونیوم", formula:"NH4Cl", category:"Inorganic Utility", use:"کاربردهای صنعتی", useEn:"Industrial/chemical uses and treatment", cas:"12125-02-9", hazard:false, page:"ammonium_chloride.html"}
+];
+
+/* ========= UTIL ========= */
+const $ = (sel, el=document)=> el.querySelector(sel);
+const $$ = (sel, el=document)=> Array.from(el.querySelectorAll(sel));
+function hasArabicScript(s){ return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(String(s||"")); }
+function normFa(s){
+  return String(s||"")
+    .replace(/\u200c/g,"")
+    .replace(/[ـ]/g,"")
+    .replace(/ي/g,"ی")
+    .replace(/ك/g,"ک");
+}
+function clip(s, n=150){
+  s = (s||"").toString().trim();
+  if(!s) return "";
+  return s.length>n ? (s.slice(0, n-1) + "…") : s;
+}
+function normalize(s){ return (s ?? "").toString().trim(); }
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[ch] || ch));
+}
+
+/* ========= I18N ========= */
+const I18N = {
+  en: {
+    title: "Chemical Farm | Interactive Chemical & Petrochemical Catalog",
+    brand: "Chemical Farm",
+    subtitle: "Fast search • merged families • compare & favorites",
+    langLabel: "فارسی",
+    searchPh: "Search name / formula / CAS / family…  (Try: ethylene • C2H4 • cas:74-85-1 • fam:solvent)",
+    h1: "Browse chemicals as a clean, interactive catalog",
+    lead: "Categories are merged into compact Families so you can filter without drowning in dozens of tags. Use favorites and pin up to 4 items to compare.",
+    total: "total",
+    shown: "shown",
+    filters: "Filters",
+    shortcuts: "Shortcuts",
+    clearSearch: "Clear search",
+    hazardAll: "All",
+    hazardHaz: "Hazard",
+    hazardNon: "Non-hazard",
+    favorites: "Favorites",
+    hasPage: "Has page",
+    sortName: "Sort: Name (A→Z)",
+    sortFamily: "Sort: Family",
+    sortCategory: "Sort: Category",
+    sortFormula: "Sort: Formula",
+    sortCas: "Sort: CAS",
+    sortHazard: "Sort: Hazard first",
+    footerHtml: "Tip: advanced search syntax — <span style='font-family:var(--mono)'>cas:</span>, <span style='font-family:var(--mono)'>formula:</span>, <span style='font-family:var(--mono)'>fam:</span>, <span style='font-family:var(--mono)'>cat:</span>, <span style='font-family:var(--mono)'>name:</span>.<br/>Example: <span style='font-family:var(--mono)'>fam:solvent cas:67-64-1</span>",
+    drawerTitle: "Filters",
+    drawerSubtitle: "Families are the primary grouping (merged categories).",
+    stateGroup: "State (25°C, 1 bar)",
+    familiesGroup: "Families",
+    advancedGroup: "Advanced",
+    stateAny: "Any",
+    stateGas: "Gas",
+    stateLiquid: "Liquid",
+    stateSolid: "Solid",
+    clearAll: "Clear all filters",
+    toastClearedT: "Cleared",
+    toastClearedB: "All filters reset.",
+    modalTech: "Technical",
+    modalUses: "Uses & tags",
+    openPage: "Open page",
+    copy: "Copy",
+    pin: "Pin to compare",
+    unpin: "Unpin",
+    noDesc: "No English description available.",
+    name: "Name",
+    formula: "Formula",
+    cas: "CAS",
+    family: "Family",
+    category: "Category",
+    state: "State",
+    hazard: "Hazard",
+    nonHazard: "Non-hazard",
+    yes: "Yes",
+    no: "No",
+    hasPageChip: "Has page",
+    stateChip: "State: ",
+    searchChip: "Search: ",
+    familyChip: "Family: ",
+    hazardChip: "Hazard: ",
+    hazardValHaz: "Hazard",
+    hazardValNon: "Non-hazard",
+    stateChipLabel: "State: ",
+    favoritesChip: "Favorites",
+    hasPageFilterChip: "Has page",
+    removed: "Remove",
+    compareTitle: "Compare",
+    compareSubtitle: "Side-by-side key fields (best for 2–4 items)",
+    compareBtn: "Compare",
+    clearBtn: "Clear",
+    toastCopiedT: "Copied",
+    toastCopyFailT: "Copy failed",
+    toastCopyFailB: "Clipboard not available.",
+    toastCompareLimitT: "Compare limit",
+    toastCompareLimitB: "Pin up to 4 items.",
+    toastPinAtLeastT: "Pin at least 2 items",
+    toastPinAtLeastB: "Use the pin icon on cards.",
+    toastPinsClearedT: "Cleared",
+    toastPinsClearedB: "Compare pins removed.",
+    helpTitle: "Shortcuts & tips",
+    helpSubtitle: "Fast navigation without extra filters.",
+    helpKeyboard: "Keyboard",
+    helpSyntax: "Search syntax",
+    helpPara: "Families are auto-merged from the raw category field to reduce clutter.",
+    helpKbBadges: [
+      [" / ", "focus search"],
+      ["Ctrl+K", "focus search"],
+      ["Esc", "close modals / clear suggestion"],
+      ["↑ ↓", "navigate suggestions"],
+      ["Enter", "open suggestion"]
+    ],
+    helpSyntaxBadges: [
+      ["cas:", "74-85-1"],
+      ["formula:", "C2H4"],
+      ["fam:", "solvent"],
+      ["cat:", "alcohol"],
+      ["name:", "benzene"]
+    ],
+    tipOpen: "Open page",
+    tipDetails: "Details",
+    tipFav: "Favorite",
+    tipPin: "Pin to compare",
+  },
+  fa: {
+    title: "کیمیکال فارم | کاتالوگ تعاملی مواد شیمیایی و پتروشیمی",
+    brand: "کیمیکال فارم",
+    subtitle: "جستجوی سریع • خانواده‌های ادغام‌شده • مقایسه و علاقه‌مندی‌ها",
+    langLabel: "English",
+    searchPh: "جستجو: نام / فرمول / کَس / خانواده…  (مثال: اتیلن • C2H4 • کاس:74-85-1 • خانواده:حلال)",
+    h1: "مرور مواد شیمیایی در قالب یک کاتالوگ تمیز و تعاملی",
+    lead: "دسته‌ها به چند «خانواده»‌ی جمع‌وجور ادغام شده‌اند تا بدون شلوغی فیلتر کنید. آیتم‌ها را علاقه‌مند کنید و تا ۴ مورد را برای مقایسه پین کنید.",
+    total: "کل",
+    shown: "نمایش",
+    filters: "فیلترها",
+    shortcuts: "راهنما",
+    clearSearch: "پاک‌کردن جستجو",
+    hazardAll: "همه",
+    hazardHaz: "خطرناک",
+    hazardNon: "غیرخطرناک",
+    favorites: "علاقه‌مندی‌ها",
+    hasPage: "صفحه دارد",
+    sortName: "مرتب‌سازی: نام (الف→ی)",
+    sortFamily: "مرتب‌سازی: خانواده",
+    sortCategory: "مرتب‌سازی: دسته",
+    sortFormula: "مرتب‌سازی: فرمول",
+    sortCas: "مرتب‌سازی: کَس",
+    sortHazard: "مرتب‌سازی: خطرناک‌ها اول",
+    footerHtml: "راهنما: سینتکس جستجوی پیشرفته — <span style='font-family:var(--mono)'>کاس:</span>، <span style='font-family:var(--mono)'>فرمول:</span>، <span style='font-family:var(--mono)'>خانواده:</span>، <span style='font-family:var(--mono)'>دسته:</span>، <span style='font-family:var(--mono)'>نام:</span>.<br/>مثال: <span style='font-family:var(--mono)'>خانواده:حلال کاس:67-64-1</span>",
+    drawerTitle: "فیلترها",
+    drawerSubtitle: "«خانواده‌ها» گروه‌بندی اصلی هستند (ادغام دسته‌ها).",
+    stateGroup: "حالت فیزیکی (۲۵°C، ۱ بار)",
+    familiesGroup: "خانواده‌ها",
+    advancedGroup: "پیشرفته",
+    stateAny: "همه",
+    stateGas: "گاز",
+    stateLiquid: "مایع",
+    stateSolid: "جامد",
+    clearAll: "پاک‌کردن همه فیلترها",
+    toastClearedT: "پاک شد",
+    toastClearedB: "همه فیلترها ریست شدند.",
+    modalTech: "مشخصات",
+    modalUses: "کاربردها و برچسب‌ها",
+    openPage: "باز کردن صفحه",
+    copy: "کپی",
+    pin: "پین برای مقایسه",
+    unpin: "برداشتن پین",
+    noDesc: "شرح فارسی موجود نیست.",
+    name: "نام",
+    formula: "فرمول",
+    cas: "کَس",
+    family: "خانواده",
+    category: "دسته",
+    state: "حالت",
+    hazard: "خطرناک",
+    nonHazard: "غیرخطرناک",
+    yes: "بله",
+    no: "خیر",
+    hasPageChip: "صفحه دارد",
+    stateChip: "حالت: ",
+    searchChip: "جستجو: ",
+    familyChip: "خانواده: ",
+    hazardChip: "خطر: ",
+    hazardValHaz: "خطرناک",
+    hazardValNon: "غیرخطرناک",
+    stateChipLabel: "حالت: ",
+    favoritesChip: "علاقه‌مندی‌ها",
+    hasPageFilterChip: "صفحه دارد",
+    removed: "حذف",
+    compareTitle: "مقایسه",
+    compareSubtitle: "مقایسه فیلدهای کلیدی کنار هم (بهترین برای ۲ تا ۴ مورد)",
+    compareBtn: "مقایسه",
+    clearBtn: "پاک‌کردن",
+    toastCopiedT: "کپی شد",
+    toastCopyFailT: "کپی ناموفق",
+    toastCopyFailB: "دسترسی به کلیپ‌بورد ممکن نیست.",
+    toastCompareLimitT: "محدودیت مقایسه",
+    toastCompareLimitB: "حداکثر ۴ مورد را پین کنید.",
+    toastPinAtLeastT: "حداقل ۲ مورد پین کنید",
+    toastPinAtLeastB: "از آیکن پین روی کارت‌ها استفاده کنید.",
+    toastPinsClearedT: "پاک شد",
+    toastPinsClearedB: "پین‌های مقایسه حذف شدند.",
+    helpTitle: "راهنما و میانبرها",
+    helpSubtitle: "بدون شلوغی، سریع‌تر کار کنید.",
+    helpKeyboard: "کیبورد",
+    helpSyntax: "سینتکس جستجو",
+    helpPara: "خانواده‌ها به‌صورت خودکار از فیلد «دسته» ادغام می‌شوند تا شلوغی کم شود.",
+    helpKbBadges: [
+      [" / ", "فوکوس روی جستجو"],
+      ["Ctrl+K", "فوکوس روی جستجو"],
+      ["Esc", "بستن پنجره‌ها / بستن پیشنهادها"],
+      ["↑ ↓", "حرکت در پیشنهادها"],
+      ["Enter", "باز کردن پیشنهاد"]
+    ],
+    helpSyntaxBadges: [
+      ["کاس:", "74-85-1"],
+      ["فرمول:", "C2H4"],
+      ["خانواده:", "حلال"],
+      ["دسته:", "الکل"],
+      ["نام:", "بنزن"]
+    ],
+    tipOpen: "باز کردن صفحه",
+    tipDetails: "جزئیات",
+    tipFav: "علاقه‌مند",
+    tipPin: "پین برای مقایسه",
+  }
+};
+function t(k){ return (I18N[LANG] && I18N[LANG][k]) ?? (I18N.en[k] ?? k); }
+
+/* ========= FAMILY + CATEGORY TRANSLATION ========= */
+const FAMILY_FA = {
+  "Monomers & Intermediates":"مونومرها و واسط‌ها",
+  "Polymers & Resins":"پلیمرها و رزین‌ها",
+  "Solvents":"حلال‌ها",
+  "Acids & Bases":"اسیدها و بازها",
+  "Additives & Surfactants":"افزودنی‌ها و سورفکتانت‌ها",
+  "Catalysts & Adsorbents":"کاتالیست‌ها و جاذب‌ها",
+  "Industrial Gases":"گازهای صنعتی",
+  "Fertilizers & Agrochemicals":"کودها و شیمی کشاورزی",
+  "Refining & Fuels":"پالایش و سوخت‌ها",
+  "Inorganics & Utilities":"مواد معدنی و کاربردی",
+  "Other":"سایر"
+};
+function trFamily(fam){ return FAMILY_FA[fam] || "سایر"; }
+
+function trCategory(cat){
+  cat = normalize(cat);
+  if(!cat) return "—";
+  if(hasArabicScript(cat)) return cat;
+  let out = cat;
+
+  const map = [
+    [/refining product/i, "محصول پالایشی"],
+    [/refining/i, "پالایش"],
+    [/fuel/i, "سوخت"],
+    [/aromatic feedstock/i, "خوراک آروماتیک"],
+    [/aromatic/i, "آروماتیک"],
+    [/monomer\/comonomer/i, "مونومر/کومونومر"],
+    [/comonomer/i, "کومونومر"],
+    [/monomer\/diolefin/i, "مونومر/دی‌اولفین"],
+    [/monomer\/gas/i, "مونومر/گاز"],
+    [/monomer/i, "مونومر"],
+    [/polymer\/resin/i, "پلیمر/رزین"],
+    [/polymer/i, "پلیمر"],
+    [/resin/i, "رزین"],
+    [/elastomer/i, "الاستومر"],
+    [/solvent\/intermediate/i, "حلال/واسط"],
+    [/solvent/i, "حلال"],
+    [/intermediate/i, "واسط"],
+    [/acid gas/i, "گاز اسیدی"],
+    [/industrial gas/i, "گاز صنعتی"],
+    [/amine/i, "آمین"],
+    [/alcohol/i, "الکل"],
+    [/aldehyde/i, "آلدهید"],
+    [/ketone/i, "کتون"],
+    [/ester/i, "استر"],
+    [/ether/i, "اتر"],
+    [/nitrile\/solvent/i, "نیتریل/حلال"],
+    [/nitrile/i, "نیتریل"],
+    [/epoxide/i, "اپوکسید"],
+    [/isocyanate/i, "ایزوسیانات"],
+    [/anhydride/i, "انهیدرید"],
+    [/carboxylic acid/i, "اسید کربوکسیلیک"],
+    [/dicarboxylic acid/i, "اسید دی‌کربوکسیلیک"],
+    [/unsaturated acid/i, "اسید غیراشباع"],
+    [/surfactant/i, "سورفکتانت"],
+    [/fertilizer\/agrochemical/i, "کود/شیمی کشاورزی"],
+    [/fertilizer\/agro/i, "کود/شیمی کشاورزی"],
+    [/fertilizer/i, "کود"],
+    [/agrochemical/i, "شیمی کشاورزی"],
+    [/catalyst\/support/i, "کاتالیست/پایه"],
+    [/catalyst/i, "کاتالیست"],
+    [/adsorbent\/zeolite/i, "جاذب/زئولیت"],
+    [/adsorbent/i, "جاذب"],
+    [/additive\/stabilizer/i, "افزودنی/پایدارکننده"],
+    [/additive\/fr/i, "افزودنی/مهارکننده شعله"],
+    [/additive/i, "افزودنی"],
+    [/stabilizer/i, "پایدارکننده"],
+    [/pigment/i, "رنگدانه"],
+    [/functional polyolefins/i, "پلی‌اولفین‌های عاملی"],
+    [/inorganic utility/i, "معدنی/کاربردی"],
+    [/inorganic/i, "معدنی"],
+    [/utility/i, "کاربردی"],
+    [/pah/i, "هیدروکربن آروماتیک چندحلقه‌ای"],
+    [/chelating agent/i, "عامل کی‌لیت‌کننده"],
+  ];
+
+  for(const [rx, rep] of map) out = out.replace(rx, rep);
+  out = out.replace(/\s*\/\s*/g, " / ").trim();
+
+  if(/[A-Za-z]/.test(out)) return "سایر";
+  return out || "سایر";
+}
+
+/* ========= FAMILY MERGE ========= */
+const FAMILY_ORDER = [
+  "Monomers & Intermediates",
+  "Polymers & Resins",
+  "Solvents",
+  "Acids & Bases",
+  "Additives & Surfactants",
+  "Catalysts & Adsorbents",
+  "Industrial Gases",
+  "Fertilizers & Agrochemicals",
+  "Refining & Fuels",
+  "Inorganics & Utilities",
+  "Other"
+];
+const FAMILY_RULES = [
+  {family:"Industrial Gases", match:/\b(feedstock\/gas|acid\s*gas|industrial\s*gas|gas)\b|\b(hydrogen|nitrogen|oxygen|argon|helium|carbon\s*dioxide|carbon\s*monoxide|ammonia|chlorine|hydrogen\s*sulfide|sulfur\s*dioxide|nitrogen\s*dioxide|nitrous\s*oxide)\b/i},
+  {family:"Solvents", match:/\bsolvent\b|\balcohol\b|\bketone\b|\bester\b|\bether\b|\bglycol\b|\bglycol\s*ether\b|\bamide\b|\bchlorinated\b|\bhalogenated\b/i},
+  {family:"Acids & Bases", match:/\bacid\b|\bbase\b|\bcaustic\b|\bhydroxide\b/i},
+  {family:"Polymers & Resins", match:/polymer|elastomer|resin|fluoropolymer|polyamide|polyester|polyolefin|vinyl|thermoset|styrenic|engineering|high-?performance|high-?mw/i},
+  {family:"Additives & Surfactants", match:/additive|antioxidant|stabilizer|surfactant|plasticizer|inhibitor|modifier|dispersant|antistatic|flame\s*retardant/i},
+  {family:"Catalysts & Adsorbents", match:/catalyst|adsorbent|support|zeolite|molecular\s*sieve|alumina\b|silica\b/i},
+  {family:"Fertilizers & Agrochemicals", match:/fertilizer|agro|urea\b|ammonium\s*nitrate|dap\b|map\b|phosphate\s*fertilizer/i},
+  {family:"Refining & Fuels", match:/refining|fuel|gasoline|diesel|naphtha|lpg|bitumen|lubricant|jet\s*fuel|kerosene/i},
+  {family:"Monomers & Intermediates", match:/monomer|olefin|aromatic|epoxide|isocyanate|anhydride|nitrile|diol|intermediate|dicarboxylic|carboxylic|aldehyde|glycol|phenol|amine/i},
+  {family:"Inorganics & Utilities", match:/inorganic|utility|salt|chloride|sulfate|carbonate|ammonium|phosphate|nitrate|oxide|hydride/i},
+];
+function familyOf(c){
+  const cat = normalize(c.category);
+  const text = (cat + " " + (c.name||"") + " " + (c.useEn||"")).toLowerCase();
+  for(const r of FAMILY_RULES){
+    if(r.match.test(text)) return r.family;
+  }
+  return "Other";
+}
+
+/* ========= BEST-EFFORT STATE TAGGING ========= */
+function carbonCount(formula){
+  const f = String(formula||"");
+  const m = f.match(/C(\d*)/i);
+  return m ? (m[1] ? parseInt(m[1],10) : 1) : 0;
+}
+const GAS_CATS = new Set(["Acid Gas","Feedstock/Gas","Monomer/Gas"]);
+const SOLID_CATS = new Set([
+  "Adsorbent","Adsorbent/Zeolite","Catalyst","Catalyst/Support","Fertilizer","Fertilizer/Agro",
+  "Polymer","Polymer/Resin","Resin","Pigment","Additive","Additive/Stabilizer","Surfactant Powder"
+]);
+
+const STATE_OVERRIDES = {
+  "106-99-0":"gas","74-82-8":"gas","74-84-0":"gas","115-07-1":"gas","74-98-6":"gas",
+  "106-97-8":"gas","75-28-5":"gas","7727-37-9":"gas","7782-44-7":"gas","7440-59-7":"gas",
+  "7440-37-1":"gas","124-38-9":"gas","630-08-0":"gas","7664-41-7":"gas","7783-06-4":"gas",
+  "7446-09-5":"gas","10028-15-6":"gas","10024-97-2":"gas","7782-50-5":"gas","1333-74-0":"gas",
+  "75-07-0":"liquid","64-19-7":"liquid","57-13-6":"solid"
+};
+const GAS_FORMULAS = new Set([
+  "CH4","C2H6","C2H4","C3H8","C3H6","C4H10","C4H8","H2","N2","O2","AR","HE","CO2","CO","NH3","CL2","H2S","SO2","NO2","N2O"
+]);
+const GAS_NAME_PATTERNS = [
+  /\b(methane|ethane|propane|butane|propene|propylene|ethylene|acetylene)\b/i,
+  /\b(ammonia|chlorine|hydrogen|nitrogen|oxygen|argon|helium|carbon dioxide|carbon monoxide|hydrogen sulfide|sulfur dioxide|nitrogen dioxide|nitrous oxide)\b/i
+];
+function isPureHydrocarbon(formula){
+  if(!formula) return false;
+  const f = String(formula).replace(/\s+/g,'');
+  return /^[CH\d]+$/i.test(f);
+}
+function phaseAt25C(x){
+  const cas = (x.cas||"").trim();
+  if(STATE_OVERRIDES[cas]) return STATE_OVERRIDES[cas];
+
+  const cat = normalize(x.category);
+  if(GAS_CATS.has(cat)) return "gas";
+  if(SOLID_CATS.has(cat)) return "solid";
+
+  const f = String(x.formula||"").replace(/\s+/g,'').toUpperCase();
+  if(GAS_FORMULAS.has(f)) return "gas";
+
+  const nameKey = ((x.name||"") + " " + (x.nameFa||"")).toLowerCase();
+  if(GAS_NAME_PATTERNS.some(rx=>rx.test(nameKey))) return "gas";
+
+  if(isPureHydrocarbon(x.formula)){
+    const c = carbonCount(x.formula);
+    if(c && c <= 4) return "gas";
+    if(c && c >= 17) return "solid";
+    return "liquid";
+  }
+  return "liquid";
+}
+function stateLabel(s){
+  if(s==="gas") return t("stateGas");
+  if(s==="liquid") return t("stateLiquid");
+  if(s==="solid") return t("stateSolid");
+  return "—";
+}
+
+/* ========= LANGUAGE-SENSITIVE FIELDS ========= */
+function safeUseEn(c){
+  const ue = (c.useEn || "").toString().trim();
+  if(ue) return ue;
+  const u = (c.use || "").toString().trim();
+  if(!u) return "";
+  if(hasArabicScript(u)) return "";
+  return u;
+}
+function safeUseFa(c){
+  const u = (c.use || "").toString().trim();
+  if(!u) return "";
+  if(hasArabicScript(u)) return u;
+  return "";
+}
+
+let LANG = (()=>{
+  try{
+    const s = localStorage.getItem("cf_lang");
+    if(s==="fa" || s==="en") return s;
+  }catch{}
+  const docLang = (document.documentElement.lang||"").toLowerCase().startsWith("fa") ? "fa" : "en";
+  return docLang;
+})();
+
+/* ========= PREP DATA ========= */
+const CHEMS = chemicals.map(c=>{
+  const family = familyOf(c);
+  const state = phaseAt25C(c);
+
+  const useEn = safeUseEn(c);
+  const useFa = safeUseFa(c);
+
+  const familyFa = trFamily(family);
+  const categoryFa = trCategory(c.category);
+
+  const hayEn = [c.name, c.formula, c.cas, c.category, family, useEn].filter(Boolean).join(" ").toLowerCase();
+  const hayFa = normFa([c.nameFa, c.formula, c.cas, categoryFa, familyFa, useFa].filter(Boolean).join(" ")).toLowerCase();
+
+  return {
+    ...c,
+    family, state,
+    useEn, useFa,
+    familyFa, categoryFa,
+    _hayEn: hayEn,
+    _hayFa: hayFa
+  };
+});
+
+const ALL_FAMILIES = Array.from(new Set(CHEMS.map(c=>c.family))).sort((a,b)=>{
+  const ia = FAMILY_ORDER.indexOf(a); const ib = FAMILY_ORDER.indexOf(b);
+  if(ia!==-1 || ib!==-1) return (ia===-1?999:ia) - (ib===-1?999:ib);
+  return a.localeCompare(b);
+});
+
+function dispName(c){
+  if(LANG==="fa") return (c.nameFa && c.nameFa.trim()) ? c.nameFa : (c.name||"—");
+  return c.name || "—";
+}
+function dispUse(c){
+  return (LANG==="fa") ? (c.useFa || "") : (c.useEn || "");
+}
+function dispFamily(c){
+  return (LANG==="fa") ? (c.familyFa || "—") : (c.family || "—");
+}
+function dispCategory(c){
+  return (LANG==="fa") ? (c.categoryFa || "—") : (c.category || "—");
+}
+function haystack(c){
+  return (LANG==="fa") ? c._hayFa : c._hayEn;
+}
+
+/* ========= DOM ========= */
+const q = $("#q");
+const clearBtn = $("#clearBtn");
+const totalCount = $("#totalCount");
+const shownCount = $("#shownCount");
+const grid = $("#grid");
+const sortSel = $("#sort");
+const favOnly = $("#favOnly");
+const hasPage = $("#hasPage");
+const stateSel = $("#state");
+
+const segBtns = $$(".seg button", $("#hazSeg"));
+const familyChips = $("#familyChips");
+const activeChips = $("#activeChips");
+
+const backdrop = $("#backdrop");
+const closeBtn = $("#closeBtn");
+const mTitle = $("#mTitle");
+const mSub = $("#mSub");
+const mDesc = $("#mDesc");
+const kv = $("#kv");
+const mBadges = $("#mBadges");
+const openPageBtn = $("#openPageBtn");
+const copyBtn = $("#copyBtn");
+const pinBtn = $("#pinBtn");
+
+const compareBar = $("#compareBar");
+const pinsEl = $("#pins");
+const compareBtn = $("#compareBtn");
+const clearPinsBtn = $("#clearPinsBtn");
+const cmpBackdrop = $("#cmpBackdrop");
+const cmpCloseBtn = $("#cmpCloseBtn");
+const cmpTable = $("#cmpTable");
+
+const filtersBtn = $("#filtersBtn");
+const drawer = $("#drawer");
+const drawerBackdrop = $("#drawerBackdrop");
+const drawerCloseBtn = $("#drawerCloseBtn");
+const familyList = $("#familyList");
+const favOnly2 = $("#favOnly2");
+const hasPage2 = $("#hasPage2");
+const clearAllBtn = $("#clearAllBtn");
+
+const helpBtn = $("#helpBtn");
+const helpBackdrop = $("#helpBackdrop");
+const helpCloseBtn = $("#helpCloseBtn");
+
+const suggest = $("#suggest");
+let suggestIndex = -1;
+
+const toast = $("#toast");
+const langBtn = $("#langBtn");
+
+/* ========= STORAGE ========= */
+const STORAGE = { favs: "cf_favs_v2", pins: "cf_pins_v2", lang: "cf_lang" };
+function loadSet(key){
+  try{
+    const raw = localStorage.getItem(key);
+    if(!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set((arr||[]).map(String));
+  } catch { return new Set(); }
+}
+function saveSet(key, set){
+  try{ localStorage.setItem(key, JSON.stringify(Array.from(set))); } catch {}
+}
+const favs = loadSet(STORAGE.favs);
+const pins = loadSet(STORAGE.pins);
+
+/* ========= APP STATE ========= */
+let hazardMode = "any";
+const selectedFamilies = new Set();
+let currentModal = null;
+
+/* ========= UI APPLY LANG ========= */
+function buildSortOptions(){
+  const opt = [
+    ["name", t("sortName")],
+    ["family", t("sortFamily")],
+    ["category", t("sortCategory")],
+    ["formula", t("sortFormula")],
+    ["cas", t("sortCas")],
+    ["hazard", t("sortHazard")],
+  ];
+  sortSel.innerHTML = opt.map(([v,l])=>`<option value="${v}">${escapeHtml(l)}</option>`).join("");
+}
+function buildStateOptions(){
+  const opt = [
+    ["any", t("stateAny")],
+    ["gas", t("stateGas")],
+    ["liquid", t("stateLiquid")],
+    ["solid", t("stateSolid")],
+  ];
+  stateSel.innerHTML = opt.map(([v,l])=>`<option value="${v}">${escapeHtml(l)}</option>`).join("");
+}
+function applyLang(){
+  const d = document.documentElement;
+  d.classList.toggle("lang-fa", LANG==="fa");
+  d.lang = LANG==="fa" ? "fa" : "en";
+  d.dir  = LANG==="fa" ? "rtl" : "ltr";
+  document.title = t("title");
+
+  $("#brandName").textContent = t("brand");
+  $("#brandSubtitle").textContent = t("subtitle");
+  $("#langLabel").textContent = t("langLabel");
+
+  q.placeholder = t("searchPh");
+  clearBtn.title = t("clearSearch");
+  $("#mainH1").textContent = t("h1");
+  if(LANG==="fa"){ $("#mainLead").textContent = t("lead"); }
+  else { $("#mainLead").innerHTML = escapeHtml(t("lead")).replace(/Families/g, "<b>Families</b>"); }
+
+  $("#totalLabel").textContent = t("total");
+  $("#shownLabel").textContent = t("shown");
+  filtersBtn.title = t("filters");
+  helpBtn.title = t("shortcuts");
+
+  segBtns.forEach(btn=>{
+    const k = btn.dataset.haz;
+    if(k==="any") btn.textContent = t("hazardAll");
+    if(k==="haz") btn.textContent = t("hazardHaz");
+    if(k==="non") btn.textContent = t("hazardNon");
+  });
+
+  $("#favOnlyLbl").textContent = t("favorites");
+  $("#favOnlyLbl2").textContent = t("favorites");
+  $("#hasPageLbl").textContent = t("hasPage");
+  $("#hasPageLbl2").textContent = t("hasPage");
+
+  $("#drawerTitle").textContent = t("drawerTitle");
+  $("#drawerSubtitle").textContent = t("drawerSubtitle");
+  $("#stateGroupTitle").textContent = t("stateGroup");
+  $("#familiesGroupTitle").textContent = t("familiesGroup");
+  $("#advancedGroupTitle").textContent = t("advancedGroup");
+  clearAllBtn.textContent = t("clearAll");
+
+  $("#modalTechTitle").textContent = t("modalTech");
+  $("#modalUsesTitle").textContent = t("modalUses");
+  openPageBtn.textContent = t("openPage");
+  copyBtn.textContent = t("copy");
+  pinBtn.textContent = t("pin");
+
+  $("#cmpTitle").textContent = t("compareTitle");
+  $("#cmpSubtitle").textContent = t("compareSubtitle");
+  compareBtn.textContent = t("compareBtn");
+  clearPinsBtn.textContent = t("clearBtn");
+
+  $("#helpTitle").textContent = t("helpTitle");
+  $("#helpSubtitle").textContent = t("helpSubtitle");
+  $("#helpKeyboardTitle").textContent = t("helpKeyboard");
+  $("#helpSyntaxTitle").textContent = t("helpSyntax");
+  $("#helpPara").textContent = t("helpPara");
+
+  const kb = $("#helpKeyboardBadges");
+  kb.innerHTML = "";
+  for(const [a,b] of (I18N[LANG].helpKbBadges||[])){
+    const s = document.createElement("span");
+    s.className = "badge";
+    s.innerHTML = `<strong>${escapeHtml(a)}</strong> ${escapeHtml(b)}`;
+    kb.appendChild(s);
+  }
+  const sb = $("#helpSyntaxBadges");
+  sb.innerHTML = "";
+  for(const [a,b] of (I18N[LANG].helpSyntaxBadges||[])){
+    const s = document.createElement("span");
+    s.className = "badge";
+    s.innerHTML = `<strong>${escapeHtml(a)}</strong>${escapeHtml(b)}`;
+    sb.appendChild(s);
+  }
+
+  $("#footerTip").innerHTML = t("footerHtml");
+
+  buildSortOptions();
+  buildStateOptions();
+
+  if(!sortSel.value) sortSel.value = "name";
+  if(!stateSel.value) stateSel.value = "any";
+
+  if(currentModal && backdrop.classList.contains("show")) openModal(currentModal, true);
+  if(cmpBackdrop.classList.contains("show")) buildCompareTable();
+}
+
+/* ========= TOAST ========= */
+function toastMsg(title, body=""){
+  const el = document.createElement("div");
+  el.className = "toastMsg";
+  el.innerHTML = "<b>"+escapeHtml(title)+"</b>" + (body?("<div style='margin-top:4px'>"+escapeHtml(body)+"</div>"):"");
+  toast.appendChild(el);
+  setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(6px)"; }, 1800);
+  setTimeout(()=>{ el.remove(); }, 2200);
+}
+
+/* ========= DRAWER ========= */
+function openDrawer(){
+  drawerBackdrop.classList.add("show");
+  drawer.classList.add("show");
+  drawerBackdrop.setAttribute("aria-hidden","false");
+}
+function closeDrawer(){
+  drawerBackdrop.classList.remove("show");
+  drawer.classList.remove("show");
+  drawerBackdrop.setAttribute("aria-hidden","true");
+}
+filtersBtn.onclick = openDrawer;
+drawerCloseBtn.onclick = closeDrawer;
+drawerBackdrop.onclick = closeDrawer;
+
+function syncDualToggles(){
+  favOnly2.checked = favOnly.checked;
+  hasPage2.checked = hasPage.checked;
+}
+favOnly2.onchange = ()=>{ favOnly.checked = favOnly2.checked; render(); };
+hasPage2.onchange = ()=>{ hasPage.checked = hasPage2.checked; render(); };
+favOnly.onchange = ()=>{ syncDualToggles(); render(); };
+hasPage.onchange = ()=>{ syncDualToggles(); render(); };
+
+clearAllBtn.onclick = ()=>{
+  q.value = "";
+  hazardMode = "any";
+  segBtns.forEach(b=> b.classList.toggle("on", b.dataset.haz==="any"));
+  selectedFamilies.clear();
+  stateSel.value = "any";
+  favOnly.checked = false;
+  hasPage.checked = false;
+  syncDualToggles();
+  render();
+  toastMsg(t("toastClearedT"), t("toastClearedB"));
+};
+
+/* ========= FAMILY CHIPS (ENTERPRISE DATA VIZ COLORS) ========= */
+const FAMILY_COLORS = {
+  "Monomers & Intermediates": "#3B82F6", // Bright Blue
+  "Polymers & Resins": "#8B5CF6",        // Violet
+  "Solvents": "#06B6D4",                 // Cyan
+  "Acids & Bases": "#F59E0B",            // Amber
+  "Additives & Surfactants": "#10B981",  // Emerald
+  "Catalysts & Adsorbents": "#F43F5E",   // Rose/Red
+  "Industrial Gases": "#0EA5E9",         // Sky Blue
+  "Fertilizers & Agrochemicals": "#84CC16", // Lime
+  "Refining & Fuels": "#EF4444",         // Red
+  "Inorganics & Utilities": "#94A3B8",   // Slate Light
+  "Other": "#D946EF"                     // Pink
+};
+
+function buildFamilyUI(){
+  familyChips.innerHTML = "";
+  familyList.innerHTML = "";
+
+  const counts = new Map();
+  for(const c of CHEMS){
+    counts.set(c.family, (counts.get(c.family)||0)+1);
+  }
+
+  for(const fam of ALL_FAMILIES){
+    const count = counts.get(fam)||0;
+    const label = (LANG==="fa") ? trFamily(fam) : fam;
+    
+    const chipColor = FAMILY_COLORS[fam] || "var(--accent)";
+
+    // Top page chips
+    const chip = document.createElement("div");
+    chip.className = "fchip";
+    chip.dataset.family = fam;
+    chip.style.setProperty("--c", chipColor);
+    chip.innerHTML = `<span class="dot" aria-hidden="true"></span><span>${escapeHtml(label)}</span><span style="margin-inline-start:auto; opacity:0.8; font-family:var(--mono); font-size:11px">${count}</span>`;
+    chip.onclick = ()=>{ toggleFamily(fam); };
+    familyChips.appendChild(chip);
+
+    // Drawer chips
+    const chip2 = document.createElement("div");
+    chip2.className = "fchip";
+    chip2.dataset.family = fam;
+    chip2.style.width = "fit-content";
+    chip2.style.setProperty("--c", chipColor);
+    chip2.innerHTML = `<span class="dot" aria-hidden="true"></span><span>${escapeHtml(label)}</span><span style="margin-inline-start:auto; opacity:0.8; font-family:var(--mono); font-size:11px">${count}</span>`;
+    chip2.onclick = ()=>{ toggleFamily(fam); };
+    familyList.appendChild(chip2);
+  }
+  syncFamilyUI();
+}
+
+function toggleFamily(fam){
+  if(selectedFamilies.has(fam)) selectedFamilies.delete(fam);
+  else selectedFamilies.add(fam);
+  syncFamilyUI();
+  render();
+}
+function syncFamilyUI(){
+  $$(".fchip", familyChips).forEach(el=>{
+    const fam = el.dataset.family;
+    el.classList.toggle("on", selectedFamilies.has(fam));
+  });
+  $$(".fchip", familyList).forEach(el=>{
+    const fam = el.dataset.family;
+    el.classList.toggle("on", selectedFamilies.has(fam));
+  });
+}
+
+/* ========= HAZARD SEG ========= */
+segBtns.forEach(btn=>{
+  btn.onclick = ()=>{
+    hazardMode = btn.dataset.haz;
+    segBtns.forEach(b=> b.classList.toggle("on", b===btn));
+    render();
+  };
+});
+
+/* ========= SEARCH PARSER ========= */
+function tokenizeQuery(q){
+  const out = [];
+  const re = /"([^"]+)"|'([^']+)'|(\S+)/g;
+  let m;
+  while((m = re.exec(q||""))){
+    const t = (m[1]||m[2]||m[3]||"").trim();
+    if(t) out.push(t);
+  }
+  return out;
+}
+function normKey(k){
+  k = normFa(String(k||"").toLowerCase());
+  if(["cas","کاس","كس","کَس"].includes(k)) return "cas";
+  if(["formula","f","فرمول"].includes(k)) return "formula";
+  if(["cat","category","دسته","کتگوری"].includes(k)) return "cat";
+  if(["fam","family","خانواده"].includes(k)) return "fam";
+  if(["name","نام"].includes(k)) return "name";
+  return k;
+}
+function parseQuery(q){
+  const toks = tokenizeQuery(q);
+  const p = { text: [], cas:null, formula:null, cat:null, fam:null, name:null };
+  for(const t0 of toks){
+    const t1 = (LANG==="fa") ? normFa(t0) : t0;
+    const i = t1.indexOf(":");
+    if(i>0){
+      const k = normKey(t1.slice(0,i));
+      const vRaw = t1.slice(i+1).trim();
+      const v = (LANG==="fa") ? normFa(vRaw) : vRaw;
+      if(!v){ p.text.push(t1.toLowerCase()); continue; }
+      if(k==="cas") p.cas = v.toLowerCase();
+      else if(k==="formula") p.formula = v.toUpperCase().replace(/\s+/g,"");
+      else if(k==="cat") p.cat = v.toLowerCase();
+      else if(k==="fam") p.fam = v.toLowerCase();
+      else if(k==="name") p.name = v.toLowerCase();
+      else p.text.push(v.toLowerCase());
+    } else {
+      p.text.push(t1.toLowerCase());
+    }
+  }
+  return p;
+}
+function matchesQuery(c, pq){
+  if(pq.cas && !String(c.cas||"").toLowerCase().includes(pq.cas)) return false;
+  if(pq.formula){
+    const f = String(c.formula||"").toUpperCase().replace(/\s+/g,"");
+    if(!f.includes(pq.formula)) return false;
+  }
+  if(pq.cat){
+    const cat = (LANG==="fa") ? (c.categoryFa||"") : (c.category||"");
+    if(!normFa(cat).toLowerCase().includes(pq.cat)) return false;
+  }
+  if(pq.fam){
+    const fam = (LANG==="fa") ? (c.familyFa||"") : (c.family||"");
+    if(!normFa(fam).toLowerCase().includes(pq.fam)) return false;
+  }
+  if(pq.name){
+    const nm = (LANG==="fa") ? (c.nameFa||"") : (c.name||"");
+    if(!normFa(nm).toLowerCase().includes(pq.name)) return false;
+  }
+  const hay = haystack(c);
+  for(const t of (pq.text||[])){
+    if(!hay.includes((LANG==="fa"?normFa(t):t).toLowerCase())) return false;
+  }
+  return true;
+}
+
+/* ========= FILTERING / SORT ========= */
+function passesFilters(c){
+  const pq = parseQuery(q.value);
+  if(!matchesQuery(c, pq)) return false;
+
+  if(selectedFamilies.size && !selectedFamilies.has(c.family)) return false;
+  if(hazardMode==="haz" && !c.hazard) return false;
+  if(hazardMode==="non" && c.hazard) return false;
+
+  if(stateSel.value!=="any" && c.state !== stateSel.value) return false;
+  if(favOnly.checked && !favs.has(String(c.cas))) return false;
+  if(hasPage.checked && !c.page) return false;
+  return true;
+}
+function compareKey(a,b, key){
+  const A = (x)=> (x ?? "").toString();
+  const nameA = dispName(a), nameB = dispName(b);
+  const loc = (LANG==="fa") ? "fa" : "en";
+  if(key==="hazard") return (b.hazard?1:0) - (a.hazard?1:0) || nameA.localeCompare(nameB, loc);
+  if(key==="family") return dispFamily(a).localeCompare(dispFamily(b), loc) || nameA.localeCompare(nameB, loc);
+  if(key==="category") return dispCategory(a).localeCompare(dispCategory(b), loc) || nameA.localeCompare(nameB, loc);
+  if(key==="formula") return A(a.formula).localeCompare(A(b.formula)) || nameA.localeCompare(nameB, loc);
+  if(key==="cas") return A(a.cas).localeCompare(A(b.cas)) || nameA.localeCompare(nameB, loc);
+  return nameA.localeCompare(nameB, loc);
+}
+
+/* ========= SEARCH SUGGEST ========= */
+function scoreSuggestion(c, t0){
+  const q0 = (LANG==="fa") ? normFa(t0).toLowerCase() : t0.toLowerCase();
+  const name = (LANG==="fa") ? normFa((c.nameFa||"")).toLowerCase() : (c.name||"").toLowerCase();
+  const cas = (c.cas||"").toLowerCase();
+  let s = 0;
+  if(cas===q0) s += 200;
+  if(cas.startsWith(q0)) s += 130;
+  if(cas.includes(q0)) s += 80;
+  if(name===q0) s += 170;
+  if(name.startsWith(q0)) s += 120;
+  if(name.includes(q0)) s += 70;
+  if((c.formula||"").toLowerCase().replace(/\s+/g,'') === q0.replace(/\s+/g,'')) s += 140;
+  if((c.formula||"").toLowerCase().includes(q0)) s += 60;
+  return s;
+}
+function shouldShowSuggest(raw){
+  const s = (raw||"").trim();
+  if(s.length < 2) return false;
+  if(s.includes(":")) return false;
+  return true;
+}
+function renderSuggest(){
+  const raw = q.value;
+  if(!shouldShowSuggest(raw)){
+    suggest.classList.remove("show");
+    suggest.innerHTML = "";
+    suggestIndex = -1;
+    return;
+  }
+  const t0 = raw.trim();
+  const scored = CHEMS
+    .map(c=>({c, s: scoreSuggestion(c, t0)}))
+    .filter(x=> x.s>0)
+    .sort((a,b)=> b.s - a.s)
+    .slice(0,8)
+    .map(x=>x.c);
+
+  if(!scored.length){
+    suggest.classList.remove("show");
+    suggest.innerHTML = "";
+    suggestIndex = -1;
+    return;
+  }
+  suggest.innerHTML = "";
+  for(const c of scored){
+    const el = document.createElement("div");
+    el.className = "sItem";
+    el.innerHTML = `<div><b>${escapeHtml(dispName(c))}</b></div>
+      <div class="sMeta"><code>${escapeHtml(c.cas||"—")}</code><span>${escapeHtml(dispFamily(c))}</span></div>`;
+    el.onclick = ()=>{
+      suggest.classList.remove("show");
+      openModal(c);
+    };
+    suggest.appendChild(el);
+  }
+  suggest.classList.add("show");
+  suggestIndex = -1;
+}
+function syncSuggestActive(){
+  const items = $$(".sItem", suggest);
+  items.forEach((el,i)=> el.classList.toggle("active", i===suggestIndex));
+  if(suggestIndex>=0 && items[suggestIndex]){
+    items[suggestIndex].scrollIntoView({block:"nearest"});
+  }
+}
+
+/* ========= ACTIVE FILTER CHIPS ========= */
+function makeActiveChip(label, onRemove){
+  const el = document.createElement("div");
+  el.className = "fchip on";
+  el.style.cursor = "default";
+  el.innerHTML = `<span class="dot" style="width:6px;height:6px;box-shadow:none" aria-hidden="true"></span>
+                  <span>${escapeHtml(label)}</span>
+                  <span style="margin-inline-start:auto; display:flex; align-items:center; gap:8px">
+                    <button class="cBtn" title="${escapeHtml(t("removed"))}" style="width:24px;height:24px;border:none;background:transparent;" type="button">
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                  </span>`;
+  const btn = $(".cBtn", el);
+  btn.onclick = (e)=>{ e.stopPropagation(); onRemove(); };
+  return el;
+}
+function syncActiveChips(){
+  activeChips.innerHTML = "";
+  const chips = [];
+
+  if(q.value.trim()) chips.push(makeActiveChip(t("searchChip") + q.value.trim(), ()=>{ q.value=""; render(); q.focus(); }));
+  if(selectedFamilies.size){
+    for(const fam of selectedFamilies){
+      const label = (LANG==="fa") ? trFamily(fam) : fam;
+      const chipColor = FAMILY_COLORS[fam] || "var(--accent)";
+      const c = makeActiveChip(t("familyChip") + label, ()=>{ selectedFamilies.delete(fam); syncFamilyUI(); render(); });
+      c.style.setProperty("--c", chipColor);
+      chips.push(c);
+    }
+  }
+  if(hazardMode!=="any"){
+    chips.push(makeActiveChip(t("hazardChip") + (hazardMode==="haz" ? t("hazardValHaz") : t("hazardValNon")), ()=>{ hazardMode="any"; segBtns.forEach(b=>b.classList.toggle("on", b.dataset.haz==="any")); render(); }));
+  }
+  if(stateSel.value!=="any"){
+    chips.push(makeActiveChip(t("stateChipLabel") + stateLabel(stateSel.value), ()=>{ stateSel.value="any"; render(); }));
+  }
+  if(favOnly.checked){
+    chips.push(makeActiveChip(t("favoritesChip"), ()=>{ favOnly.checked=false; syncDualToggles(); render(); }));
+  }
+  if(hasPage.checked){
+    chips.push(makeActiveChip(t("hasPageFilterChip"), ()=>{ hasPage.checked=false; syncDualToggles(); render(); }));
+  }
+
+  for(const c of chips) activeChips.appendChild(c);
+}
+
+/* ========= CARD RENDER ========= */
+function icon(svgPath){
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("viewBox","0 0 24 24");
+  s.setAttribute("fill","none");
+  const p = document.createElementNS("http://www.w3.org/2000/svg","path");
+  p.setAttribute("d", svgPath);
+  p.setAttribute("stroke","currentColor");
+  p.setAttribute("stroke-width","2");
+  p.setAttribute("stroke-linecap","round");
+  p.setAttribute("stroke-linejoin","round");
+  s.appendChild(p);
+  return s;
+}
+const PATH_STAR = "M12 17.27l5.18 3-1.64-5.81L20 9.24l-5.9-.51L12 3.5 9.9 8.73 4 9.24l4.46 4.22L6.82 20.27 12 17.27Z";
+const PATH_PIN = "M14 4l6 6-4 2-4 8-2-2 8-4 2-4-6-6-2 4-6-2 2-2 6 2 2-4Z";
+const PATH_OPEN = "M14 5h5v5M10 14l9-9M19 14v5H5V5h5";
+
+function chipHtml(label, strong=false, haz=false){
+  const cls = "chip" + (strong ? " strong" : "") + (haz ? " haz" : "");
+  const dot = strong ? '<span class="miniDot" aria-hidden="true"></span>' : '';
+  const inner = strong ? `<strong>${escapeHtml(label)}</strong>` : escapeHtml(label);
+  return `<span class="${cls}">${dot}${inner}</span>`;
+}
+
+function card(c){
+  const el = document.createElement("article");
+  el.className = "card";
+  el.tabIndex = 0;
+
+  const favOn = favs.has(String(c.cas));
+  const pinOn = pins.has(String(c.cas));
+
+  const familyTxt = dispFamily(c);
+  const catTxt = dispCategory(c);
+  const nameTxt = dispName(c);
+  const useTxt = dispUse(c);
+
+  const chipColor = FAMILY_COLORS[c.family] || "var(--accent)";
+
+  el.innerHTML = `
+    <div class="cardIn">
+      <div class="titleRow">
+        <div>
+          <h3>${escapeHtml(nameTxt)}</h3>
+          <div class="submeta">${escapeHtml(familyTxt)} • ${escapeHtml(catTxt)}</div>
+        </div>
+        <div class="cardActions">
+          <button class="cBtn fav ${favOn ? "on":""}" title="${escapeHtml(t("tipFav"))}" aria-label="Favorite" type="button"></button>
+          <button class="cBtn pin ${pinOn ? "on":""}" title="${escapeHtml(t("tipPin"))}" aria-label="Pin" type="button"></button>
+          <button class="cBtn open" title="${escapeHtml(c.page ? t("tipOpen") : t("tipDetails"))}" aria-label="Open" type="button"></button>
+        </div>
+      </div>
+
+      <div class="metaGrid">
+        <div class="meta"><span>${escapeHtml(t("formula"))}</span><b>${escapeHtml(c.formula || "—")}</b></div>
+        <div class="meta"><span>${escapeHtml(t("cas"))}</span><b>${escapeHtml(c.cas || "—")}</b></div>
+      </div>
+
+      <div class="chips">
+        <span class="chip strong" style="--c: ${chipColor}; border-color: var(--c); background: color-mix(in oklab, var(--c) 15%, transparent); color: var(--text);">
+          <span class="miniDot" style="background: var(--c);"></span>
+          <strong>${escapeHtml(familyTxt)}</strong>
+        </span>
+        ${c.state ? chipHtml(t("stateChip") + stateLabel(c.state)) : ""}
+        ${c.hazard ? chipHtml(t("hazard"), false, true) : chipHtml(t("nonHazard"))}
+        ${c.page ? chipHtml(t("hasPageChip")) : ""}
+      </div>
+
+      <p class="desc">${escapeHtml(useTxt ? clip(useTxt, 160) : t("noDesc"))}</p>
+    </div>
+  `;
+
+  const favBtn = $(".cBtn.fav", el);
+  favBtn.appendChild(icon(PATH_STAR));
+  favBtn.onclick = (e)=>{
+    e.stopPropagation();
+    toggleFav(c.cas);
+    favBtn.classList.toggle("on", favs.has(String(c.cas)));
+    render();
+  };
+
+  const pinBtn2 = $(".cBtn.pin", el);
+  pinBtn2.appendChild(icon(PATH_PIN));
+  pinBtn2.onclick = (e)=>{
+    e.stopPropagation();
+    togglePin(c.cas);
+    pinBtn2.classList.toggle("on", pins.has(String(c.cas)));
+    refreshCompareBar();
+    render();
+  };
+
+  const openBtn = $(".cBtn.open", el);
+  openBtn.appendChild(icon(PATH_OPEN));
+  openBtn.onclick = (e)=>{
+    e.stopPropagation();
+    if(c.page) window.open(c.page, "_self");
+    else openModal(c);
+  };
+
+  el.onclick = ()=> openModal(c);
+  el.onkeydown = (e)=>{ if(e.key==="Enter" || e.key===" ") openModal(c); };
+
+  return el;
+}
+
+function render(){
+  const list = CHEMS.filter(passesFilters).slice();
+  list.sort((a,b)=> compareKey(a,b, sortSel.value));
+
+  totalCount.textContent = CHEMS.length;
+  shownCount.textContent = list.length;
+
+  grid.innerHTML = "";
+
+  if(list.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--muted);">
+        <svg viewBox="0 0 24 24" fill="none" style="width: 64px; height: 64px; color: var(--muted2); margin-bottom: 16px;">
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h3 style="margin: 0 0 8px; color: var(--text); font-size: 16px;">${LANG === "fa" ? "ماده‌ای یافت نشد!" : "No chemicals found!"}</h3>
+        <p style="margin: 0 0 16px; font-size: 13px;">${LANG === "fa" ? "لطفاً املای کلمه را بررسی کنید یا فیلترها را کاهش دهید." : "Try adjusting your search or clearing some filters."}</p>
+        <button class="ghostBtn" onclick="clearAllBtn.click()" type="button">
+          ${LANG === "fa" ? "پاک‌کردن فیلترها" : "Clear Filters"}
+        </button>
+      </div>
+    `;
+  } else {
+    const frag = document.createDocumentFragment();
+    for(const c of list) frag.appendChild(card(c));
+    grid.appendChild(frag);
+  }
+
+  syncActiveChips();
+  refreshCompareBar();
+}
+
+/* ========= FAVORITES ========= */
+function toggleFav(cas){
+  cas = String(cas||"").trim();
+  if(!cas) return;
+  if(favs.has(cas)) favs.delete(cas);
+  else favs.add(cas);
+  saveSet(STORAGE.favs, favs);
+}
+
+/* ========= MODAL ========= */
+function makeBadge(txt, strong=false){
+  const s = document.createElement("span");
+  s.className = "badge" + (strong ? " strong" : "");
+  s.textContent = txt;
+  return s;
+}
+
+function openModal(c, silent=false){
+  currentModal = c;
+  mTitle.textContent = dispName(c);
+
+  const fam = dispFamily(c);
+  const cat = dispCategory(c);
+  const haz = c.hazard ? t("hazard") : t("nonHazard");
+
+  mSub.textContent = `${fam} • ${cat} • ${t("cas")}:${c.cas || "—"} • ${haz}`;
+
+  mBadges.innerHTML = "";
+
+  const chipColor = FAMILY_COLORS[c.family] || "var(--accent)";
+  const famBadge = document.createElement("span");
+  famBadge.className = "badge strong";
+  famBadge.style.cssText = `--c: ${chipColor}; border-color: var(--c); background: var(--c); color: #fff; font-weight: 600;`;
+  famBadge.textContent = fam;
+  mBadges.appendChild(famBadge);
+
+  if(cat) mBadges.appendChild(makeBadge(cat));
+  if(c.formula) mBadges.appendChild(makeBadge(t("formula") + ": " + c.formula));
+  if(c.cas) mBadges.appendChild(makeBadge(t("cas") + ": " + c.cas));
+  mBadges.appendChild(makeBadge(t("state") + ": " + stateLabel(c.state)));
+  mBadges.appendChild(makeBadge(haz, c.hazard));
+
+  const useTxt = dispUse(c);
+  mDesc.textContent = useTxt ? useTxt : t("noDesc");
+
+  kv.innerHTML = "";
+  const rows = [
+    [t("name"), dispName(c)],
+    [t("formula"), c.formula || "—"],
+    [t("cas"), c.cas || "—"],
+    [t("family"), fam || "—"],
+    [t("category"), cat || "—"],
+    [t("hazard"), c.hazard ? t("yes") : t("no")],
+    [(LANG==="fa") ? (t("state") + " (۲۵°C، ۱ بار)") : (t("state") + " (25°C, 1 bar)"), stateLabel(c.state)],
+  ];
+  for(const [k,v] of rows){
+    const a=document.createElement("div"); a.className="k"; a.textContent=k;
+    const b=document.createElement("div"); b.className="v"; b.textContent=v;
+    kv.appendChild(a); kv.appendChild(b);
+  }
+
+  openPageBtn.disabled = !c.page;
+  openPageBtn.textContent = t("openPage");
+  openPageBtn.onclick = ()=>{ if(c.page) window.open(c.page, "_self"); };
+
+  copyBtn.textContent = t("copy");
+  copyBtn.onclick = async ()=> {
+    const lines = [
+      dispName(c),
+      `${t("cas")}: ${c.cas||"—"}`,
+      `${t("formula")}: ${c.formula||"—"}`,
+      `${t("family")}: ${fam||"—"}`,
+      `${t("category")}: ${cat||"—"}`,
+      `${t("hazard")}: ${c.hazard ? t("yes") : t("no")}`,
+      `${t("state")}: ${stateLabel(c.state)}`,
+      (useTxt ? ((LANG==="fa") ? `کاربرد: ${useTxt}` : `Use: ${useTxt}`) : ((LANG==="fa") ? "کاربرد: (ندارد)" : "Use: (not available)"))
+    ];
+    try{
+      await navigator.clipboard.writeText(lines.join("\n"));
+      toastMsg(t("toastCopiedT"), dispName(c));
+    } catch {
+      toastMsg(t("toastCopyFailT"), t("toastCopyFailB"));
+    }
+  };
+
+  pinBtn.textContent = pins.has(String(c.cas)) ? t("unpin") : t("pin");
+  pinBtn.onclick = ()=> {
+    togglePin(c.cas);
+    pinBtn.textContent = pins.has(String(c.cas)) ? t("unpin") : t("pin");
+    refreshCompareBar();
+    render();
+  };
+
+  if(c.cas && !silent){
+    history.replaceState(null, "", "#cas=" + encodeURIComponent(c.cas));
+  }
+
+  backdrop.classList.add("show");
+  backdrop.setAttribute("aria-hidden", "false");
+}
+function closeModal(){
+  backdrop.classList.remove("show");
+  backdrop.setAttribute("aria-hidden", "true");
+  currentModal = null;
+  if(location.hash.startsWith("#cas=")){
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+}
+closeBtn.onclick = closeModal;
+backdrop.onclick = (e)=>{ if(e.target===backdrop) closeModal(); };
+
+/* ========= COMPARE ========= */
+function togglePin(cas){
+  cas = String(cas||"").trim();
+  if(!cas) return;
+  if(pins.has(cas)) pins.delete(cas);
+  else{
+    if(pins.size >= 4){
+      toastMsg(t("toastCompareLimitT"), t("toastCompareLimitB"));
+      return;
+    }
+    pins.add(cas);
+  }
+  saveSet(STORAGE.pins, pins);
+}
+function refreshCompareBar(){
+  if(!pins.size){
+    compareBar.classList.remove("show");
+    return;
+  }
+  compareBar.classList.add("show");
+  pinsEl.innerHTML = "";
+  const pinned = Array.from(pins).map(cas=> CHEMS.find(c=>String(c.cas)===String(cas))).filter(Boolean);
+  for(const c of pinned){
+    const p = document.createElement("div");
+    p.className = "pin";
+    p.innerHTML = `<b>${escapeHtml(dispName(c))}</b><span style="font-family:var(--mono); color:var(--muted)">${escapeHtml(c.cas||"")}</span>`;
+    const x = document.createElement("button");
+    x.title = t("removed");
+    x.innerHTML = "×";
+    x.onclick = ()=>{ togglePin(c.cas); refreshCompareBar(); render(); };
+    p.appendChild(x);
+    pinsEl.appendChild(p);
+  }
+}
+
+function buildCompareTable(){
+  const pinned = Array.from(pins).map(cas=> CHEMS.find(c=>String(c.cas)===String(cas))).filter(Boolean);
+  const fields = [
+    [LANG==="fa" ? "نام" : "Name", c=>dispName(c)],
+    [t("cas"), c=>c.cas],
+    [t("formula"), c=>c.formula],
+    [t("family"), c=>dispFamily(c)],
+    [t("category"), c=>dispCategory(c)],
+    [t("hazard"), c=>c.hazard ? t("yes") : t("no")],
+    [(LANG==="fa") ? (t("state") + " (۲۵°C، ۱ بار)") : (t("state") + " (25°C, 1 bar)"), c=>stateLabel(c.state)],
+    [LANG==="fa" ? "کاربرد" : "Use", c=>{ const u=dispUse(c); return u?clip(u,140):t("noDesc"); }],
+  ];
+
+  cmpTable.innerHTML = "";
+  const tr0 = document.createElement("tr");
+  const fieldHdr = LANG==="fa" ? "فیلد" : "Field";
+  tr0.innerHTML = `<th style="text-align:${LANG==="fa"?"right":"left"}; color:var(--muted); padding:8px 10px; font-size:12px">${escapeHtml(fieldHdr)}</th>` + pinned.map(c=>`<th style="text-align:${LANG==="fa"?"right":"left"}; padding:8px 10px; font-size:13px; color:var(--text);">${escapeHtml(dispName(c)||"—")}</th>`).join("");
+  cmpTable.appendChild(tr0);
+
+  for(const [label, fn] of fields){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td style="padding:10px; border-radius:var(--r3); background: rgba(0,0,0,0.2); border:1px solid var(--stroke); color:var(--muted)">${escapeHtml(label)}</td>` +
+      pinned.map(c=>`<td style="padding:10px; border-radius:var(--r3); background: rgba(255,255,255,0.02); border:1px solid var(--stroke); color:var(--text)">${escapeHtml(fn(c)||"—")}</td>`).join("");
+    cmpTable.appendChild(tr);
+  }
+}
+
+compareBtn.onclick = ()=>{
+  const pinned = Array.from(pins).map(cas=> CHEMS.find(c=>String(c.cas)===String(cas))).filter(Boolean);
+  if(pinned.length < 2){
+    toastMsg(t("toastPinAtLeastT"), t("toastPinAtLeastB"));
+    return;
+  }
+  buildCompareTable();
+  cmpBackdrop.classList.add("show");
+  cmpBackdrop.setAttribute("aria-hidden","false");
+};
+function closeCompare(){
+  cmpBackdrop.classList.remove("show");
+  cmpBackdrop.setAttribute("aria-hidden","true");
+}
+cmpCloseBtn.onclick = closeCompare;
+cmpBackdrop.onclick = (e)=>{ if(e.target===cmpBackdrop) closeCompare(); };
+
+clearPinsBtn.onclick = ()=>{
+  pins.clear();
+  saveSet(STORAGE.pins, pins);
+  refreshCompareBar();
+  render();
+  toastMsg(t("toastPinsClearedT"), t("toastPinsClearedB"));
+};
+
+/* ========= HELP ========= */
+function openHelp(){
+  helpBackdrop.classList.add("show");
+  helpBackdrop.setAttribute("aria-hidden","false");
+}
+function closeHelp(){
+  helpBackdrop.classList.remove("show");
+  helpBackdrop.setAttribute("aria-hidden","true");
+}
+helpBtn.onclick = openHelp;
+helpCloseBtn.onclick = closeHelp;
+helpBackdrop.onclick = (e)=>{ if(e.target===helpBackdrop) closeHelp(); };
+
+/* ========= EVENTS ========= */
+q.addEventListener("input", ()=>{
+  renderSuggest();
+  render();
+});
+clearBtn.onclick = ()=>{
+  q.value = "";
+  suggest.classList.remove("show");
+  suggest.innerHTML = "";
+  suggestIndex = -1;
+  render();
+  q.focus();
+};
+sortSel.onchange = render;
+stateSel.onchange = render;
+
+// Language toggle
+langBtn.onclick = ()=>{
+  LANG = (LANG==="fa") ? "en" : "fa";
+  try{ localStorage.setItem(STORAGE.lang, LANG); }catch{}
+  applyLang();
+  buildFamilyUI();
+  renderSuggest();
+  render();
+};
+
+document.addEventListener("keydown", (e)=>{
+  if((e.key==="/" && !/input|textarea|select/i.test(document.activeElement.tagName)) || (e.ctrlKey && e.key.toLowerCase()==="k")){
+    e.preventDefault();
+    q.focus();
+  }
+  if(e.key==="Escape"){
+    if(suggest.classList.contains("show")){
+      suggest.classList.remove("show");
+      suggest.innerHTML = "";
+      suggestIndex = -1;
+      return;
+    }
+    if(backdrop.classList.contains("show")){ closeModal(); return; }
+    if(cmpBackdrop.classList.contains("show")){ closeCompare(); return; }
+    if(helpBackdrop.classList.contains("show")){ closeHelp(); return; }
+    if(drawer.classList.contains("show")){ closeDrawer(); return; }
+    if(document.activeElement === q && q.value.trim()){
+      q.value = "";
+      render();
+      return;
+    }
+  }
+  if(suggest.classList.contains("show")){
+    const items = $$(".sItem", suggest);
+    if(!items.length) return;
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      suggestIndex = Math.min(items.length-1, suggestIndex+1);
+      syncSuggestActive();
+    } else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      suggestIndex = Math.max(0, suggestIndex-1);
+      syncSuggestActive();
+    } else if(e.key==="Enter" && suggestIndex>=0){
+      e.preventDefault();
+      items[suggestIndex].click();
+    }
+  }
+});
+
+/* Deep link: open modal by CAS in hash */
+function openFromHash(){
+  if(!location.hash.startsWith("#cas=")) return;
+  const cas = decodeURIComponent(location.hash.slice(5));
+  const c = CHEMS.find(x=>String(x.cas)===String(cas));
+  if(c) openModal(c, true);
+}
+
+/* init */
+applyLang();
+buildFamilyUI();
+syncDualToggles();
+render();
+openFromHash();
+window.addEventListener("hashchange", openFromHash);
+</script>
+</body>
+</html>
